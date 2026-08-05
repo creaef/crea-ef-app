@@ -1,0 +1,160 @@
+{
+  "devsStore": [
+    {
+      "email": "admin@crea-ef.es",
+      "password": "admin123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester1@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester2@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester3@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester4@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester5@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester6@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester7@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester8@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester9@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "tester10@crea-ef.es",
+      "password": "tester123",
+      "estado": "Activo"
+    },
+    {
+      "email": "creaef@gmail.com",
+      "password": "admin123",
+      "estado": "Activo"
+    }
+  ],
+  "usersStore": [
+    {
+      "email": "usuario@crea-ef.es",
+      "password": "123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "admin@crea-ef.es",
+      "password": "admin123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester1@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester2@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester3@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester4@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester5@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester6@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester7@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester8@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester9@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "tester10@crea-ef.es",
+      "password": "tester123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "hola@gmail.com",
+      "password": "hola",
+      "estadoPago": "Pendiente"
+    },
+    {
+      "email": "creaef@gmail.com",
+      "password": "admin123",
+      "estadoPago": "Pagado"
+    },
+    {
+      "email": "creaefs@gmail.com",
+      "password": "hola",
+      "nombre": "Crea",
+      "apellidos": "Física",
+      "estadoPago": "Pendiente"
+    },
+    {
+      "email": "creaesf@gmail.com",
+      "password": "DDDD",
+      "nombre": "Crea",
+      "apellidos": "Física",
+      "estadoPago": "Pendiente"
+    }
+  ]
+}
