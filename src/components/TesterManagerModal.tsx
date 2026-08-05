@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Users, UserX, UserCheck, Plus, Copy, Check, RefreshCw, KeyRound, ShieldAlert } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 interface TesterAcc {
   email: string;
@@ -24,11 +26,13 @@ export const TesterManagerModal: React.FC<TesterManagerModalProps> = ({ isOpen, 
   const fetchTesters = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/testers');
-      const data = await res.json();
-      if (Array.isArray(data.testers)) {
-        setTesters(data.testers);
-      }
+      const devsRef = collection(db, 'devs');
+      const snap = await getDocs(devsRef);
+      const devsList = snap.docs.map(doc => doc.data() as TesterAcc);
+      
+      // Filter out 'admin@crea-ef.es' and 'tester@crea-ef.es' to only show extra testers
+      const filtered = devsList.filter(d => d.email !== 'admin@crea-ef.es' && d.email !== 'tester@crea-ef.es');
+      setTesters(filtered);
     } catch (e) {
       console.error('Error fetching testers:', e);
     } finally {
@@ -47,11 +51,11 @@ export const TesterManagerModal: React.FC<TesterManagerModalProps> = ({ isOpen, 
   const handleDelete = async (email: string) => {
     if (!confirm(`¿Seguro que deseas eliminar/revocar el acceso a ${email}?`)) return;
     try {
-      const res = await fetch(`/api/admin/testers/${encodeURIComponent(email)}`, { method: 'DELETE' });
-      if (res.ok) {
-        setStatusMsg(`Tester ${email} eliminado correctamente.`);
-        fetchTesters();
-      }
+      const devDocRef = doc(db, 'devs', email);
+      // Inactivate instead of delete to keep history or just delete
+      await setDoc(devDocRef, { estado: 'Inactivo' }, { merge: true });
+      setStatusMsg(`Tester ${email} inactivado correctamente.`);
+      fetchTesters();
     } catch (e) {
       console.error('Error deleting tester:', e);
     }
@@ -62,16 +66,15 @@ export const TesterManagerModal: React.FC<TesterManagerModalProps> = ({ isOpen, 
     if (!targetEmail) return;
 
     try {
-      const res = await fetch('/api/admin/testers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: targetEmail, password: newPass || 'tester123', estado: 'Activo' }),
-      });
-      if (res.ok) {
-        setStatusMsg(`Tester ${targetEmail} guardado/activado.`);
-        setNewEmail('');
-        fetchTesters();
-      }
+      const devDocRef = doc(db, 'devs', targetEmail);
+      await setDoc(devDocRef, { email: targetEmail, password: newPass || 'tester123', estado: 'Activo' });
+      
+      const userDocRef = doc(db, 'users', targetEmail);
+      await setDoc(userDocRef, { email: targetEmail, password: newPass || 'tester123', estadoPago: 'Pagado' }, { merge: true });
+
+      setStatusMsg(`Tester ${targetEmail} guardado/activado.`);
+      setNewEmail('');
+      fetchTesters();
     } catch (e) {
       console.error('Error adding tester:', e);
     }

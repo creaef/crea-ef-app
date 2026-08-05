@@ -18,6 +18,8 @@ import {
 import { CreaEfLogo } from './CreaEfLogo';
 import { ThemeSelectorModal } from './ThemeSelectorModal';
 import { useColorTheme } from '../utils/theme';
+import { db } from '../lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export interface UserSession {
   type: 'trial' | 'user' | 'admin';
@@ -166,39 +168,63 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
     }
 
     try {
-      const endpoint = isRegister ? '/api/auth/user/register' : '/api/auth/user/login';
-      const bodyPayload = isRegister
-        ? { nombre: userNombre.trim(), apellidos: userApellidos.trim(), email: cleanEmail, password: userPassword }
-        : { email: cleanEmail, password: userPassword };
-
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyPayload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setUserError(data.message || 'Error en la autenticación.');
-        return;
+      const userRef = doc(db, 'users', cleanEmail);
+      const devRef = doc(db, 'devs', cleanEmail);
+      
+      const devSnap = await getDoc(devRef);
+      if (devSnap.exists()) {
+        const devData = devSnap.data();
+        if (devData.estado === 'Inactivo') {
+          setUserError('⛔ Acceso revocado. La cuenta de tester se encuentra inactiva o eliminada.');
+          return;
+        }
       }
 
-      if (data.estadoPago === 'Pendiente') {
+      if (isRegister) {
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserError('El correo ya se encuentra registrado. Por favor, inicia sesión.');
+          return;
+        }
+        
+        await setDoc(userRef, {
+          email: cleanEmail,
+          password: userPassword,
+          nombre: userNombre.trim(),
+          apellidos: userApellidos.trim(),
+          estadoPago: 'Pendiente'
+        });
+
+        const url = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
         setCurrentUserPending(cleanEmail);
-        const url = data.stripeCheckoutUrl || `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
         setStripeCheckoutUrl(url);
         setShowStripeCheckout(true);
-        // Abrir la pasarela de pago de Stripe en una nueva pestaña
         window.open(url, '_blank');
       } else {
-        onStartSession({
-          type: 'user',
-          email: cleanEmail,
-          estadoPago: 'Pagado',
-        });
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists() || userSnap.data().password !== userPassword) {
+          setUserError('Credenciales de usuario incorrectas o cuenta no registrada.');
+          return;
+        }
+
+        const data = userSnap.data();
+        if (data.estadoPago === 'Pendiente') {
+          setCurrentUserPending(cleanEmail);
+          const url = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
+          setStripeCheckoutUrl(url);
+          setShowStripeCheckout(true);
+          window.open(url, '_blank');
+        } else {
+          onStartSession({
+            type: 'user',
+            email: cleanEmail,
+            estadoPago: 'Pagado',
+          });
+        }
       }
     } catch (err) {
-      setUserError('Error conectando con el servidor de autenticación.');
+      setUserError('Error conectando con la base de datos.');
+      console.error(err);
     }
   };
 
@@ -216,18 +242,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
     }
 
     try {
-      const res = await fetch('/api/auth/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password: adminPassword }),
-      });
+      const devRef = doc(db, 'devs', cleanEmail);
+      const devSnap = await getDoc(devRef);
 
-      const data = await res.json();
-      if (!res.ok) {
-        setAdminError(data.message || 'Acceso denegado.');
+      if (!devSnap.exists() || devSnap.data().password !== adminPassword) {
+        setAdminError('Acceso denegado.');
         return;
       }
 
+      const data = devSnap.data();
       if (data.estado === 'Inactivo') {
         setAdminError('⛔ Acceso revocado. Tu cuenta de desarrollador se encuentra INACTIVA.');
         return;
@@ -240,6 +263,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       });
     } catch (err) {
       setAdminError('Error al validar credenciales de administración.');
+      console.error(err);
     }
   };
 

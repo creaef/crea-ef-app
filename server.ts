@@ -10,11 +10,17 @@ import * as pdfParseModule from 'pdf-parse';
 const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
 import * as XLSX from 'xlsx';
 import { formatGameDescription } from './src/types';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import firebaseConfig from './firebase-applet-config.json';
 
 dotenv.config();
 
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp, '(default)');
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -191,95 +197,7 @@ function safeParseAIJson<T = any>(text: string | undefined | null, defaultValue:
   }
 }
 
-// --- BANCO Y CONTROL DE ACCESO PERSISTENTE CON FILE STORE ---
-const AUTH_USERS_FILE = path.join(process.cwd(), 'auth_users.json');
-
-interface DevAccount {
-  email: string;
-  password: string;
-  estado: 'Activo' | 'Inactivo';
-}
-
-interface UserAccount {
-  email: string;
-  password: string;
-  nombre?: string;
-  apellidos?: string;
-  estadoPago: 'Pendiente' | 'Pagado';
-}
-
-interface AuthData {
-  devsStore: DevAccount[];
-  usersStore: UserAccount[];
-}
-
-function getDefaultAuthData(): AuthData {
-  const initialDevs: DevAccount[] = [
-    { email: 'admin@crea-ef.es', password: 'admin123', estado: 'Activo' },
-    { email: 'tester@crea-ef.es', password: 'tester123', estado: 'Activo' },
-  ];
-  const initialUsers: UserAccount[] = [
-    { email: 'usuario@crea-ef.es', password: '123', estadoPago: 'Pagado' },
-    { email: 'admin@crea-ef.es', password: 'admin123', estadoPago: 'Pagado' },
-    { email: 'tester@crea-ef.es', password: 'tester123', estadoPago: 'Pagado' },
-  ];
-
-  // Generar los 10 testers solicitados con email tester1@crea-ef.es ... tester10@crea-ef.es y contraseña tester123
-  for (let i = 1; i <= 10; i++) {
-    const email = `tester${i}@crea-ef.es`;
-    initialDevs.push({ email, password: 'tester123', estado: 'Activo' });
-    initialUsers.push({ email, password: 'tester123', estadoPago: 'Pagado' });
-  }
-
-  return {
-    devsStore: initialDevs,
-    usersStore: initialUsers,
-  };
-}
-
-function loadAuthData(): AuthData {
-  try {
-    if (fs.existsSync(AUTH_USERS_FILE)) {
-      const content = fs.readFileSync(AUTH_USERS_FILE, 'utf-8');
-      const data = JSON.parse(content);
-      if (Array.isArray(data.devsStore) && Array.isArray(data.usersStore)) {
-        // Garantizar que estén los 10 testers por defecto si faltan y actualizar sus contraseñas a tester123
-        const defaultData = getDefaultAuthData();
-        defaultData.devsStore.forEach((dev) => {
-          const existingDev = data.devsStore.find((d: DevAccount) => d.email === dev.email);
-          if (!existingDev) {
-            data.devsStore.push(dev);
-          } else if (dev.email.startsWith('tester')) {
-            existingDev.password = dev.password; // 'tester123'
-          }
-        });
-        defaultData.usersStore.forEach((usr) => {
-          const existingUser = data.usersStore.find((u: UserAccount) => u.email === usr.email);
-          if (!existingUser) {
-            data.usersStore.push(usr);
-          } else if (usr.email.startsWith('tester')) {
-            existingUser.password = usr.password; // 'tester123'
-          }
-        });
-        saveAuthData(data);
-        return data;
-      }
-    }
-  } catch (e) {
-    console.error('Error al leer auth_users.json:', e);
-  }
-  const defaultData = getDefaultAuthData();
-  saveAuthData(defaultData);
-  return defaultData;
-}
-
-function saveAuthData(data: AuthData) {
-  try {
-    fs.writeFileSync(AUTH_USERS_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (e) {
-    console.error('Error al guardar auth_users.json:', e);
-  }
-}
+// --- PERSISTENCE MOVED TO FIRESTORE ---
 
 const trialStore = new Map<string, { count: number; lastAccess: Date }>();
 
@@ -314,81 +232,8 @@ app.post('/api/auth/trial', (req, res) => {
   });
 });
 
-// Vía 2: Registro de Usuario
-app.post('/api/auth/user/register', (req, res) => {
-  const { nombre, apellidos, email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ message: 'Email y contraseña requeridos' });
-
-  const cleanEmail = String(email).trim().toLowerCase();
-  const authData = loadAuthData();
-  const existing = authData.usersStore.find((u) => u.email === cleanEmail);
-  if (existing) {
-    return res.status(400).json({ message: 'El correo ya se encuentra registrado. Por favor, inicia sesión.' });
-  }
-
-  const stripeCheckoutUrl = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
-
-  const newUser: UserAccount = {
-    email: cleanEmail,
-    password: String(password),
-    nombre: nombre ? String(nombre).trim() : undefined,
-    apellidos: apellidos ? String(apellidos).trim() : undefined,
-    estadoPago: 'Pendiente',
-  };
-  authData.usersStore.push(newUser);
-  saveAuthData(authData);
-
-  return res.json({
-    success: true,
-    estadoPago: 'Pendiente',
-    email: cleanEmail,
-    stripeCheckoutUrl,
-    message: 'Usuario registrado correctamente. Procede al pago para activar el acceso ilimitado.',
-  });
-});
-
-// Vía 2: Login de Usuario
-app.post('/api/auth/user/login', (req, res) => {
-  const { email, password } = req.body;
-  const cleanEmail = String(email).trim().toLowerCase();
-  const authData = loadAuthData();
-  
-  // Verificar si está inactivo en devsStore
-  const dev = authData.devsStore.find((d) => d.email === cleanEmail);
-  if (dev && dev.estado === 'Inactivo') {
-    return res.status(403).json({ message: '⛔ Acceso revocado. La cuenta de tester se encuentra inactiva o eliminada.' });
-  }
-
-  const user = authData.usersStore.find((u) => u.email === cleanEmail && u.password === String(password));
-
-  if (!user) {
-    return res.status(401).json({ message: 'Credenciales de usuario incorrectas o cuenta no registrada.' });
-  }
-
-  const stripeCheckoutUrl = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
-
-  if (user.estadoPago === 'Pendiente') {
-    return res.status(403).json({
-      success: false,
-      estadoPago: 'Pendiente',
-      email: user.email,
-      stripeCheckoutUrl,
-      message: '⚠️ Tu cuenta tiene el pago PENDIENTE. Debes completar la suscripción en la pasarela de pago para poder acceder a la aplicación.',
-    });
-  }
-
-  return res.json({
-    success: true,
-    estadoPago: user.estadoPago,
-    email: user.email,
-    nombre: user.nombre,
-    apellidos: user.apellidos,
-    stripeCheckoutUrl,
-  });
-});
-
 // Vía 2: Confirmar Pago Stripe (Webhook oficial y confirmación por URL)
-app.post('/api/stripe/webhook', (req, res) => {
+app.post('/api/stripe/webhook', async (req, res) => {
   const event = req.body;
   const email =
     event?.data?.object?.customer_details?.email ||
@@ -398,109 +243,30 @@ app.post('/api/stripe/webhook', (req, res) => {
 
   if (email) {
     const cleanEmail = String(email).trim().toLowerCase();
-    const authData = loadAuthData();
-    const user = authData.usersStore.find((u) => u.email === cleanEmail);
-    if (user) {
-      user.estadoPago = 'Pagado';
-      saveAuthData(authData);
-      console.log(`[Stripe Webhook] Usuario ${cleanEmail} actualizado a estado Pagado.`);
-    } else {
-      authData.usersStore.push({ email: cleanEmail, password: '123', estadoPago: 'Pagado' });
-      saveAuthData(authData);
-      console.log(`[Stripe Webhook] Nuevo usuario ${cleanEmail} registrado como Pagado.`);
+    const userRef = doc(db, 'users', cleanEmail);
+    try {
+      await setDoc(userRef, { estadoPago: 'Pagado', email: cleanEmail, password: '123' }, { merge: true });
+      console.log(`[Stripe Webhook] Usuario ${cleanEmail} actualizado a estado Pagado en Firestore.`);
+    } catch (e) {
+      console.error(`[Stripe Webhook] Error actualizando usuario ${cleanEmail} en Firestore:`, e);
     }
   }
   res.json({ received: true });
 });
 
-app.post('/api/auth/user/confirm-payment', (req, res) => {
+app.post('/api/auth/user/confirm-payment', async (req, res) => {
   const { email } = req.body;
   const cleanEmail = String(email || '').trim().toLowerCase();
   if (!cleanEmail) return res.status(400).json({ error: 'Email requerido' });
 
-  const authData = loadAuthData();
-  const user = authData.usersStore.find((u) => u.email === cleanEmail);
-
-  if (user) {
-    user.estadoPago = 'Pagado';
-    saveAuthData(authData);
+  const userRef = doc(db, 'users', cleanEmail);
+  try {
+    await setDoc(userRef, { estadoPago: 'Pagado', email: cleanEmail }, { merge: true });
     return res.json({ success: true, estadoPago: 'Pagado', email: cleanEmail });
+  } catch (e) {
+    console.error(`Error confirming payment for ${cleanEmail}:`, e);
+    return res.status(500).json({ error: 'Error interno guardando confirmación de pago' });
   }
-
-  authData.usersStore.push({ email: cleanEmail, password: '123', estadoPago: 'Pagado' });
-  saveAuthData(authData);
-  return res.json({ success: true, estadoPago: 'Pagado', email: cleanEmail });
-});
-
-// Vía 3: Login Admin / Desarrolladores / Testers
-app.post('/api/auth/admin/login', (req, res) => {
-  const { email, password } = req.body;
-  const cleanEmail = String(email).trim().toLowerCase();
-  const authData = loadAuthData();
-  const dev = authData.devsStore.find((d) => d.email === cleanEmail && d.password === String(password));
-
-  if (!dev) {
-    return res.status(401).json({ message: 'Credenciales de administración/tester incorrectas.' });
-  }
-
-  if (dev.estado === 'Inactivo') {
-    return res.status(403).json({
-      message: '⛔ Acceso revocado. Tu usuario de tester/desarrollador se encuentra INACTIVO o ha sido eliminado.',
-      estado: 'Inactivo',
-    });
-  }
-
-  return res.json({ success: true, estado: 'Activo', email: dev.email });
-});
-
-// API ADMIN: Obtener lista de testers y usuarios
-app.get('/api/admin/testers', (req, res) => {
-  const authData = loadAuthData();
-  res.json({ testers: authData.devsStore, users: authData.usersStore });
-});
-
-// API ADMIN: Eliminar un tester
-app.delete('/api/admin/testers/:email', (req, res) => {
-  const cleanEmail = String(req.params.email || '').trim().toLowerCase();
-  if (!cleanEmail) {
-    return res.status(400).json({ error: 'Email requerido.' });
-  }
-  const authData = loadAuthData();
-  authData.devsStore = authData.devsStore.filter((d) => d.email !== cleanEmail);
-  authData.usersStore = authData.usersStore.filter((u) => u.email !== cleanEmail);
-  saveAuthData(authData);
-  res.json({ success: true, message: `Tester ${cleanEmail} eliminado.` });
-});
-
-// API ADMIN: Añadir o actualizar un tester
-app.post('/api/admin/testers', (req, res) => {
-  const { email, password, estado } = req.body;
-  const cleanEmail = String(email || '').trim().toLowerCase();
-  if (!cleanEmail) {
-    return res.status(400).json({ error: 'Email es obligatorio.' });
-  }
-  const pass = String(password || 'tester123');
-  const st = estado === 'Inactivo' ? 'Inactivo' : 'Activo';
-
-  const authData = loadAuthData();
-  const existingDev = authData.devsStore.find((d) => d.email === cleanEmail);
-  if (existingDev) {
-    existingDev.password = pass;
-    existingDev.estado = st;
-  } else {
-    authData.devsStore.push({ email: cleanEmail, password: pass, estado: st });
-  }
-
-  const existingUser = authData.usersStore.find((u) => u.email === cleanEmail);
-  if (existingUser) {
-    existingUser.password = pass;
-    existingUser.estadoPago = st === 'Activo' ? 'Pagado' : 'Pendiente';
-  } else {
-    authData.usersStore.push({ email: cleanEmail, password: pass, estadoPago: st === 'Activo' ? 'Pagado' : 'Pendiente' });
-  }
-
-  saveAuthData(authData);
-  res.json({ success: true, message: `Tester ${cleanEmail} guardado con éxito.` });
 });
 
 // API 1: Generar Justificación de la SdA
@@ -1900,77 +1666,7 @@ Escribe entre 80 y 150 palabras explicando:
   }
 });
 
-// API: Persistencia de SdAs del Usuario por Email (Servidor y Disco)
-const USER_SDAS_FILE = path.join(process.cwd(), 'user_sdas.json');
-
-function readUserSdasFromFile(): Record<string, any[]> {
-  try {
-    if (fs.existsSync(USER_SDAS_FILE)) {
-      const content = fs.readFileSync(USER_SDAS_FILE, 'utf-8');
-      return JSON.parse(content);
-    }
-  } catch (e) {
-    console.error('Error reading user_sdas.json:', e);
-  }
-  return {};
-}
-
-function writeUserSdasToFile(data: Record<string, any[]>) {
-  try {
-    fs.writeFileSync(USER_SDAS_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (e) {
-    console.error('Error writing user_sdas.json:', e);
-  }
-}
-
-app.get('/api/sdas', (req, res) => {
-  const email = String(req.query.email || '').trim().toLowerCase();
-  if (!email) {
-    return res.json({ sdas: [] });
-  }
-  const db = readUserSdasFromFile();
-  const userSdas = db[email] || [];
-  res.json({ sdas: userSdas });
-});
-
-app.post('/api/sdas', (req, res) => {
-  const { email, sda, userType } = req.body;
-  const cleanEmail = String(email || '').trim().toLowerCase();
-  if (!cleanEmail || !sda || !sda.id) {
-    return res.status(400).json({ error: 'Email y SdA válidos son obligatorios.' });
-  }
-
-  const isTrialUser = userType === 'trial' || trialStore.has(cleanEmail);
-  const maxLimit = isTrialUser ? 3 : 8;
-
-  const db = readUserSdasFromFile();
-  const list = db[cleanEmail] || [];
-  const filtered = list.filter((s: any) => s.id !== sda.id);
-
-  if (filtered.length >= maxLimit) {
-    return res.status(400).json({
-      error: `Has alcanzado el límite máximo de ${maxLimit} Situaciones de Aprendizaje guardadas en tu perfil. Elimina alguna desde "Mis SdAs Guardadas" para guardar una nueva.`,
-      limitReached: true,
-    });
-  }
-
-  db[cleanEmail] = [sda, ...filtered].slice(0, maxLimit);
-  writeUserSdasToFile(db);
-  res.json({ success: true, sdas: db[cleanEmail] });
-});
-
-app.delete('/api/sdas/:id', (req, res) => {
-  const idToDelete = req.params.id;
-  const cleanEmail = String(req.query.email || req.body?.email || '').trim().toLowerCase();
-  if (!cleanEmail || !idToDelete) {
-    return res.status(400).json({ error: 'Email e ID son requeridos.' });
-  }
-  const db = readUserSdasFromFile();
-  const list = db[cleanEmail] || [];
-  db[cleanEmail] = list.filter((s: any) => s.id !== idToDelete);
-  writeUserSdasToFile(db);
-  res.json({ success: true, sdas: db[cleanEmail] });
-});
+// SdA Persistence moved to Frontend (Firestore)
 
 // Boot server and Vite middleware
 async function startServer() {

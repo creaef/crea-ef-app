@@ -14,7 +14,8 @@ import { Step10Export } from './components/Step10Export';
 import { LandingPage, UserSession } from './components/LandingPage';
 import { SituacionAprendizaje, Curso, Trimestre, TematicaEF, Ciclo, ModeloEstructuraSesion } from './types';
 import { getCicloFromCurso, generarRubricaPorDefecto } from './utils/sdaGenerator';
-import { logoutGoogle } from './lib/firebase';
+import { logoutGoogle, db } from './lib/firebase';
+import { collection, doc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { useColorTheme } from './utils/theme';
 
 const INITIAL_SDA_STATE: SituacionAprendizaje = {
@@ -95,26 +96,33 @@ export default function App() {
     const email = userSession?.email?.trim().toLowerCase();
     if (email) {
       localStorage.setItem('current_user_email', email);
-      fetch(`/api/sdas?email=${encodeURIComponent(email)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && Array.isArray(data.sdas)) {
-            setSavedSdas(data.sdas);
+      
+      const loadFromFirestore = async () => {
+        try {
+          const sdasRef = collection(db, 'users', email, 'user_sdas');
+          const snap = await getDocs(sdasRef);
+          const sdasList = snap.docs.map(d => d.data() as SituacionAprendizaje);
+          
+          if (sdasList.length > 0) {
+            setSavedSdas(sdasList);
             try {
-              localStorage.setItem(`sda_ef_andalucia_list_${email}`, JSON.stringify(data.sdas));
+              localStorage.setItem(`sda_ef_andalucia_list_${email}`, JSON.stringify(sdasList));
             } catch (e) {}
           } else {
             setSavedSdas([]);
           }
-        })
-        .catch(() => {
+        } catch (error) {
+          console.warn('Could not load SdAs from Firestore:', error);
           try {
             const stored = localStorage.getItem(`sda_ef_andalucia_list_${email}`);
             setSavedSdas(stored ? JSON.parse(stored) : []);
           } catch (e) {
             setSavedSdas([]);
           }
-        });
+        }
+      };
+      
+      loadFromFirestore();
     } else {
       localStorage.removeItem('current_user_email');
       setSavedSdas([]);
@@ -201,7 +209,7 @@ export default function App() {
     setMaxStepReached(1);
   };
 
-  const handleSaveSdA = () => {
+  const handleSaveSdA = async () => {
     const isTrialUser = userSession?.type === 'trial' || (userSession as any)?.isTrial;
     const maxAllowedSdas = isTrialUser ? 3 : 8;
 
@@ -219,22 +227,18 @@ export default function App() {
       } catch (e) {
         console.error('Error saving to localStorage:', e);
       }
-      fetch('/api/sdas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: userSession.email, sda, userType: userSession?.type }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.error) {
-            alert(data.error);
-          }
-        })
-        .catch((e) => console.warn('Could not persist SdA to server:', e));
+      
+      try {
+        const sdaDocRef = doc(db, 'users', email, 'user_sdas', sda.id);
+        await setDoc(sdaDocRef, sda, { merge: true });
+      } catch (e) {
+        console.warn('Could not persist SdA to server:', e);
+        alert('Error al guardar en la nube, pero se ha guardado localmente.');
+      }
     }
   };
 
-  const handleDeleteSdA = (idToDelete: string) => {
+  const handleDeleteSdA = async (idToDelete: string) => {
     const updated = savedSdas.filter((s) => s.id !== idToDelete);
     setSavedSdas(updated);
     const email = userSession?.email?.trim().toLowerCase();
@@ -244,9 +248,13 @@ export default function App() {
       } catch (e) {
         console.error('Error deleting from localStorage:', e);
       }
-      fetch(`/api/sdas/${encodeURIComponent(idToDelete)}?email=${encodeURIComponent(userSession.email)}`, {
-        method: 'DELETE',
-      }).catch((e) => console.warn('Could not delete SdA from server:', e));
+      
+      try {
+        const sdaDocRef = doc(db, 'users', email, 'user_sdas', idToDelete);
+        await deleteDoc(sdaDocRef);
+      } catch (e) {
+        console.warn('Could not delete SdA from server:', e);
+      }
     }
   };
 
