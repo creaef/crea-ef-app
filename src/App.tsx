@@ -58,33 +58,9 @@ export default function App() {
   const [sda, setSda] = useState<SituacionAprendizaje>(INITIAL_SDA_STATE);
   const [savedSdas, setSavedSdas] = useState<SituacionAprendizaje[]>([]);
 
-  // Auto-scroll smoothly and gradually to top whenever step or login session changes
+  // Auto-scroll to top whenever step or login session changes
   useEffect(() => {
-    const startY = window.scrollY || document.documentElement.scrollTop;
-    if (startY > 10) {
-      const duration = 750; // 750ms smooth transition
-      const startTime = performance.now();
-
-      const animateScroll = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        // easeInOutCubic curve for a graceful, smooth deceleration
-        const ease =
-          progress < 0.5
-            ? 4 * progress * progress * progress
-            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-        window.scrollTo(0, startY * (1 - ease));
-
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        }
-      };
-
-      requestAnimationFrame(animateScroll);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep, userSession?.email]);
 
   // El pago se confirma exclusivamente vía Webhook de Stripe en el backend.

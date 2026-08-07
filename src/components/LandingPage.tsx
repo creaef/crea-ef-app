@@ -52,6 +52,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
   const [stripeCheckoutUrl, setStripeCheckoutUrl] = useState('');
   const [currentUserPending, setCurrentUserPending] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   // Via 3: Admin / Developer State
   const [adminEmail, setAdminEmail] = useState('');
@@ -181,6 +182,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       }
 
       if (isRegister) {
+        /*
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
           setUserError('El correo ya se encuentra registrado. Por favor, inicia sesión.');
@@ -200,6 +202,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
         setStripeCheckoutUrl(url);
         setShowStripeCheckout(true);
         window.open(url, '_blank');
+        */
+        setShowComingSoonModal(true);
+        return;
       } else {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists() || userSnap.data().password !== userPassword) {
@@ -366,7 +371,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
             </div>
             <h3 className="font-extrabold text-base text-white">Iniciar Sesión / Registro</h3>
             <p className="text-xs text-slate-400 mt-1">
-              Acceso ilimitado por pago único de 12€.
+              Acceso ilimitado (Próximamente).
             </p>
           </button>
 
@@ -461,6 +466,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
+
+              <div className="pt-4 flex justify-center">
+                <a
+                  href="https://docs.google.com/forms/d/e/1FAIpQLScB2nJKkqH1RlsU84ihKveoPq5uy13E1uS4ENiJGNKwhiGuuA/viewform?usp=sharing&ouid=104396603938196011081"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex py-3 px-6 bg-sky-900/40 hover:bg-sky-800/60 border border-sky-500/50 text-sky-100 font-bold text-xs rounded-2xl transition shadow-lg flex-col items-center justify-center text-center space-y-1"
+                >
+                  <span className="text-sm font-black text-white">Necesito tu opinión</span>
+                  <span className="text-sky-300 font-semibold">Cuéntame qué te parece 📝</span>
+                </a>
+              </div>
             </div>
           )}
 
@@ -477,7 +494,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                       {isRegister ? 'Registro de Usuario' : 'Iniciar Sesión'}
                     </h3>
                     <p className="text-xs text-slate-400">
-                      {isRegister ? 'Cuestionario de alta para pago único de 12€' : 'Ingresa con tus credenciales guardadas'}
+                      {isRegister ? 'Cuestionario de alta (Próximamente)' : 'Ingresa con tus credenciales guardadas'}
                     </p>
                   </div>
                 </div>
@@ -574,7 +591,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   {isRegister ? (
                     <>
                       <UserPlus className="w-4 h-4" />
-                      <span>Regístrame (Pago Único 12€)</span>
+                      <span>Regístrame (Próximamente)</span>
                     </>
                   ) : (
                     <>
@@ -681,7 +698,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
             <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-3">
               <div className="flex justify-between items-center text-xs text-slate-300">
                 <span>Pago Único por App Ilimitada Crea-Ef</span>
-                <span className="font-extrabold text-amber-400 text-sm">12,00 €</span>
+                <span className="font-extrabold text-amber-400 text-sm">(Próximamente)</span>
               </div>
               <p className="text-[11px] text-slate-400">
                 Acceso completo e ilimitado para siempre a la herramienta de Situaciones de Aprendizaje de EF, Banco de Juegos, exportaciones y adaptaciones LOMLOE / DUA.
@@ -705,7 +722,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2"
                 >
                   <CreditCard className="w-4 h-4" />
-                  <span>Abrir Pasarela de Pago Stripe (12€)</span>
+                  <span>Abrir Pasarela de Pago Stripe</span>
                 </a>
                 <p className="text-[11px] text-slate-400 text-center leading-relaxed">
                   Una vez realizado el pago, Stripe notificará a la app y tu usuario quedará activo automáticamente para que puedas acceder con tus credenciales.
@@ -719,6 +736,38 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* COMING SOON MODAL */}
+      {showComingSoonModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-6 shadow-2xl relative text-center">
+            <button
+              onClick={() => setShowComingSoonModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/30">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-black text-white">¡Próximamente!</h3>
+            <p className="text-sm text-slate-400">
+              El registro de nuevas cuentas estará disponible muy pronto. 
+              Mientras tanto, puedes probar la app en el <strong>Periodo de Prueba</strong> (Vía 1).
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setShowComingSoonModal(false);
+                setActiveTab('trial');
+              }}
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm rounded-xl transition"
+            >
+              Ir al Periodo de Prueba
+            </button>
           </div>
         </div>
       )}

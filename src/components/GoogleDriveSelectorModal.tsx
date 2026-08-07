@@ -420,6 +420,12 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
                 <p className="text-[11px] text-slate-500 font-medium">
                   ¿Quieres acceder con otra cuenta de Gmail o corporativa? Al hacer clic podrás elegir o añadir cualquier cuenta de Google.
                 </p>
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-[11px] font-medium mt-3 text-left leading-relaxed w-full">
+                  <strong>🔒 Privacidad y Seguridad Total:</strong> La app se encuentra en fase de validación por Google, por lo que verás un aviso de permisos al conectar tu cuenta. 
+                  No te preocupes, <strong>nunca guardamos tus datos personales ni tus documentos</strong> en nuestros servidores; todo se procesa en tu propio dispositivo. 
+                  <br className="mt-1" />
+                  <em>Si prefieres no conectar tu cuenta, siempre puedes subir tus documentos manualmente desde la opción "Cargar PDF/Word/Excel".</em>
+                </div>
               </div>
             </div>
           ) : (

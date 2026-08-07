@@ -16,6 +16,8 @@ import {
 import { Curso, Trimestre, TematicaEF, Ciclo } from '../types';
 import { getCicloFromCurso } from '../utils/sdaGenerator';
 import { LISTA_UNIFICADA_TEMATICAS } from '../data/proposedThemes';
+import { db } from '../lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 interface Step1Props {
   titulo: string;
@@ -66,6 +68,7 @@ export const Step1General: React.FC<Step1Props> = ({
 
   const [userApiKey, setUserApiKey] = useState('');
   const [apiKeySaved, setApiKeySaved] = useState(false);
+  const [showTutorialModal, setShowTutorialModal] = useState(false);
 
   useEffect(() => {
     const storageKey = userEmail ? `user_gemini_api_key_${userEmail}` : 'user_gemini_api_key';
@@ -73,20 +76,56 @@ export const Step1General: React.FC<Step1Props> = ({
     if (savedKey) {
       setUserApiKey(savedKey);
       setApiKeySaved(true);
+    } else if (userEmail) {
+      // Intenta cargarla de la base de datos si no está en local
+      const fetchKeyFromDb = async () => {
+        try {
+          const userRef = doc(db, 'users', userEmail.toLowerCase());
+          const snap = await getDoc(userRef);
+          if (snap.exists() && snap.data().geminiApiKey) {
+            const key = snap.data().geminiApiKey;
+            setUserApiKey(key);
+            setApiKeySaved(true);
+            localStorage.setItem(storageKey, key);
+          }
+        } catch (e) {
+          console.warn('Error loading API key from DB:', e);
+        }
+      };
+      fetchKeyFromDb();
     } else {
       setUserApiKey('');
       setApiKeySaved(false);
     }
   }, [userEmail]);
 
-  const handleSaveApiKey = () => {
+  const handleSaveApiKey = async () => {
     const storageKey = userEmail ? `user_gemini_api_key_${userEmail}` : 'user_gemini_api_key';
-    if (userApiKey.trim()) {
-      localStorage.setItem(storageKey, userApiKey.trim());
+    const keyToSave = userApiKey.trim();
+    if (keyToSave) {
+      localStorage.setItem(storageKey, keyToSave);
       setApiKeySaved(true);
+      if (userEmail) {
+        try {
+          const cleanEmail = userEmail.toLowerCase();
+          const userRef = doc(db, 'users', cleanEmail);
+          await setDoc(userRef, { geminiApiKey: keyToSave, email: cleanEmail }, { merge: true });
+        } catch (e) {
+          console.error('Error saving API key to DB:', e);
+        }
+      }
     } else {
       localStorage.removeItem(storageKey);
       setApiKeySaved(false);
+      if (userEmail) {
+        try {
+          const cleanEmail = userEmail.toLowerCase();
+          const userRef = doc(db, 'users', cleanEmail);
+          await setDoc(userRef, { geminiApiKey: '' }, { merge: true });
+        } catch (e) {
+          console.error('Error removing API key from DB:', e);
+        }
+      }
     }
   };
 
@@ -506,7 +545,7 @@ export const Step1General: React.FC<Step1Props> = ({
               <div className="flex w-full sm:w-auto items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => alert('Próximamente: Tutorial en vídeo/imágenes paso a paso.')}
+                  onClick={() => setShowTutorialModal(true)}
                   className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition border border-slate-300"
                 >
                   TUTORIAL
@@ -577,6 +616,33 @@ export const Step1General: React.FC<Step1Props> = ({
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Tutorial Video Modal */}
+      {showTutorialModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-2 relative shadow-2xl">
+            <button
+              onClick={() => setShowTutorialModal(false)}
+              className="absolute -top-12 right-0 text-white hover:text-amber-400 flex items-center space-x-2 transition"
+            >
+              <span className="font-bold text-sm">Cerrar</span>
+              <div className="bg-slate-800 p-2 rounded-full">
+                <X className="w-5 h-5" />
+              </div>
+            </button>
+            <div className="rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
+              <video 
+                src="/videos/tutorial.mp4" 
+                controls 
+                autoPlay
+                className="w-full h-full object-contain"
+              >
+                Tu navegador no soporta el elemento de vídeo.
+              </video>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -22,7 +22,16 @@ const db = getFirestore(fbApp, '(default)');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Invalid JSON payload' });
+  }
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ error: 'Payload too large. Por favor, reduce el tamaño de los documentos seleccionados.' });
+  }
+  next();
+});
 
 // API Key Pool for zero-cost high availability rotation across free Gemini keys
 function getApiKeys(): string[] {
@@ -587,9 +596,11 @@ FORMATO DE LOS 4 APARTADOS OBLIGATORIOS POR JUEGO (mínimo 180-250 palabras por 
 HILO NARRATIVO Y GAMIFICACIÓN:
 Integra un hilo narrativo continuo y gamificado que conecte todas las sesiones de principio a fin si la metodología es Gamificación (ej. misiones, niveles, insignias, mapa del tesoro, historia envolvente). Si es otra metodología, contextualiza los retos y juegos en la temática del título y en el Reto/Producto Final.
 
-INTEGRACIÓN DE COMPETENCIA DIGITAL Y HERRAMIENTAS REALES:
-Incorpora el uso de herramientas tecnológicas reales en las sesiones (ej. tabletas digitales para autograbación del movimiento, códigos QR con retos/pistas, apps de análisis técnico, formularios digitales de coevaluación como Google Forms, Plickers o Kahoot).
-
+${
+  (ciclo.toLowerCase().includes('tercer') || curso.includes('5º') || curso.includes('6º'))
+    ? `INTEGRACIÓN DE COMPETENCIA DIGITAL Y HERRAMIENTAS REALES:\nIncorpora el uso de herramientas tecnológicas reales en las sesiones (ej. tabletas digitales para autograbación del movimiento, códigos QR con retos/pistas, apps de análisis técnico, formularios digitales de coevaluación como Kahoot).\n`
+    : `USO DE MATERIAL DIGITAL LIMITADO:\nAl tratarse de alumnado de ciclos inferiores, NO utilices tabletas, móviles, grabaciones ni dispositivos electrónicos en las sesiones. Todo el material debe ser tradicional de Educación Física (pelotas, aros, picas, petos, etc.).\n`
+}
 ESTRUCURA Y FASES DE CADA SESIÓN (60 MINUTOS TOTALES):
 Cada sesión DEBE contener exactamente 6 objetos en la lista "fases" (1 Calentamiento + 4 Juegos en la Parte Principal + 1 Vuelta a la Calma):
 1. Fase 1: "fase": "Calentamiento / Inicio", "duracionMin": 10

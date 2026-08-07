@@ -126,6 +126,22 @@ export const ExcelGameDatabaseModal: React.FC<ExcelGameDatabaseModalProps> = ({
         if (!nombre && row['A']) nombre = String(row['A']);
         if (!descripcion && row['E']) descripcion = String(row['E']);
 
+        if (!ciclo) {
+          // If no specific cycle column was found, look at the values themselves
+          const rowVals = Object.values(row).join(' ').toLowerCase();
+          if (rowVals.includes('primer ciclo') || rowVals.includes('1er') || rowVals.includes('1º') || rowVals.includes('2º')) ciclo = 'Primer Ciclo';
+          else if (rowVals.includes('segundo ciclo') || rowVals.includes('2do') || rowVals.includes('3º') || rowVals.includes('4º')) ciclo = 'Segundo Ciclo';
+          else if (rowVals.includes('tercer ciclo') || rowVals.includes('3er') || rowVals.includes('5º') || rowVals.includes('6º')) ciclo = 'Tercer Ciclo';
+          
+          if (!ciclo) {
+            // Check filename for cycle as a last resort
+            const fnLower = fileName.toLowerCase();
+            if (fnLower.includes('primer') || fnLower.includes('1er') || fnLower.includes('1º') || fnLower.includes('2º') || fnLower.includes('1 y 2')) ciclo = 'Primer Ciclo';
+            else if (fnLower.includes('segundo') || fnLower.includes('2do') || fnLower.includes('3º') || fnLower.includes('4º') || fnLower.includes('3 y 4')) ciclo = 'Segundo Ciclo';
+            else if (fnLower.includes('tercer') || fnLower.includes('3er') || fnLower.includes('5º') || fnLower.includes('6º') || fnLower.includes('5 y 6')) ciclo = 'Tercer Ciclo';
+          }
+        }
+
         if (nombre && nombre.toLowerCase() !== 'nombre' && nombre.toLowerCase() !== 'juego') {
           parsed.push({
             id: `excel-${Date.now()}-${idx}`,
@@ -246,7 +262,17 @@ export const ExcelGameDatabaseModal: React.FC<ExcelGameDatabaseModalProps> = ({
       g.criterio.toLowerCase().includes(search.toLowerCase()) ||
       g.descripcion.toLowerCase().includes(search.toLowerCase());
 
-    const matchCiclo = selectedCiclo === 'Todos' || g.ciclo.toLowerCase().includes(selectedCiclo.toLowerCase());
+    let matchCiclo = selectedCiclo === 'Todos';
+    if (!matchCiclo) {
+      const gCicloLower = g.ciclo.toLowerCase();
+      if (selectedCiclo === 'Primer Ciclo') {
+        matchCiclo = gCicloLower.includes('primer') || gCicloLower.includes('1º') || gCicloLower.includes('2º') || gCicloLower.includes('1er') || gCicloLower.includes('1 y 2') || gCicloLower.includes('primero') || gCicloLower.includes('segundo');
+      } else if (selectedCiclo === 'Segundo Ciclo') {
+        matchCiclo = gCicloLower.includes('segundo ciclo') || gCicloLower.includes('3º') || gCicloLower.includes('4º') || gCicloLower.includes('2do') || gCicloLower.includes('3 y 4') || gCicloLower.includes('tercero') || gCicloLower.includes('cuarto');
+      } else if (selectedCiclo === 'Tercer Ciclo') {
+        matchCiclo = gCicloLower.includes('tercer') || gCicloLower.includes('5º') || gCicloLower.includes('6º') || gCicloLower.includes('3er') || gCicloLower.includes('5 y 6') || gCicloLower.includes('quinto') || gCicloLower.includes('sexto');
+      }
+    }
 
     return matchQuery && matchCiclo;
   });

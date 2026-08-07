@@ -377,7 +377,7 @@ export const Step5Sessions: React.FC<Step5Props> = ({
           tematica,
           modeloEstructura,
           criteriosSeleccionados,
-          driveDocumentationText: docText,
+          driveDocumentationText: docText ? docText.slice(0, 45000) : '',
         }),
       });
 
