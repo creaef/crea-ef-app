@@ -119,4 +119,13 @@ export const LISTA_UNIFICADA_TEMATICAS: string[] = [
   'Circuito por estaciones',
   'Robótica y EF',
   'Gamificación en EF',
+  'habilidades motrices',
+  'Condición física',
+  'juegos cooperativos',
+  'cohesión grupal',
+  'atletismo',
+  'fisiología',
+  'entrenamiento',
+  'nutrición',
+  'plogging (Activa tu cuerpo y limpia tu entorno)'
 ];

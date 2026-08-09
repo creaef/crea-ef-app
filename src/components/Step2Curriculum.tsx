@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { BookmarkCheck, CheckSquare, Square, ArrowLeft, ArrowRight, Info } from 'lucide-react';
-import { Ciclo, TematicaEF } from '../types';
-import { COMPETENCIAS_ESPECIFICAS_EF, CRITERIOS_EVALUACION_EF } from '../data/curriculumData';
+import { Ciclo, TematicaEF, EtapaEducativa } from '../types';
+import { getCompetenciasByEtapa, getCriteriosByEtapa } from '../utils/curriculumHelpers';
 
 interface Step2Props {
+  etapa: EtapaEducativa;
   ciclo: Ciclo;
   tematica: TematicaEF;
   competenciasSeleccionadas: string[];
@@ -15,6 +16,7 @@ interface Step2Props {
 }
 
 export const Step2Curriculum: React.FC<Step2Props> = ({
+  etapa,
   ciclo,
   tematica,
   competenciasSeleccionadas,
@@ -24,14 +26,17 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
   onPrev,
   onNext,
 }) => {
+  const competenciasEtapa = getCompetenciasByEtapa(etapa);
+  const criteriosEtapa = getCriteriosByEtapa(etapa);
+
   // Filter criterios matching current cycle
-  const criteriosDelCiclo = CRITERIOS_EVALUACION_EF.filter((c) => c.ciclo === ciclo);
+  const criteriosDelCiclo = criteriosEtapa.filter((c) => c.ciclo === ciclo || c.ciclo === 'Todos');
 
   // Keep selected competencias in sync with selected criteria (without forcing default competencies when empty)
   useEffect(() => {
     const compSet = new Set<string>();
     criteriosSeleccionados.forEach((cod) => {
-      const crit = CRITERIOS_EVALUACION_EF.find((c) => c.codigo === cod || c.id === cod);
+      const crit = criteriosEtapa.find((c) => c.codigo === cod || c.id === cod);
       if (crit) {
         compSet.add(crit.competenciaId);
       }
@@ -64,7 +69,7 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
           <h2 className="text-xl font-bold">Paso 2: Conexión Curricular (Criterios y Competencias)</h2>
         </div>
         <p className="text-indigo-100 text-sm max-w-3xl">
-          Selección de Competencias Específicas de Educación Física y Criterios de Evaluación autonómicos de Andalucía para <strong>{ciclo}</strong> (Decreto 101/2023).
+          Selección de Competencias Específicas y Criterios de Evaluación autonómicos de Andalucía para <strong>{etapa} ({ciclo})</strong>.
         </p>
       </div>
 
@@ -90,7 +95,7 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
           </h3>
 
           <div className="space-y-3">
-            {COMPETENCIAS_ESPECIFICAS_EF.map((comp) => {
+            {competenciasEtapa.map((comp) => {
               const isSelected = competenciasSeleccionadas.includes(comp.id);
               return (
                 <div

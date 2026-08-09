@@ -21,6 +21,7 @@ import { useColorTheme } from './utils/theme';
 const INITIAL_SDA_STATE: SituacionAprendizaje = {
   id: 'sda-' + Date.now(),
   fechaCreacion: new Date().toLocaleDateString('es-ES'),
+  etapa: 'Primaria',
   titulo: '',
   curso: '3º Primaria',
   ciclo: 'Segundo Ciclo',
@@ -270,6 +271,8 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {currentStep === 1 && (
           <Step1General
+            etapa={sda.etapa}
+            setEtapa={(v) => updateSda({ etapa: v })}
             titulo={sda.titulo}
             setTitulo={(v) => updateSda({ titulo: v })}
             curso={sda.curso}
@@ -292,6 +295,7 @@ export default function App() {
 
         {currentStep === 2 && (
           <Step2Curriculum
+            etapa={sda.etapa}
             ciclo={sda.ciclo}
             tematica={sda.tematica}
             competenciasSeleccionadas={sda.competenciasSeleccionadas}
@@ -305,6 +309,7 @@ export default function App() {
 
         {currentStep === 3 && (
           <Step3Saberes
+            etapa={sda.etapa}
             ciclo={sda.ciclo}
             saberesSeleccionados={sda.saberesSeleccionados}
             setSaberesSeleccionados={(v) => updateSda({ saberesSeleccionados: v })}
@@ -379,6 +384,7 @@ export default function App() {
               curso: sda.curso,
               tematica: sda.tematica,
               productoFinal: sda.productoFinal,
+              etapa: sda.etapa,
             }}
             onPrev={handlePrev}
             onNext={handleNext}
@@ -396,6 +402,7 @@ export default function App() {
             criteriosSeleccionados={sda.criteriosSeleccionados}
             tematica={sda.tematica}
             curso={sda.curso}
+            etapa={sda.etapa}
             rubrica={sda.rubrica}
             setRubrica={(v) => updateSda({ rubrica: v })}
             sesiones={sda.sesiones}
@@ -428,7 +435,7 @@ export default function App() {
       <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
           <span>
-            Crea-Ef LOMLOE • Basado en Decreto 101/2023 y Orden 30 de mayo de 2023.
+            Crea-Ef LOMLOE • Basado en la normativa vigente de cada etapa (Andalucía).
           </span>
           <span className="font-semibold text-indigo-700">
             Diseñado para docentes de Educación Física en Andalucía

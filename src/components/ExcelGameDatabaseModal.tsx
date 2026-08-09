@@ -84,7 +84,7 @@ export const ExcelGameDatabaseModal: React.FC<ExcelGameDatabaseModalProps> = ({
       const workbook = XLSX.read(arrayBuffer, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const rawRows: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+      const rawRows: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
       if (!rawRows || rawRows.length === 0) {
         setErrorMsg('El archivo Excel no contiene filas de datos.');
@@ -93,48 +93,63 @@ export const ExcelGameDatabaseModal: React.FC<ExcelGameDatabaseModalProps> = ({
       }
 
       const parsed: ExcelGame[] = [];
+      let startIdx = 0;
 
-      rawRows.forEach((row, idx) => {
-        // Find keys dynamically (case-insensitive)
-        let nombre = '';
-        let tematica = '';
-        let criterio = '';
-        let ciclo = '';
-        let descripcion = '';
-        let material = '';
+      // Identify column indices from the first row (header row)
+      let colName = -1, colDesc = -1, colTematica = -1, colCriterio = -1, colCiclo = -1, colMaterial = -1;
+      const firstRow = rawRows[0] || [];
+      const isHeader = firstRow.some((val: any) => {
+        const str = String(val).toLowerCase();
+        return str.includes('nombre') || str.includes('juego') || str.includes('actividad') || str.includes('descrip');
+      });
 
-        Object.keys(row).forEach((k) => {
-          const keyLower = k.toLowerCase().trim();
-          const val = String(row[k]).trim();
-
-          if (keyLower.includes('nombre') || keyLower.includes('juego') || keyLower.includes('actividad') || keyLower.includes('titulo')) {
-            if (!nombre) nombre = val;
-          } else if (keyLower.includes('temat') || keyLower.includes('contenido') || keyLower.includes('categoria')) {
-            if (!tematica) tematica = val;
-          } else if (keyLower.includes('criterio') || keyLower.includes('evalua') || keyLower.includes('competenc')) {
-            if (!criterio) criterio = val;
-          } else if (keyLower.includes('ciclo') || keyLower.includes('nivel') || keyLower.includes('curso') || keyLower.includes('etapa')) {
-            if (!ciclo) ciclo = val;
-          } else if (keyLower.includes('descrip') || keyLower.includes('desarrollo') || keyLower.includes('regla') || keyLower.includes('explicacion')) {
-            if (!descripcion) descripcion = val;
-          } else if (keyLower.includes('material') || keyLower.includes('recurso')) {
-            if (!material) material = val;
-          }
+      if (isHeader) {
+        startIdx = 1;
+        firstRow.forEach((val: any, index: number) => {
+          const k = String(val).toLowerCase().trim();
+          const isNum = k.includes('nº') || k.includes('num') || k.includes('núm');
+          
+          if (!isNum && (k.includes('nombre') || k.includes('juego') || k.includes('actividad') || k.includes('titulo'))) colName = index;
+          else if (k.includes('descrip') || k.includes('desarrollo') || k.includes('regla') || k.includes('explicacion')) colDesc = index;
+          else if (k.includes('temat') || k.includes('contenido') || k.includes('categoria')) colTematica = index;
+          else if (k.includes('criterio') || k.includes('evalua') || k.includes('competenc')) colCriterio = index;
+          else if (k.includes('ciclo') || k.includes('nivel') || k.includes('curso') || k.includes('etapa')) colCiclo = index;
+          else if (k.includes('material') || k.includes('recurso')) colMaterial = index;
         });
+      }
 
-        // Fallback positioning if headers were generic
-        if (!nombre && row['A']) nombre = String(row['A']);
-        if (!descripcion && row['E']) descripcion = String(row['E']);
+      for (let idx = startIdx; idx < rawRows.length; idx++) {
+        const row = rawRows[idx];
+        if (!row || row.length === 0) continue;
+        
+        let nombre = colName !== -1 ? String(row[colName]) : '';
+        let descripcion = colDesc !== -1 ? String(row[colDesc]) : '';
+        let tematica = colTematica !== -1 ? String(row[colTematica]) : '';
+        let criterio = colCriterio !== -1 ? String(row[colCriterio]) : '';
+        let ciclo = colCiclo !== -1 ? String(row[colCiclo]) : '';
+        let material = colMaterial !== -1 ? String(row[colMaterial]) : '';
 
+        // Fallback if no valid name was found from headers
+        if (!nombre || nombre.trim() === '') {
+          // If first column is a number, assume second column is the name
+          if (row.length >= 2 && !isNaN(Number(row[0])) && String(row[0]).trim() !== '') {
+            nombre = String(row[1]);
+            if (!descripcion && row.length >= 3) descripcion = String(row[2]);
+          } else if (row.length > 0) {
+            nombre = String(row[0]);
+            if (!descripcion && row.length >= 2) descripcion = String(row[1]);
+          }
+        }
+
+        nombre = nombre.trim();
+        
         if (!ciclo) {
-          // If no specific cycle column was found, look at the values themselves
-          const rowVals = Object.values(row).join(' ').toLowerCase();
+          const rowVals = row.join(' ').toLowerCase();
           if (rowVals.includes('primer ciclo') || rowVals.includes('1er') || rowVals.includes('1º') || rowVals.includes('2º')) ciclo = 'Primer Ciclo';
           else if (rowVals.includes('segundo ciclo') || rowVals.includes('2do') || rowVals.includes('3º') || rowVals.includes('4º')) ciclo = 'Segundo Ciclo';
           else if (rowVals.includes('tercer ciclo') || rowVals.includes('3er') || rowVals.includes('5º') || rowVals.includes('6º')) ciclo = 'Tercer Ciclo';
           
           if (!ciclo) {
-            // Check filename for cycle as a last resort
             const fnLower = fileName.toLowerCase();
             if (fnLower.includes('primer') || fnLower.includes('1er') || fnLower.includes('1º') || fnLower.includes('2º') || fnLower.includes('1 y 2')) ciclo = 'Primer Ciclo';
             else if (fnLower.includes('segundo') || fnLower.includes('2do') || fnLower.includes('3º') || fnLower.includes('4º') || fnLower.includes('3 y 4')) ciclo = 'Segundo Ciclo';
@@ -146,15 +161,15 @@ export const ExcelGameDatabaseModal: React.FC<ExcelGameDatabaseModalProps> = ({
           parsed.push({
             id: `excel-${Date.now()}-${idx}`,
             nombre,
-            tematica: tematica || 'General EF',
-            criterio: criterio || 'General',
-            ciclo: ciclo || 'Todos los Ciclos',
-            descripcion: descripcion || 'Sin descripción.',
-            material: material || 'Sin material específico',
+            tematica: tematica.trim() || 'General EF',
+            criterio: criterio.trim() || 'General',
+            ciclo: ciclo.trim() || 'Todos los Ciclos',
+            descripcion: descripcion.trim() || 'Sin descripción.',
+            material: material.trim() || 'Sin material específico',
             origen: fileName,
           });
         }
-      });
+      }
 
       if (parsed.length === 0) {
         setErrorMsg('No se detectaron columnas válidas de juegos. Asegúrate de tener columnas como: Nombre, Temática, Criterio, Ciclo, Descripción, Material.');

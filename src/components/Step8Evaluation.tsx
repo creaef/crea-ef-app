@@ -12,8 +12,8 @@ import {
   Layers,
   FileCheck2,
 } from 'lucide-react';
-import { InstrumentoEvaluacion, ElementoRubrica, SesionTrabajo } from '../types';
-import { CRITERIOS_EVALUACION_EF } from '../data/curriculumData';
+import { InstrumentoEvaluacion, ElementoRubrica, SesionTrabajo, EtapaEducativa } from '../types';
+import { TODOS_LOS_CRITERIOS } from '../utils/curriculumHelpers';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
 
 interface Step8Props {
@@ -26,6 +26,7 @@ interface Step8Props {
   criteriosSeleccionados: string[];
   tematica?: string;
   curso?: string;
+  etapa?: EtapaEducativa;
   rubrica: ElementoRubrica[];
   setRubrica: (v: ElementoRubrica[]) => void;
   sesiones?: SesionTrabajo[];
@@ -52,6 +53,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
   criteriosSeleccionados,
   tematica = 'General',
   curso = 'Primaria',
+  etapa = 'Primaria',
   rubrica,
   setRubrica,
   sesiones = [],
@@ -93,7 +95,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           'Content-Type': 'application/json',
           'x-user-api-key': (localStorage.getItem('current_user_email') ? localStorage.getItem('user_gemini_api_key_' + localStorage.getItem('current_user_email')) : localStorage.getItem('user_gemini_api_key')) || ''
         },
-        body: JSON.stringify({ sesiones, tematica, curso, criteriosSeleccionados }),
+        body: JSON.stringify({ sesiones, tematica, curso, criteriosSeleccionados, etapa }),
       });
       const data = await parseResponseJson(res);
       if (!res.ok) throw new Error(data.error || 'Error al generar la rúbrica por sesiones.');
@@ -140,6 +142,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           tematica,
           criteriosSeleccionados,
           curso,
+          etapa,
         }),
       });
 
@@ -153,7 +156,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       // 2. Generate Rubric if requested
       if (selectedTools.includes('Rúbrica de Evaluación Criterial (4 Niveles)') && criteriosSeleccionados.length > 0) {
         const payloadCriterios = criteriosSeleccionados.map((cod) => {
-          const obj = CRITERIOS_EVALUACION_EF.find((c) => c.codigo === cod || c.id === cod);
+          const obj = TODOS_LOS_CRITERIOS.find((c) => c.codigo === cod || c.id === cod);
           return {
             codigo: cod,
             descripcion: obj ? obj.descripcion : 'Criterio de evaluación de EF',
@@ -300,6 +303,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           tematica,
           curso,
           criteriosSeleccionados,
+          etapa,
         }),
       });
       const data = await parseResponseJson(res);
@@ -439,7 +443,8 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       filename: `Cuaderno_Instrumentos_Evaluacion_${tematica.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'table', 'h2', 'h3'] }
     };
 
     html2pdf().set(opt).from(container).save();
@@ -886,7 +891,8 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       filename: `Instrumento_${(inst.tipo || inst.nombre).replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: isLandscape ? ('landscape' as const) : ('portrait' as const) }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: isLandscape ? ('landscape' as const) : ('portrait' as const) },
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'table', 'h2', 'h3'] }
     };
 
     html2pdf().set(opt).from(container).save();

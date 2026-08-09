@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { SituacionAprendizaje, formatGameDescription, renderFormattedGameDescriptionHtml } from '../types';
 import { CreaEfLogo, CREA_EF_LOGO_URL } from './CreaEfLogo';
-import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
+import { renderOfficialDocumentHeaderHtml, getNormativaForEtapa } from '../utils/documentHeader';
 
 /**
  * Renderiza la descripción de un juego en componentes React
@@ -147,7 +147,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     lines.push(`1. JUSTIFICACIÓN`);
     lines.push(`${sda.justificacion}\n`);
 
-    lines.push(`2. ELEMENTOS CURRICULARES (DECRETO 101/2023 ANDALUCÍA)`);
+    lines.push(`2. ELEMENTOS CURRICULARES (${getNormativaForEtapa(sda.etapa).split(' de ')[0]} ANDALUCÍA)`);
     lines.push(`Competencias Específicas: ${sda.competenciasSeleccionadas.join(', ')}`);
     lines.push(`Criterios de Evaluación: ${sda.criteriosSeleccionados.join(', ')}`);
     lines.push(`Saberes Básicos: ${sda.saberesSeleccionados.join(', ')}`);
@@ -192,7 +192,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     if (sda.driveDocumentationText) {
       lines.push(`* Documentos / Fichas / Banco de Juegos en Excel o Drive consultados y adaptados.`);
     } else {
-      lines.push(`* Programación LOMLOE y Decreto 101/2023 de Educación Física.`);
+      lines.push(`* Programación LOMLOE y ${getNormativaForEtapa(sda.etapa)}.`);
     }
 
     return lines.join('\n');
@@ -269,7 +269,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       );
 
       let warmupHtml = warmup.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
             <span style="font-weight: bold; color: #0284c7; font-size: 11px;">Fase 1: Calentamiento / Inicio (${f.duracionMin} min)</span>
             <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
@@ -287,7 +287,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
               PARTE PRINCIPAL / PRÁCTICA (40 MIN) — ${main.length} ACTIVIDADES / JUEGOS CON ENFOQUE INCLUSIVO
             </div>
             ${main.map((f, mIdx) => `
-              <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+              <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                   <span style="font-weight: bold; color: #e85d04; font-size: 11px;">Juego ${mIdx + 1} (${f.duracionMin} min)</span>
                   <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
@@ -301,7 +301,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       }
 
       let coolHtml = cool.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
             <span style="font-weight: bold; color: #047857; font-size: 11px;">Fase Final: Vuelta a la Calma / Reflexión (${f.duracionMin} min)</span>
             <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
@@ -311,7 +311,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       `).join('');
 
       let otherHtml = other.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
             <span style="font-weight: bold; color: #0284c7; font-size: 11px;">${f.fase} (${f.duracionMin} min)</span>
             <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
@@ -321,11 +321,11 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       `).join('');
 
       return `
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1.5px solid #0a2240; page-break-inside: avoid; break-inside: avoid;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1.5px solid #0a2240; page-break-before: always; break-before: page;">
           <thead>
             <tr style="background-color: #0a2240; color: #ffffff;">
               <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; border-bottom: 2px solid #e85d04;">
-                SESIÓN ${ses.numeroSesion}: ${(ses.titulo || '').toUpperCase()} (60 MINUTOS)
+                SESIÓN ${ses.numeroSesion}: ${(ses.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '').toUpperCase()} (60 MINUTOS)
               </th>
               <th style="padding: 10px 14px; text-align: right; font-size: 10px; color: #fef08a; border-bottom: 2px solid #e85d04;">
                 Materiales: ${(ses.materialesTotales || []).join(', ') || 'Habitual de EF'}
@@ -393,7 +393,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       <div style="font-family: Arial, sans-serif; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5; padding: 20px; color: #1e293b; max-width: 850px; margin: 0 auto; background-color: #ffffff;">
         
         <!-- MEMBRETE OFICIAL CON LOGOTIPO CREA-EF -->
-        ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026')}
+        ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026', sda.etapa)}
 
         <!-- HERO BANNER EN TABLA COMPACTA -->
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 22px; border: 2px solid #0a2240; background-color: #0a2240; color: #ffffff;">
@@ -401,7 +401,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             <tr>
               <td style="padding: 18px 20px; text-align: left;">
                 <span style="background-color: #e85d04; color: #ffffff; font-weight: 800; font-size: 10px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 8px;">
-                  SITUACIÓN DE APRENDIZAJE EDUCACIÓN FÍSICA (ANDALUCÍA — DECRETO 101/2023)
+                  SITUACIÓN DE APRENDIZAJE ${(sda.etapa === 'Infantil' ? 'PSICOMOTRICIDAD' : 'EDUCACIÓN FÍSICA')} (ANDALUCÍA — ${getNormativaForEtapa(sda.etapa).split(' de ')[0]})
                 </span>
                 <h1 style="margin: 6px 0 10px 0; font-size: 20px; font-weight: 900; color: #ffffff; line-height: 1.3; text-align: left;">
                   ${sda.titulo || 'Sin Título'}
@@ -444,7 +444,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           <thead>
             <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
               <th colSpan={3} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN LOMLOE (DECRETO 101/2023)
+                2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN LOMLOE (${getNormativaForEtapa(sda.etapa).split(' de ')[0]})
               </th>
             </tr>
             <tr style="background-color: #1e293b; color: #ffffff; text-align: left;">
@@ -655,7 +655,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'table', 'h2', 'h3'] }
       };
 
       await html2pdf().set(opt).from(container).save();
@@ -1419,7 +1419,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
                   <span className="text-xs font-bold bg-indigo-900 text-white px-3 py-1 rounded-md">
                     SESIÓN {ses.numeroSesion} (60 MIN)
                   </span>
-                  <h3 className="text-lg font-bold text-slate-900 mt-2">{ses.titulo}</h3>
+                  <h3 className="text-lg font-bold text-slate-900 mt-2">{(ses.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '')}</h3>
                   <p className="text-xs text-slate-500">{sda.curso} • {sda.tematica}</p>
                 </div>
                 <div className="text-right text-xs">

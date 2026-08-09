@@ -147,8 +147,8 @@ async function callGeminiWithRetry(
 }
 
 // System instruction prompt for Andalusian EF LOMLOE Expert
-const SYSTEM_INSTRUCTION_EF = `
-Actúa como un Experto Docente en Educación Física y Desarrollador de Situaciones de Aprendizaje (SdA) para Educación Primaria en la Comunidad Autónoma de Andalucía (España), bajo la normativa LOMLOE (Decreto 101/2023 de Andalucía y Orden de 30 de mayo de 2023).
+const getSystemInstructionEF = (etapa?: string) => `
+Actúa como un Experto Docente en Educación Física y Desarrollador de Situaciones de Aprendizaje (SdA) para ${etapa || 'Educación Primaria'} en la Comunidad Autónoma de Andalucía (España), bajo la normativa vigente (Decretos y Órdenes de Andalucía).
 Tus propuestas deben ser pedagógicamente impecables, inclusivas (Marco DUA y atención NEAE), fundamentadas en metodologías activas y estrictamente alineadas con los Criterios de Evaluación y Competencias Específicas andaluzas de Educación Física.
 Responde siempre en español profesional, motivador y docente.
 `;
@@ -281,7 +281,7 @@ app.post('/api/auth/user/confirm-payment', async (req, res) => {
 // API 1: Generar Justificación de la SdA
 app.post('/api/ai/generate-justification', async (req, res) => {
   try {
-    const { titulo, curso, ciclo, tematica } = req.body;
+    const { titulo, curso, ciclo, tematica, etapa } = req.body;
     if (!titulo || !tematica) {
       return res.status(400).json({ error: 'Título y temática son requeridos.' });
     }
@@ -301,7 +301,7 @@ Instrucciones:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.7,
       },
     });
@@ -316,7 +316,7 @@ Instrucciones:
 // API 2: Generar Rúbrica de Evaluación
 app.post('/api/ai/generate-rubric', async (req, res) => {
   try {
-    const { criterios } = req.body;
+    const { criterios, etapa } = req.body;
     if (!criterios || !Array.isArray(criterios) || criterios.length === 0) {
       return res.status(400).json({ error: 'Se requiere una lista de criterios de evaluación.' });
     }
@@ -344,7 +344,7 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
         model: 'gemini-2.5-pro',
         contents: prompt,
         config: {
-          systemInstruction: SYSTEM_INSTRUCTION_EF,
+          systemInstruction: getSystemInstructionEF(etapa),
           temperature: 0.3,
           responseMimeType: 'application/json',
         },
@@ -379,7 +379,7 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 // API 2b: Generar Rúbrica Personalizada de 4 Niveles por Sesión de Trabajo
 app.post('/api/ai/generate-session-rubric', async (req, res) => {
   try {
-    const { sesiones, tematica, curso, criteriosSeleccionados = [] } = req.body;
+    const { sesiones, tematica, curso, criteriosSeleccionados = [], etapa } = req.body;
     if (!Array.isArray(sesiones) || sesiones.length === 0) {
       return res.status(400).json({ error: 'Se requiere al menos una sesión de trabajo generada.' });
     }
@@ -428,7 +428,7 @@ Devuelve un JSON array de objetos con el siguiente esquema:
         model: 'gemini-2.5-pro',
         contents: prompt,
         config: {
-          systemInstruction: SYSTEM_INSTRUCTION_EF,
+          systemInstruction: getSystemInstructionEF(etapa),
           temperature: 0.3,
           responseMimeType: 'application/json',
         },
@@ -489,7 +489,7 @@ Devuelve un JSON array de objetos con el siguiente esquema:
 // API 3: Generar o Enriquecer Reto / Producto Final
 app.post('/api/ai/generate-final-challenge', async (req, res) => {
   try {
-    const { titulo, curso, tematica, metodologia } = req.body;
+    const { titulo, curso, tematica, metodologia, etapa } = req.body;
     const ai = getGenAIClient();
 
     const prompt = `Propón un Producto Final o Reto Motor motivador, significativo e inclusivo para culminar una Situación de Aprendizaje de Educación Física en Andalucía.
@@ -505,7 +505,7 @@ Devuelve en formato JSON: { "tituloReto": "...", "descripcionReto": "..." }`;
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         responseMimeType: 'application/json',
       },
     });
@@ -529,6 +529,7 @@ app.post('/api/ai/generate-sessions', async (req, res) => {
       modeloEstructura,
       criteriosSeleccionados,
       driveDocumentationText,
+      etapa,
     } = req.body;
 
     const ai = getGenAIClient();
@@ -646,7 +647,7 @@ Devuelve una respuesta JSON estricta con este formato:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.75,
         responseMimeType: 'application/json',
       },
@@ -766,7 +767,7 @@ Devuelve una respuesta JSON estricta con este formato:
 // API: Enriquecer y Cumplimentar Explicación Completa de un Juego / Actividad
 app.post('/api/ai/enrich-game-description', async (req, res) => {
   try {
-    const { nombreJuego, descripcion, tematica, curso } = req.body;
+    const { nombreJuego, descripcion, tematica, curso, etapa } = req.body;
     const ai = getGenAIClient();
 
     const prompt = `Actúa como Catedrático Experto en Didáctica de la Educación Física y LOMLOE en Andalucía.
@@ -808,7 +809,7 @@ Devuelve un JSON estricto con:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.7,
         responseMimeType: 'application/json',
       },
@@ -830,7 +831,7 @@ Devuelve un JSON estricto con:
 // API: Enriquecer / Autocompletar Sesión Completa con IA
 app.post('/api/ai/enrich-full-session', async (req, res) => {
   try {
-    const { sesion, tematica, curso } = req.body;
+    const { sesion, tematica, curso, etapa } = req.body;
     if (!sesion || !sesion.fases) {
       return res.status(400).json({ error: 'Datos de sesión incompletos.' });
     }
@@ -871,7 +872,7 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.7,
         responseMimeType: 'application/json',
       },
@@ -959,6 +960,7 @@ app.post('/api/parse-local-file', async (req, res) => {
 app.post('/api/ai/generate-diversity', async (req, res) => {
   try {
     const { neaeSeleccionadas, sdaContext } = req.body;
+    const etapa = sdaContext?.etapa || 'Primaria';
     const ai = getGenAIClient();
 
     const prompt = `Genera la propuesta de Atención a la Diversidad para la Situación de Aprendizaje de Educación Física.
@@ -1003,7 +1005,7 @@ Devuelve una respuesta JSON estricta con esta estructura:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.5,
         responseMimeType: 'application/json',
       },
@@ -1020,7 +1022,7 @@ Devuelve una respuesta JSON estricta con esta estructura:
 // API 6: Generar Instrumentos de Evaluación Formativa seleccionados por el usuario
 app.post('/api/ai/generate-evaluation-tools', async (req, res) => {
   try {
-    const { selectedInstrumentTypes, tematica, criteriosSeleccionados, curso } = req.body;
+    const { selectedInstrumentTypes, tematica, criteriosSeleccionados, curso, etapa } = req.body;
     const ai = getGenAIClient();
 
     const prompt = `Genera los Instrumentos de Evaluación Formativa seleccionados por el docente para una Situación de Aprendizaje de Educación Física en Andalucía (${curso}).
@@ -1052,7 +1054,7 @@ Devuelve una respuesta JSON estricta con el siguiente formato:
         model: 'gemini-2.5-pro',
         contents: prompt,
         config: {
-          systemInstruction: SYSTEM_INSTRUCTION_EF,
+          systemInstruction: getSystemInstructionEF(etapa),
           temperature: 0.4,
           responseMimeType: 'application/json',
         },
@@ -1649,7 +1651,7 @@ app.post('/api/parse-local-file', async (req, res) => {
 // API: Generar Estrategia de Evaluación Inicial / Diagnóstica
 app.post('/api/ai/generate-initial-eval', async (req, res) => {
   try {
-    const { tematica, curso, criteriosSeleccionados } = req.body;
+    const { tematica, curso, criteriosSeleccionados, etapa } = req.body;
 
     const ai = getGenAIClient();
     const prompt = `Redacta una estrategia de Evaluación Inicial / Diagnóstica para una Situación de Aprendizaje de Educación Física en Primaria (${curso}):
@@ -1665,7 +1667,7 @@ Escribe entre 80 y 150 palabras explicando:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION_EF,
+        systemInstruction: getSystemInstructionEF(etapa),
         temperature: 0.7,
       },
     });

@@ -13,13 +13,15 @@ import {
   Tag,
   Lightbulb,
 } from 'lucide-react';
-import { Curso, Trimestre, TematicaEF, Ciclo } from '../types';
+import { Curso, Trimestre, TematicaEF, Ciclo, EtapaEducativa } from '../types';
 import { getCicloFromCurso } from '../utils/sdaGenerator';
 import { LISTA_UNIFICADA_TEMATICAS } from '../data/proposedThemes';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 interface Step1Props {
+  etapa: EtapaEducativa;
+  setEtapa: (v: EtapaEducativa) => void;
   titulo: string;
   setTitulo: (v: string) => void;
   curso: Curso;
@@ -36,18 +38,18 @@ interface Step1Props {
   userEmail?: string;
 }
 
-const CURSOS_LIST: Curso[] = [
-  '1º Primaria',
-  '2º Primaria',
-  '3º Primaria',
-  '4º Primaria',
-  '5º Primaria',
-  '6º Primaria',
-];
+const CURSOS_POR_ETAPA: Record<EtapaEducativa, Curso[]> = {
+  Infantil: ['3 años', '4 años', '5 años'],
+  Primaria: ['1º Primaria', '2º Primaria', '3º Primaria', '4º Primaria', '5º Primaria', '6º Primaria'],
+  ESO: ['1º ESO', '2º ESO', '3º ESO', '4º ESO'],
+  Bachillerato: ['1º Bachillerato', '2º Bachillerato']
+};
 
 const TRIMESTRES_LIST: Trimestre[] = ['1º Trimestre', '2º Trimestre', '3º Trimestre'];
 
 export const Step1General: React.FC<Step1Props> = ({
+  etapa,
+  setEtapa,
   titulo,
   setTitulo,
   curso,
@@ -205,6 +207,7 @@ export const Step1General: React.FC<Step1Props> = ({
         body: JSON.stringify({
           titulo,
           curso,
+          etapa,
           ciclo: cicloCalculado,
           tematica,
         }),
@@ -258,7 +261,30 @@ export const Step1General: React.FC<Step1Props> = ({
         </div>
 
         {/* Course, Trimestre, Num Sesiones Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Etapa Select */}
+          <div>
+            <label id="label-sda-etapa" className="block text-sm font-bold text-slate-800 mb-1">
+              Etapa Educativa
+            </label>
+            <select
+              id="select-sda-etapa"
+              value={etapa}
+              onChange={(e) => {
+                const newEtapa = e.target.value as EtapaEducativa;
+                setEtapa(newEtapa);
+                const firstCourse = CURSOS_POR_ETAPA[newEtapa][0];
+                setCurso(firstCourse);
+              }}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
+            >
+              <option value="Infantil">Infantil</option>
+              <option value="Primaria">Primaria</option>
+              <option value="ESO">ESO</option>
+              <option value="Bachillerato">Bachillerato</option>
+            </select>
+          </div>
+
           {/* Curso / Level Select */}
           <div>
             <label id="label-sda-curso" className="block text-sm font-bold text-slate-800 mb-1">
@@ -270,15 +296,17 @@ export const Step1General: React.FC<Step1Props> = ({
               onChange={(e) => setCurso(e.target.value as Curso)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
             >
-              {CURSOS_LIST.map((c) => (
+              {CURSOS_POR_ETAPA[etapa].map((c) => (
                 <option key={c} value={c}>
-                  {c} ({getCicloFromCurso(c)})
+                  {c}
                 </option>
               ))}
             </select>
-            <p className="text-xs text-slate-500 mt-1">
-              Ciclo asignado automáticamente: <strong className="text-indigo-700">{cicloCalculado}</strong>
-            </p>
+            {etapa === 'Primaria' && (
+              <p className="text-xs text-slate-500 mt-1">
+                Ciclo asignado automáticamente: <strong className="text-indigo-700">{cicloCalculado}</strong>
+              </p>
+            )}
           </div>
 
           {/* Trimestre */}

@@ -1,5 +1,15 @@
 import { CREA_EF_LOGO_URL } from '../components/CreaEfLogo';
 import { CREA_EF_LOGO_BASE64 } from './logoBase64';
+import { EtapaEducativa } from '../types';
+
+export function getNormativaForEtapa(etapa: EtapaEducativa): string {
+  switch (etapa) {
+    case 'Infantil': return 'Decreto 100/2023 de Psicomotricidad en Andalucía';
+    case 'ESO': return 'Decreto 102/2023 de Educación Física en Andalucía';
+    case 'Bachillerato': return 'Decreto 103/2023 de Educación Física en Andalucía';
+    default: return 'Decreto 101/2023 de Educación Física en Andalucía';
+  }
+}
 
 export const OFFICIAL_LOGO_SRC = CREA_EF_LOGO_BASE64 || 'https://lh3.googleusercontent.com/d/10xARAH1teV4NN9a3E7C2wQ44eFtB02QU=s220';
 
@@ -11,7 +21,8 @@ export const OFFICIAL_LOGO_IMG_HTML = `<img src="${OFFICIAL_LOGO_SRC}" alt="Logo
  */
 export function renderOfficialDocumentHeaderHtml(
   docTitle: string = 'DOCUMENTO OFICIAL PROGRAMACIÓN',
-  regId: string = 'SDA-EF-2026'
+  regId: string = 'SDA-EF-2026',
+  etapa: EtapaEducativa = 'Primaria'
 ): string {
   const dateStr = new Date().toLocaleDateString('es-ES');
   return `
@@ -28,7 +39,7 @@ export function renderOfficialDocumentHeaderHtml(
             Diseña y personaliza tus Situaciones de Aprendizaje de EF
           </p>
           <p style="margin: 1px 0 0 0; font-size: 8.5px; color: #007A33; font-weight: 600; line-height: 1.2;">
-            Programación Oficial LOMLOE • Decreto 101/2023 de Educación Física en Andalucía
+            Programación Oficial LOMLOE • ${getNormativaForEtapa(etapa)}
           </p>
         </td>
         <td style="text-align: right; vertical-align: middle; padding-bottom: 12px; font-size: 8.5px; color: #64748b; line-height: 1.3; border: none; white-space: nowrap;">

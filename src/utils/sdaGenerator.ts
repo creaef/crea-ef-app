@@ -10,7 +10,8 @@ import {
   formatGameDescription,
 } from '../types';
 import { BASE_DATOS_ACTIVIDADES } from '../data/activitiesDatabase';
-import { COMPETENCIAS_ESPECIFICAS_EF, CRITERIOS_EVALUACION_EF, SABERES_BASICOS_EF, ODS_LIST } from '../data/curriculumData';
+import { TODAS_LAS_COMPETENCIAS, TODOS_LOS_CRITERIOS, TODOS_LOS_SABERES } from './curriculumHelpers';
+import { ODS_LIST } from '../data/curriculumData';
 import { MODELOS_ESTRUCTURA_SESION, PAUTAS_DUA_GLOBALES, ADAPTACIONES_NEAE_BASE, INSTRUMENTOS_EVALUACION_DEFAULT } from '../data/methodologiesAndModels';
 
 // Filter database activities by cycle & theme
@@ -31,9 +32,18 @@ export function getActividadesFiltradas(ciclo: Ciclo, tematica: TematicaEF): Jue
 
 // Map course to cycle
 export function getCicloFromCurso(curso: string): Ciclo {
-  if (curso.startsWith('1º') || curso.startsWith('2º')) return 'Primer Ciclo';
-  if (curso.startsWith('3º') || curso.startsWith('4º')) return 'Segundo Ciclo';
-  return 'Tercer Ciclo';
+  if (curso.includes('años')) return 'Infantil';
+  if (curso.includes('Primaria')) {
+    if (curso.startsWith('1º') || curso.startsWith('2º')) return 'Primer Ciclo';
+    if (curso.startsWith('3º') || curso.startsWith('4º')) return 'Segundo Ciclo';
+    return 'Tercer Ciclo';
+  }
+  if (curso.includes('ESO')) {
+    if (curso.startsWith('1º') || curso.startsWith('2º')) return '1º Ciclo ESO';
+    return '2º Ciclo ESO';
+  }
+  if (curso.includes('Bachillerato')) return 'Bachillerato';
+  return 'Todos';
 }
 
 // Generate automatic sessions given model structure and activities database
@@ -209,7 +219,7 @@ export function generarSesionesAuto(
 // Generate default rubric from selected criteria
 export function generarRubricaPorDefecto(criteriosCodigos: string[]): ElementoRubrica[] {
   return criteriosCodigos.map((cod) => {
-    const critObj = CRITERIOS_EVALUACION_EF.find((c) => c.codigo === cod || c.id === cod);
+    const critObj = TODOS_LOS_CRITERIOS.find((c) => c.codigo === cod || c.id === cod);
     const desc = critObj ? critObj.descripcion : 'Demuestra el criterio de evaluación seleccionado.';
     return {
       criterioCodigo: cod,
@@ -240,21 +250,21 @@ export function generarRubricaPorDefecto(criteriosCodigos: string[]): ElementoRu
 export function exportarSdAaMarkdown(sda: SituacionAprendizaje): string {
   const compsList = sda.competenciasSeleccionadas
     .map((id) => {
-      const c = COMPETENCIAS_ESPECIFICAS_EF.find((item) => item.id === id);
+      const c = TODAS_LAS_COMPETENCIAS.find((item) => item.id === id);
       return c ? `* **${c.id}:** ${c.nombre} (${c.descripcion})` : `* **${id}**`;
     })
     .join('\n');
 
   const critsList = sda.criteriosSeleccionados
     .map((cod) => {
-      const cr = CRITERIOS_EVALUACION_EF.find((item) => item.codigo === cod || item.id === cod);
+      const cr = TODOS_LOS_CRITERIOS.find((item) => item.codigo === cod || item.id === cod);
       return cr ? `* **${cr.codigo}:** ${cr.descripcion}` : `* **${cod}**`;
     })
     .join('\n');
 
   const saberesList = sda.saberesSeleccionados
     .map((cod) => {
-      const sb = SABERES_BASICOS_EF.find((item) => item.codigo === cod);
+      const sb = TODOS_LOS_SABERES.find((item) => item.codigo === cod);
       return sb ? `* **[Bloque ${sb.bloque}] ${sb.codigo}:** ${sb.descripcion}` : `* **${cod}**`;
     })
     .join('\n');
@@ -318,7 +328,7 @@ ${sda.justificacion}
 #### Competencias Específicas
 ${compsList}
 
-#### Criterios de Evaluación (Andalucía - Decreto 101/2023)
+#### Criterios de Evaluación (Andalucía - Normativa LOMLOE)
 ${critsList}
 
 #### Saberes Básicos

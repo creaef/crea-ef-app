@@ -26,6 +26,7 @@ interface Step7Props {
     curso: string;
     tematica: string;
     productoFinal: string;
+    etapa?: string;
   };
   onPrev: () => void;
   onNext: () => void;
