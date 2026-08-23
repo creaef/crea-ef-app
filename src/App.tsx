@@ -12,6 +12,7 @@ import { Step8Evaluation } from './components/Step8Evaluation';
 import { Step9Resources } from './components/Step9Resources';
 import { Step10Export } from './components/Step10Export';
 import { LandingPage, UserSession } from './components/LandingPage';
+import { CookieBanner } from './components/CookieBanner';
 import { SituacionAprendizaje, Curso, Trimestre, TematicaEF, Ciclo, ModeloEstructuraSesion } from './types';
 import { getCicloFromCurso, generarRubricaPorDefecto } from './utils/sdaGenerator';
 import { logoutGoogle, db } from './lib/firebase';
@@ -244,7 +245,12 @@ export default function App() {
   const { theme } = useColorTheme();
 
   if (!userSession) {
-    return <LandingPage onStartSession={handleStartSession} />;
+    return (
+      <>
+        <LandingPage onStartSession={handleStartSession} />
+        <CookieBanner />
+      </>
+    );
   }
 
   return (
@@ -432,16 +438,26 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
-          <span>
-            Crea-Ef LOMLOE • Basado en la normativa vigente de cada etapa (Andalucía).
-          </span>
-          <span className="font-semibold text-indigo-700">
-            Diseñado para docentes de Educación Física en Andalucía
-          </span>
+      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span>
+              Crea-Ef LOMLOE • Basado en la normativa vigente de cada etapa (Andalucía).
+            </span>
+            <span className="font-semibold text-indigo-700">
+              Diseñado para docentes de Educación Física en Andalucía
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 text-slate-500 font-medium mt-1">
+            <a href="https://crea-ef.es/aviso-legal.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">Aviso Legal</a>
+            <a href="https://crea-ef.es/terminos-y-condiciones.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">Términos y condiciones</a>
+            <a href="https://crea-ef.es/privacidad.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">Política de Privacidad</a>
+            <a href="https://crea-ef.es/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">Política de Cookies</a>
+          </div>
         </div>
       </footer>
+
+      <CookieBanner />
     </div>
   );
 }

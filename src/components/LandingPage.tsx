@@ -577,6 +577,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   </div>
                 </div>
 
+                {isRegister && (
+                  <div className="flex items-start gap-2.5 bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                    <input 
+                      type="checkbox" 
+                      required 
+                      className="mt-1 w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900" 
+                    />
+                    <label className="text-xs text-slate-300 leading-relaxed">
+                      He leído y acepto los <a href="https://crea-ef.es/terminos-y-condiciones.html" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 hover:underline font-semibold">Términos y Condiciones</a> y la <a href="https://crea-ef.es/privacidad.html" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 hover:underline font-semibold">Política de Privacidad</a>.
+                    </label>
+                  </div>
+                )}
+
                 {userError && (
                   <div className="p-3 bg-red-950/80 border border-red-500/50 rounded-xl text-xs text-red-200 flex items-center space-x-2">
                     <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
@@ -773,8 +786,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-4 bg-slate-950 text-center text-xs text-slate-500">
-        Plataforma de Situaciones de Aprendizaje de EF Andalucía • Adaptado a LOMLOE & Instrucción 12/2022
+      <footer className="border-t border-slate-800 py-6 bg-slate-950 text-center text-xs text-slate-500">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-3">
+          <p>Plataforma de Situaciones de Aprendizaje de EF Andalucía • Adaptado a LOMLOE & Instrucción 12/2022</p>
+          <div className="flex flex-wrap justify-center gap-4 text-slate-400 font-medium">
+            <a href="https://crea-ef.es/aviso-legal.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Aviso Legal</a>
+            <a href="https://crea-ef.es/terminos-y-condiciones.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Términos y condiciones</a>
+            <a href="https://crea-ef.es/privacidad.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Política de Privacidad</a>
+            <a href="https://crea-ef.es/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Política de Cookies</a>
+          </div>
+        </div>
       </footer>
     </div>
   );
