@@ -78,11 +78,11 @@ async function callGeminiWithRetry(
 ) {
   const userApiKey = req?.headers?.['x-user-api-key'] as string | undefined;
   const keys = userApiKey ? [userApiKey] : getApiKeys();
-  const preferredModel = params.model || 'gemini-2.5-pro';
+  const preferredModel = params.model || 'gemini-1.5-flash';
 
   const modelsToTry = [
     preferredModel,
-    'gemini-2.5-pro',
+    'gemini-1.5-flash',
     'gemini-3.1-pro',
     'gemini-2.5-flash',
     'gemini-1.5-flash',
@@ -141,15 +141,18 @@ async function callGeminiWithRetry(
     if (errStr.includes('API_KEY_SERVICE_BLOCKED') || errStr.includes('PERMISSION_DENIED') || errStr.includes('API_KEY_INVALID')) {
       throw new Error('La clave API proporcionada no es válida o no tiene permisos para usar Gemini. Si acabas de crearla, Google puede tardar 2-3 minutos en activarla. Asegúrate también de que elegiste "Create API key in new project".');
     }
+    if (errStr.includes('503') || errStr.includes('high demand') || errStr.includes('overloaded') || errStr.includes('UNAVAILABLE')) {
+      throw new Error('Los servidores de Google Gemini están muy saturados en este momento. Por favor, espera un par de minutos y vuelve a intentarlo.');
+    }
     throw lastError;
   }
   throw new Error('El servicio de la API de Gemini no está disponible en este momento. Por favor, inténtalo de nuevo en unos instantes.');
 }
 
 // System instruction prompt for Andalusian EF LOMLOE Expert
-const getSystemInstructionEF = (etapa?: string) => `
-Actúa como un Experto Docente en Educación Física y Desarrollador de Situaciones de Aprendizaje (SdA) para ${etapa || 'Educación Primaria'} en la Comunidad Autónoma de Andalucía (España), bajo la normativa vigente (Decretos y Órdenes de Andalucía).
-Tus propuestas deben ser pedagógicamente impecables, inclusivas (Marco DUA y atención NEAE), fundamentadas en metodologías activas y estrictamente alineadas con los Criterios de Evaluación y Competencias Específicas andaluzas de Educación Física.
+const getSystemInstructionEF = (etapa?: string, comunidad: string = 'Andalucía') => `
+Actúa como un Experto Docente en Educación Física y Desarrollador de Situaciones de Aprendizaje (SdA) para ${etapa || 'Educación Primaria'} en la Comunidad Autónoma de ${comunidad} (España), bajo la normativa vigente de dicha comunidad.
+Tus propuestas deben ser pedagógicamente impecables, inclusivas (Marco DUA y atención NEAE), fundamentadas en metodologías activas y estrictamente alineadas con los Criterios de Evaluación y Competencias Específicas de ${comunidad} de Educación Física.
 Responde siempre en español profesional, motivador y docente.
 `;
 
@@ -281,27 +284,27 @@ app.post('/api/auth/user/confirm-payment', async (req, res) => {
 // API 1: Generar Justificación de la SdA
 app.post('/api/ai/generate-justification', async (req, res) => {
   try {
-    const { titulo, curso, ciclo, tematica, etapa } = req.body;
+    const { titulo, curso, ciclo, tematica, etapa, comunidad = 'Andalucía' } = req.body;
     if (!titulo || !tematica) {
       return res.status(400).json({ error: 'Título y temática son requeridos.' });
     }
 
     const ai = getGenAIClient();
-    const prompt = `Redacta una justificación pedagógica y motivadora (entre 120 y 200 palabras) para una Situación de Aprendizaje de Educación Física en Andalucía.
+    const prompt = `Redacta una justificación pedagógica y motivadora (entre 120 y 200 palabras) para una Situación de Aprendizaje de Educación Física en ${comunidad}.
 Título: "${titulo}"
 Curso/Nivel: ${curso} (${ciclo})
 Temática principal: ${tematica}
 
 Instrucciones:
 - Justifica la pertinencia de la temática según el desarrollo psicoevolutivo del alumnado de ${curso}.
-- Conecta con la relevancia para la vida diaria, el fomento de hábitos saludables, la inclusión DUA y los valores del Decreto 101/2023 de Andalucía.
+- Conecta con la relevancia para la vida diaria, el fomento de hábitos saludables, la inclusión DUA y los valores de la normativa vigente de ${comunidad}.
 - Devuelve únicamente el texto de la justificación redactado en Markdown limpio.`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.7,
       },
     });
@@ -341,10 +344,10 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 
     try {
       const response = await callGeminiWithRetry(req, ai, {
-        model: 'gemini-2.5-pro',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: getSystemInstructionEF(etapa),
+          systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
           temperature: 0.3,
           responseMimeType: 'application/json',
         },
@@ -425,10 +428,10 @@ Devuelve un JSON array de objetos con el siguiente esquema:
 
     try {
       const response = await callGeminiWithRetry(req, ai, {
-        model: 'gemini-2.5-pro',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: {
-          systemInstruction: getSystemInstructionEF(etapa),
+          systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
           temperature: 0.3,
           responseMimeType: 'application/json',
         },
@@ -502,10 +505,10 @@ Proporciona un título para el Reto y una descripción detallada (80-150 palabra
 Devuelve en formato JSON: { "tituloReto": "...", "descripcionReto": "..." }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         responseMimeType: 'application/json',
       },
     });
@@ -644,10 +647,10 @@ Devuelve una respuesta JSON estricta con este formato:
 }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.75,
         responseMimeType: 'application/json',
       },
@@ -809,7 +812,7 @@ Devuelve un JSON estricto con:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.7,
         responseMimeType: 'application/json',
       },
@@ -872,7 +875,7 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.7,
         responseMimeType: 'application/json',
       },
@@ -1005,7 +1008,7 @@ Devuelve una respuesta JSON estricta con esta estructura:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.5,
         responseMimeType: 'application/json',
       },
@@ -1054,7 +1057,7 @@ Devuelve una respuesta JSON estricta con el siguiente formato:
         model: 'gemini-2.5-pro',
         contents: prompt,
         config: {
-          systemInstruction: getSystemInstructionEF(etapa),
+          systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
           temperature: 0.4,
           responseMimeType: 'application/json',
         },
@@ -1412,8 +1415,8 @@ app.post('/api/docs/create-doc', async (req, res) => {
 
     segments.push({ text: `1. JUSTIFICACIÓN DE LA PROPUESTA\n`, style: 'heading1' });
     segments.push({ text: `${sda.justificacion || 'Sin justificación.'}\n\n` });
-
-    segments.push({ text: `2. CONEXIÓN CURRICULAR (DECRETO 101/2023 ANDALUCÍA)\n`, style: 'heading1' });
+    const normativaText = sda.comunidad && sda.comunidad !== 'Andalucía' ? `(NORMATIVA VIGENTE DE ${sda.comunidad.toUpperCase()})` : `(DECRETO 101/2023 ANDALUCÍA)`;
+    segments.push({ text: `2. CONEXIÓN CURRICULAR ${normativaText}\n`, style: 'heading1' });
     segments.push({ text: `Competencias Específicas: `, style: 'boldLabel' });
     segments.push({ text: `${(sda.competenciasSeleccionadas || []).join(', ')}\n` });
     segments.push({ text: `Criterios de Evaluación: `, style: 'boldLabel' });
@@ -1667,7 +1670,7 @@ Escribe entre 80 y 150 palabras explicando:
       model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa),
+        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         temperature: 0.7,
       },
     });
@@ -1697,7 +1700,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Servidor SdA Educación Física corriendo en http://localhost:${PORT}`);
   });
 }

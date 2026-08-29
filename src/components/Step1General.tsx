@@ -13,13 +13,15 @@ import {
   Tag,
   Lightbulb,
 } from 'lucide-react';
-import { Curso, Trimestre, TematicaEF, Ciclo, EtapaEducativa } from '../types';
+import { Curso, Trimestre, TematicaEF, Ciclo, EtapaEducativa, ComunidadAutonoma } from '../types';
 import { getCicloFromCurso } from '../utils/sdaGenerator';
 import { LISTA_UNIFICADA_TEMATICAS } from '../data/proposedThemes';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 interface Step1Props {
+  comunidad: ComunidadAutonoma;
+  setComunidad: (v: ComunidadAutonoma) => void;
   etapa: EtapaEducativa;
   setEtapa: (v: EtapaEducativa) => void;
   titulo: string;
@@ -48,6 +50,8 @@ const CURSOS_POR_ETAPA: Record<EtapaEducativa, Curso[]> = {
 const TRIMESTRES_LIST: Trimestre[] = ['1º Trimestre', '2º Trimestre', '3º Trimestre'];
 
 export const Step1General: React.FC<Step1Props> = ({
+  comunidad,
+  setComunidad,
   etapa,
   setEtapa,
   titulo,
@@ -68,68 +72,6 @@ export const Step1General: React.FC<Step1Props> = ({
   const [loadingAi, setLoadingAi] = useState(false);
   const [errorAi, setErrorAi] = useState<string | null>(null);
 
-  const [userApiKey, setUserApiKey] = useState('');
-  const [apiKeySaved, setApiKeySaved] = useState(false);
-  const [showTutorialModal, setShowTutorialModal] = useState(false);
-
-  useEffect(() => {
-    const storageKey = userEmail ? `user_gemini_api_key_${userEmail}` : 'user_gemini_api_key';
-    const savedKey = localStorage.getItem(storageKey);
-    if (savedKey) {
-      setUserApiKey(savedKey);
-      setApiKeySaved(true);
-    } else if (userEmail) {
-      // Intenta cargarla de la base de datos si no está en local
-      const fetchKeyFromDb = async () => {
-        try {
-          const userRef = doc(db, 'users', userEmail.toLowerCase());
-          const snap = await getDoc(userRef);
-          if (snap.exists() && snap.data().geminiApiKey) {
-            const key = snap.data().geminiApiKey;
-            setUserApiKey(key);
-            setApiKeySaved(true);
-            localStorage.setItem(storageKey, key);
-          }
-        } catch (e) {
-          console.warn('Error loading API key from DB:', e);
-        }
-      };
-      fetchKeyFromDb();
-    } else {
-      setUserApiKey('');
-      setApiKeySaved(false);
-    }
-  }, [userEmail]);
-
-  const handleSaveApiKey = async () => {
-    const storageKey = userEmail ? `user_gemini_api_key_${userEmail}` : 'user_gemini_api_key';
-    const keyToSave = userApiKey.trim();
-    if (keyToSave) {
-      localStorage.setItem(storageKey, keyToSave);
-      setApiKeySaved(true);
-      if (userEmail) {
-        try {
-          const cleanEmail = userEmail.toLowerCase();
-          const userRef = doc(db, 'users', cleanEmail);
-          await setDoc(userRef, { geminiApiKey: keyToSave, email: cleanEmail }, { merge: true });
-        } catch (e) {
-          console.error('Error saving API key to DB:', e);
-        }
-      }
-    } else {
-      localStorage.removeItem(storageKey);
-      setApiKeySaved(false);
-      if (userEmail) {
-        try {
-          const cleanEmail = userEmail.toLowerCase();
-          const userRef = doc(db, 'users', cleanEmail);
-          await setDoc(userRef, { geminiApiKey: '' }, { merge: true });
-        } catch (e) {
-          console.error('Error removing API key from DB:', e);
-        }
-      }
-    }
-  };
 
   // Parse current tematica into an array of selected theme ideas
   const [selectedThemes, setSelectedThemes] = useState<string[]>(() => {
@@ -202,7 +144,6 @@ export const Step1General: React.FC<Step1Props> = ({
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'x-user-api-key': (localStorage.getItem('current_user_email') ? localStorage.getItem('user_gemini_api_key_' + localStorage.getItem('current_user_email')) : localStorage.getItem('user_gemini_api_key')) || ''
         },
         body: JSON.stringify({
           titulo,
@@ -210,6 +151,7 @@ export const Step1General: React.FC<Step1Props> = ({
           etapa,
           ciclo: cicloCalculado,
           tematica,
+          comunidad,
         }),
       });
 
@@ -240,7 +182,7 @@ export const Step1General: React.FC<Step1Props> = ({
           <h2 className="text-xl font-bold">Paso 1: Datos Generales y Temática SdA</h2>
         </div>
         <p className="text-indigo-100 text-sm max-w-3xl">
-          Define las coordenadas principales de tu Situación de Aprendizaje para el área de Educación Física bajo la normativa LOMLOE de Andalucía.
+          Define las coordenadas principales de tu Situación de Aprendizaje para el área de Educación Física bajo la normativa LOMLOE de {comunidad}.
         </p>
       </div>
 
@@ -260,8 +202,37 @@ export const Step1General: React.FC<Step1Props> = ({
           />
         </div>
 
-        {/* Course, Trimestre, Num Sesiones Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Comunidad, Etapa, Course, Trimestre, Num Sesiones Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          {/* Comunidad Select */}
+          <div>
+            <label id="label-sda-comunidad" className="block text-sm font-bold text-slate-800 mb-1">
+              Comunidad Autónoma
+            </label>
+            <select
+              id="select-sda-comunidad"
+              value={comunidad}
+              onChange={(e) => {
+                const newComunidad = e.target.value as ComunidadAutonoma;
+                setComunidad(newComunidad);
+                if (newComunidad === 'Región de Murcia' && etapa !== 'Primaria') {
+                  setEtapa('Primaria');
+                  setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
+                } else if ((newComunidad === 'Castilla-La Mancha' || newComunidad === 'Extremadura' || newComunidad === 'Castilla y León') && (etapa === 'Infantil' || etapa === 'Bachillerato')) {
+                  setEtapa('Primaria');
+                  setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
+                }
+              }}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
+            >
+              <option value="Andalucía">Andalucía</option>
+              <option value="Castilla y León">Castilla y León</option>
+              <option value="Castilla-La Mancha">Castilla-La Mancha</option>
+              <option value="Extremadura">Extremadura</option>
+              <option value="Región de Murcia">Región de Murcia</option>
+            </select>
+          </div>
+
           {/* Etapa Select */}
           <div>
             <label id="label-sda-etapa" className="block text-sm font-bold text-slate-800 mb-1">
@@ -278,10 +249,10 @@ export const Step1General: React.FC<Step1Props> = ({
               }}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
             >
-              <option value="Infantil">Infantil</option>
+              {comunidad === 'Andalucía' && <option value="Infantil">Infantil</option>}
               <option value="Primaria">Primaria</option>
-              <option value="ESO">ESO</option>
-              <option value="Bachillerato">Bachillerato</option>
+              {comunidad !== 'Región de Murcia' && <option value="ESO">ESO</option>}
+              {comunidad === 'Andalucía' && <option value="Bachillerato">Bachillerato</option>}
             </select>
           </div>
 
@@ -541,60 +512,6 @@ export const Step1General: React.FC<Step1Props> = ({
           </div>
         </div>
 
-        {/* Conexión con IA (BYOK) */}
-        <div className="border border-sky-200 bg-sky-50/40 rounded-2xl p-5 space-y-4">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="w-5 h-5 text-sky-600" />
-            <h3 className="font-bold text-sky-950 text-base">Conexión con IA Gemini</h3>
-          </div>
-          <p className="text-sm text-slate-700">
-            Para que la aplicación funcione con todo su potencial y puedas generar textos, rúbricas y justificaciones de forma gratuita e ilimitada, necesitamos que conectes tu propia cuenta de Google (patrón seguro BYOK).
-          </p>
-          <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-900">
-            <strong>🔒 Privacidad Garantizada:</strong> Por seguridad, tu clave API se guarda <strong>únicamente en tu navegador local (localStorage)</strong>. Jamás se envía ni se almacena en nuestro servidor. Es un proceso 100% amigable y seguro.
-          </div>
-          <div className="space-y-3">
-            <div className="text-xs text-slate-600 space-y-1">
-              <p>1. Entra en <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-sky-600 font-bold hover:underline">Google AI Studio</a> con tu cuenta de Gmail.</p>
-              <p>2. Haz clic en "Create API key" y luego en "Create API key in new project".</p>
-              <p>3. Pega la clave generada aquí abajo y pulsa Guardar.</p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center gap-2">
-              <input
-                type="password"
-                placeholder="Pega aquí tu API Key de Google"
-                value={userApiKey}
-                onChange={(e) => {
-                  setUserApiKey(e.target.value);
-                  setApiKeySaved(false);
-                }}
-                className="flex-1 w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 font-medium focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition"
-              />
-              <div className="flex w-full sm:w-auto items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowTutorialModal(true)}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition border border-slate-300"
-                >
-                  TUTORIAL
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSaveApiKey}
-                  className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm rounded-xl transition shadow-md whitespace-nowrap"
-                >
-                  Validar y Guardar
-                </button>
-              </div>
-            </div>
-            {apiKeySaved && userApiKey.trim() && (
-              <div className="flex items-center space-x-2 text-emerald-600 text-sm font-bold bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-200 inline-block">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>¡Conexión Existosa con Gemini! Tu clave está guardada de forma segura en tu navegador.</span>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* Justificación y Temática */}
         <div className="space-y-2">
@@ -619,7 +536,7 @@ export const Step1General: React.FC<Step1Props> = ({
             rows={5}
             value={justificacion}
             onChange={(e) => setJustificacion(e.target.value)}
-            placeholder="Introduce la justificación pedagógica o pulsa en 'Generar Justificación con IA' para que el sistema redacte la justificación alineada con la LOMLOE andaluza..."
+            placeholder={`Introduce la justificación pedagógica o pulsa en 'Generar Justificación con IA' para que el sistema redacte la justificación alineada con la LOMLOE de ${comunidad}...`}
             className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm transition"
           />
 
@@ -645,32 +562,7 @@ export const Step1General: React.FC<Step1Props> = ({
         </button>
       </div>
 
-      {/* Tutorial Video Modal */}
-      {showTutorialModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-2 relative shadow-2xl">
-            <button
-              onClick={() => setShowTutorialModal(false)}
-              className="absolute -top-12 right-0 text-white hover:text-amber-400 flex items-center space-x-2 transition"
-            >
-              <span className="font-bold text-sm">Cerrar</span>
-              <div className="bg-slate-800 p-2 rounded-full">
-                <X className="w-5 h-5" />
-              </div>
-            </button>
-            <div className="rounded-2xl overflow-hidden bg-black aspect-video flex items-center justify-center">
-              <video 
-                src="/videos/tutorial.mp4" 
-                controls 
-                autoPlay
-                className="w-full h-full object-contain"
-              >
-                Tu navegador no soporta el elemento de vídeo.
-              </video>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };

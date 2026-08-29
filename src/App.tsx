@@ -13,7 +13,7 @@ import { Step9Resources } from './components/Step9Resources';
 import { Step10Export } from './components/Step10Export';
 import { LandingPage, UserSession } from './components/LandingPage';
 import { CookieBanner } from './components/CookieBanner';
-import { SituacionAprendizaje, Curso, Trimestre, TematicaEF, Ciclo, ModeloEstructuraSesion } from './types';
+import { SituacionAprendizaje, Curso, Trimestre, TematicaEF, Ciclo, ModeloEstructuraSesion, ComunidadAutonoma } from './types';
 import { getCicloFromCurso, generarRubricaPorDefecto } from './utils/sdaGenerator';
 import { logoutGoogle, db } from './lib/firebase';
 import { collection, doc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
@@ -22,6 +22,7 @@ import { useColorTheme } from './utils/theme';
 const INITIAL_SDA_STATE: SituacionAprendizaje = {
   id: 'sda-' + Date.now(),
   fechaCreacion: new Date().toLocaleDateString('es-ES'),
+  comunidad: 'Andalucía',
   etapa: 'Primaria',
   titulo: '',
   curso: '3º Primaria',
@@ -277,6 +278,8 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {currentStep === 1 && (
           <Step1General
+            comunidad={sda.comunidad}
+            setComunidad={(v) => updateSda({ comunidad: v })}
             etapa={sda.etapa}
             setEtapa={(v) => updateSda({ etapa: v })}
             titulo={sda.titulo}
@@ -301,6 +304,7 @@ export default function App() {
 
         {currentStep === 2 && (
           <Step2Curriculum
+            comunidad={sda.comunidad}
             etapa={sda.etapa}
             ciclo={sda.ciclo}
             tematica={sda.tematica}
@@ -315,6 +319,7 @@ export default function App() {
 
         {currentStep === 3 && (
           <Step3Saberes
+            comunidad={sda.comunidad}
             etapa={sda.etapa}
             ciclo={sda.ciclo}
             saberesSeleccionados={sda.saberesSeleccionados}
@@ -399,7 +404,8 @@ export default function App() {
 
         {currentStep === 8 && (
           <Step8Evaluation
-            evaluacionInicial={sda.evaluacionInicial}
+            comunidad={sda.comunidad}
+            evaluacionInicial={sda.evaluacionInicial || ''}
             setEvaluacionInicial={(v) => updateSda({ evaluacionInicial: v })}
             instrumentosSeleccionados={sda.instrumentosSeleccionados}
             setInstrumentosSeleccionados={(v) => updateSda({ instrumentosSeleccionados: v })}
@@ -441,12 +447,12 @@ export default function App() {
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-3">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span>
-              Crea-Ef LOMLOE • Basado en la normativa vigente de cada etapa (Andalucía).
-            </span>
-            <span className="font-semibold text-indigo-700">
-              Diseñado para docentes de Educación Física en Andalucía
-            </span>
+            <p className="font-bold text-slate-800">
+              Crea-Ef LOMLOE • Basado en la normativa vigente de cada comunidad autónoma.
+            </p>
+            <p className="mt-1">
+              Diseñado para docentes de Educación Física
+            </p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-slate-500 font-medium mt-1">
             <a href="https://crea-ef.es/aviso-legal.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">Aviso Legal</a>

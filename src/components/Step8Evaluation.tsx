@@ -26,6 +26,7 @@ interface Step8Props {
   criteriosSeleccionados: string[];
   tematica?: string;
   curso?: string;
+  comunidad?: string;
   etapa?: EtapaEducativa;
   rubrica: ElementoRubrica[];
   setRubrica: (v: ElementoRubrica[]) => void;
@@ -53,6 +54,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
   criteriosSeleccionados,
   tematica = 'General',
   curso = 'Primaria',
+  comunidad = 'Andalucía',
   etapa = 'Primaria',
   rubrica,
   setRubrica,
@@ -425,7 +427,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       <div style="background: #1e1b4b; color: #ffffff; padding: 18px 24px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
         <h1 style="margin: 0; font-size: 22px; font-weight: 900; color: #ffffff;">CUADERNO Y CARPETILLA DE INSTRUMENTOS DE EVALUACIÓN FORMADORA</h1>
         <p style="margin: 6px 0 0 0; font-size: 13px; color: #fbbf24; font-weight: bold;">
-          Educación Física Andaluz - LOMLOE | Curso: ${curso} | Temática: ${tematica}
+          Educación Física ${comunidad} - LOMLOE | Curso: ${curso} | Temática: ${tematica}
         </p>
       </div>
 

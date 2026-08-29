@@ -18,8 +18,9 @@ import {
 import { CreaEfLogo } from './CreaEfLogo';
 import { ThemeSelectorModal } from './ThemeSelectorModal';
 import { useColorTheme } from '../utils/theme';
-import { db } from '../lib/firebase';
+import { db, analytics } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { logEvent } from 'firebase/analytics';
 
 export interface UserSession {
   type: 'trial' | 'user' | 'admin';
@@ -127,6 +128,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       localStorage.setItem('trial_device_email', cleanEmail);
       localStorage.setItem('trial_device_count', String(data.generacionesUsadas || deviceCount));
 
+      if (analytics) {
+        logEvent(analytics, 'trial_started', { email: cleanEmail });
+      }
+
       onStartSession({
         type: 'trial',
         email: cleanEmail,
@@ -203,9 +208,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
         setShowStripeCheckout(true);
         window.open(url, '_blank');
         */
+        if (analytics) {
+          logEvent(analytics, 'register_attempt', { email: cleanEmail });
+        }
         setShowComingSoonModal(true);
         return;
       } else {
+        if (analytics) {
+          logEvent(analytics, 'login_attempt', { email: cleanEmail });
+        }
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists() || userSnap.data().password !== userPassword) {
           setUserError('Credenciales de usuario incorrectas o cuenta no registrada.');
@@ -294,7 +305,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   <span className="text-sky-400">Ef</span>
                 </h1>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 uppercase tracking-wider">
-                  LOMLOE Andalucía
+                  LOMLOE Autonómica
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5 font-medium leading-snug">
@@ -788,7 +799,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       {/* Footer */}
       <footer className="border-t border-slate-800 py-6 bg-slate-950 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-3">
-          <p>Plataforma de Situaciones de Aprendizaje de EF Andalucía • Adaptado a LOMLOE & Instrucción 12/2022</p>
+          <p>Plataforma de Situaciones de Aprendizaje de EF • Adaptado a LOMLOE y Normativa Autonómica</p>
           <div className="flex flex-wrap justify-center gap-4 text-slate-400 font-medium">
             <a href="https://crea-ef.es/aviso-legal.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Aviso Legal</a>
             <a href="https://crea-ef.es/terminos-y-condiciones.html" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Términos y condiciones</a>

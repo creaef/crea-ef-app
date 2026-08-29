@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getAnalytics } from 'firebase/analytics';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 declare global {
@@ -13,6 +14,7 @@ declare global {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const analytics = getAnalytics(app);
 
 export const requestDriveTokenViaGIS = (): Promise<string> => {
   return new Promise((resolve, reject) => {

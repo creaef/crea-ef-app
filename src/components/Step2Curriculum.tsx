@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { BookmarkCheck, CheckSquare, Square, ArrowLeft, ArrowRight, Info } from 'lucide-react';
-import { Ciclo, TematicaEF, EtapaEducativa } from '../types';
+import { Ciclo, TematicaEF, EtapaEducativa, ComunidadAutonoma } from '../types';
 import { getCompetenciasByEtapa, getCriteriosByEtapa } from '../utils/curriculumHelpers';
 
 interface Step2Props {
+  comunidad: ComunidadAutonoma;
   etapa: EtapaEducativa;
   ciclo: Ciclo;
   tematica: TematicaEF;
@@ -16,6 +17,7 @@ interface Step2Props {
 }
 
 export const Step2Curriculum: React.FC<Step2Props> = ({
+  comunidad,
   etapa,
   ciclo,
   tematica,
@@ -26,8 +28,8 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
   onPrev,
   onNext,
 }) => {
-  const competenciasEtapa = getCompetenciasByEtapa(etapa);
-  const criteriosEtapa = getCriteriosByEtapa(etapa);
+  const competenciasEtapa = getCompetenciasByEtapa(etapa, comunidad);
+  const criteriosEtapa = getCriteriosByEtapa(etapa, comunidad);
 
   // Filter criterios matching current cycle
   const criteriosDelCiclo = criteriosEtapa.filter((c) => c.ciclo === ciclo || c.ciclo === 'Todos');
@@ -69,7 +71,7 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
           <h2 className="text-xl font-bold">Paso 2: Conexión Curricular (Criterios y Competencias)</h2>
         </div>
         <p className="text-indigo-100 text-sm max-w-3xl">
-          Selección de Competencias Específicas y Criterios de Evaluación autonómicos de Andalucía para <strong>{etapa} ({ciclo})</strong>.
+          Selección de Competencias Específicas y Criterios de Evaluación autonómicos de {comunidad} para <strong>{etapa} ({ciclo})</strong>.
         </p>
       </div>
 

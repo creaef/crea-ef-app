@@ -147,7 +147,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     lines.push(`1. JUSTIFICACIÓN`);
     lines.push(`${sda.justificacion}\n`);
 
-    lines.push(`2. ELEMENTOS CURRICULARES (${getNormativaForEtapa(sda.etapa).split(' de ')[0]} ANDALUCÍA)`);
+    lines.push(`2. ELEMENTOS CURRICULARES (${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]} ${sda.comunidad.toUpperCase()})`);
     lines.push(`Competencias Específicas: ${sda.competenciasSeleccionadas.join(', ')}`);
     lines.push(`Criterios de Evaluación: ${sda.criteriosSeleccionados.join(', ')}`);
     lines.push(`Saberes Básicos: ${sda.saberesSeleccionados.join(', ')}`);
@@ -192,7 +192,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     if (sda.driveDocumentationText) {
       lines.push(`* Documentos / Fichas / Banco de Juegos en Excel o Drive consultados y adaptados.`);
     } else {
-      lines.push(`* Programación LOMLOE y ${getNormativaForEtapa(sda.etapa)}.`);
+      lines.push(`* Programación LOMLOE y ${getNormativaForEtapa(sda.etapa, sda.comunidad)}.`);
     }
 
     return lines.join('\n');
@@ -321,7 +321,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       `).join('');
 
       return `
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1.5px solid #0a2240; page-break-before: always; break-before: page;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1.5px solid #0a2240; page-break-inside: auto;">
           <thead>
             <tr style="background-color: #0a2240; color: #ffffff;">
               <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; border-bottom: 2px solid #e85d04;">
@@ -340,7 +340,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             ` : ''}
           </thead>
           <tbody>
-            <tr style="background-color: #ffffff;">
+            <tr style="background-color: #ffffff; page-break-inside: auto;">
               <td colSpan="2" style="padding: 12px;">
                 ${warmupHtml}
                 ${mainHtml}
@@ -393,7 +393,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       <div style="font-family: Arial, sans-serif; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5; padding: 20px; color: #1e293b; max-width: 850px; margin: 0 auto; background-color: #ffffff;">
         
         <!-- MEMBRETE OFICIAL CON LOGOTIPO CREA-EF -->
-        ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026', sda.etapa)}
+        ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026', sda.etapa, sda.comunidad)}
 
         <!-- HERO BANNER EN TABLA COMPACTA -->
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 22px; border: 2px solid #0a2240; background-color: #0a2240; color: #ffffff;">
@@ -401,7 +401,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             <tr>
               <td style="padding: 18px 20px; text-align: left;">
                 <span style="background-color: #e85d04; color: #ffffff; font-weight: 800; font-size: 10px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 8px;">
-                  SITUACIÓN DE APRENDIZAJE ${(sda.etapa === 'Infantil' ? 'PSICOMOTRICIDAD' : 'EDUCACIÓN FÍSICA')} (ANDALUCÍA — ${getNormativaForEtapa(sda.etapa).split(' de ')[0]})
+                  SITUACIÓN DE APRENDIZAJE ${(sda.etapa === 'Infantil' ? 'PSICOMOTRICIDAD' : 'EDUCACIÓN FÍSICA')} (${sda.comunidad.toUpperCase()} — ${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})
                 </span>
                 <h1 style="margin: 6px 0 10px 0; font-size: 20px; font-weight: 900; color: #ffffff; line-height: 1.3; text-align: left;">
                   ${sda.titulo || 'Sin Título'}
@@ -444,7 +444,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           <thead>
             <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
               <th colSpan={3} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN LOMLOE (${getNormativaForEtapa(sda.etapa).split(' de ')[0]})
+                2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN LOMLOE (${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})
               </th>
             </tr>
             <tr style="background-color: #1e293b; color: #ffffff; text-align: left;">
@@ -499,7 +499,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </tr>
           </thead>
           <tbody>
-            <tr style="background-color: #eef2ff;">
+            <tr style="background-color: #eef2ff; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 14px; font-size: 11px; color: #1e1b4b; line-height: 1.6; text-align: justify; border: 1px solid #c7d2fe;">
                 ${sda.productoFinal || 'Sin definir.'}
               </td>
@@ -546,7 +546,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </tr>
           </thead>
           <tbody>
-            <tr style="background-color: #f8fafc;">
+            <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 12px; font-size: 11px; border: 1px solid #cbd5e1; text-align: justify; width: 100%;">
                 <p style="margin: 0; color: #334155; text-align: justify; line-height: 1.6; width: 100%;">${sda.evaluacionInicial || 'Diagnóstica inicial de capacidades motrices, actitudinales y nivel competencial de partida.'}</p>
               </td>
@@ -564,7 +564,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </tr>
           </thead>
           <tbody>
-            <tr style="background-color: #1e293b; color: #ffffff;">
+            <tr style="background-color: #1e293b; color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
               <th style="padding: 8px 10px; width: 28%; text-align: left; font-size: 10.5px;">Herramienta / Instrumento</th>
               <th style="padding: 8px 10px; width: 72%; text-align: left; font-size: 10.5px;">Criterios de Evaluación, Descripción y Aplicación Práctica</th>
             </tr>
@@ -586,23 +586,23 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </tr>
           </thead>
           <tbody>
-            <tr style="background-color: #f8fafc;">
+            <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">🔢 Matemáticas</td>
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Conteo de puntos, cálculo de distancias y tiempos, orientación geométrica en el espacio de juego y registro estadístico.</td>
             </tr>
-            <tr style="background-color: #ffffff;">
+            <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">📚 Lengua Castellana</td>
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Comprensión de reglamentos, vocabulario motriz específico, expresión oral en asambleas reflexivas y coevaluación dialogada.</td>
             </tr>
-            <tr style="background-color: #f8fafc;">
+            <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">🌱 Conocimiento del Medio</td>
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Reconocimiento de frecuencia cardíaca/respiratoria, higiene corporal, educación para la salud, nutrición activa y respeto al entorno.</td>
             </tr>
-            <tr style="background-color: #ffffff;">
+            <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #b45309; font-size: 10.5px; vertical-align: top;">🎨 Educación Artística</td>
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Expresión corporal, ritmo, acompañamiento musical, coordinación colectiva y diseño de tarjetas o insignias.</td>
             </tr>
-            <tr style="background-color: #f8fafc;">
+            <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">📱 Competencia Digital</td>
               <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Registro audiovisual en tabletas para análisis biomecánico, lectura de códigos QR para retos y formularios digitales de coevaluación (Google Forms, Plickers).</td>
             </tr>
@@ -977,7 +977,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
                   Diseña y personaliza tus Situaciones de Aprendizaje de EF
                 </p>
                 <p className="text-[11px] font-semibold text-emerald-700 mt-0.5">
-                  Programación LOMLOE • Decreto 101/2023 de Educación Física en Andalucía
+                  Programación LOMLOE • {getNormativaForEtapa(sda.etapa, sda.comunidad)}
                 </p>
               </div>
             </div>
@@ -1025,7 +1025,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           {/* 2. Elementos Curriculares y Matriz de Relación */}
           <section className="space-y-4">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1 flex items-center justify-between">
-              <span>2. Elementos Curriculares y Matriz de Relación (Andalucía - Decreto 101/2023)</span>
+              <span>2. Elementos Curriculares y Matriz de Relación ({sda.comunidad} - {getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})</span>
               <span className="text-xs bg-purple-100 text-purple-900 font-extrabold px-2.5 py-0.5 rounded-full">
                 Matriz LOMLOE
               </span>
@@ -1314,7 +1314,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1 flex items-center justify-between">
               <span>8. Conexiones Interdisciplinares (Vinculación Curricular)</span>
               <span className="text-xs bg-indigo-100 text-indigo-900 px-2.5 py-0.5 rounded-full font-bold">
-                Decreto 101/2023 Andalucía
+                {getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]} {sda.comunidad}
               </span>
             </h3>
 
