@@ -46,6 +46,14 @@ export function getCicloFromCurso(curso: string): Ciclo {
   return 'Todos';
 }
 
+export function getEtapaFromCurso(curso: string): EtapaEducativa {
+  if (curso.includes('años')) return 'Infantil';
+  if (curso.includes('Primaria')) return 'Primaria';
+  if (curso.includes('ESO')) return 'ESO';
+  if (curso.includes('Bachillerato')) return 'Bachillerato';
+  return 'Primaria'; // Default
+}
+
 // Generate automatic sessions given model structure and activities database
 export function generarSesionesAuto(
   numSesiones: number,

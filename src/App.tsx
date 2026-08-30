@@ -14,7 +14,7 @@ import { Step10Export } from './components/Step10Export';
 import { LandingPage, UserSession } from './components/LandingPage';
 import { CookieBanner } from './components/CookieBanner';
 import { SituacionAprendizaje, Curso, Trimestre, TematicaEF, Ciclo, ModeloEstructuraSesion, ComunidadAutonoma } from './types';
-import { getCicloFromCurso, generarRubricaPorDefecto } from './utils/sdaGenerator';
+import { getCicloFromCurso, getEtapaFromCurso, generarRubricaPorDefecto } from './utils/sdaGenerator';
 import { logoutGoogle, db } from './lib/firebase';
 import { collection, doc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { useColorTheme } from './utils/theme';
@@ -287,7 +287,8 @@ export default function App() {
             curso={sda.curso}
             setCurso={(v) => {
               const newCiclo = getCicloFromCurso(v);
-              updateSda({ curso: v, ciclo: newCiclo });
+              const newEtapa = getEtapaFromCurso(v);
+              updateSda({ curso: v, ciclo: newCiclo, etapa: newEtapa });
             }}
             trimestre={sda.trimestre}
             setTrimestre={(v) => updateSda({ trimestre: v })}

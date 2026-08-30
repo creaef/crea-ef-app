@@ -13,6 +13,24 @@ const NORMATIVAS_POR_COMUNIDAD: Record<string, NormativaComunidad> = {
     'ESO': 'Decreto 102/2023 de Educación Física en Andalucía',
     'Bachillerato': 'Decreto 103/2023 de Educación Física en Andalucía',
   },
+  'Aragón': {
+    'Infantil': 'Orden de Infantil en Aragón',
+    'Primaria': 'Orden ECD/1112/2022 de Aragón',
+    'ESO': 'Orden ECD/1172/2022 de Aragón',
+    'Bachillerato': 'Orden de Bachillerato en Aragón',
+  },
+  'Asturias': {
+    'Infantil': 'Decreto de Infantil de Asturias',
+    'Primaria': 'Decreto 57/2022 de Asturias',
+    'ESO': 'Decreto 59/2022 de Asturias',
+    'Bachillerato': 'Decreto de Bachillerato de Asturias',
+  },
+  'Cantabria': {
+    'Infantil': 'Decreto de Infantil de Cantabria',
+    'Primaria': 'Decreto 66/2022 de Cantabria',
+    'ESO': 'Decreto 65/2022 de Cantabria',
+    'Bachillerato': 'Decreto de Bachillerato de Cantabria',
+  },
   'Castilla y León': {
     'Infantil': 'Decreto 36/2022 de Castilla y León',
     'Primaria': 'Decreto 38/2022 de Castilla y León',
@@ -36,6 +54,24 @@ const NORMATIVAS_POR_COMUNIDAD: Record<string, NormativaComunidad> = {
     'Primaria': 'Decreto 209/2022 de la Región de Murcia',
     'ESO': 'Decreto 235/2022 de la Región de Murcia',
     'Bachillerato': 'Decreto 243/2022 de la Región de Murcia',
+  },
+  'Galicia': {
+    'Infantil': 'Decreto de Infantil de Galicia',
+    'Primaria': 'Decreto 155/2022 de Galicia',
+    'ESO': 'Decreto 156/2022 de Galicia',
+    'Bachillerato': 'Decreto de Bachillerato de Galicia',
+  },
+  'Comunidad Valenciana': {
+    'Infantil': 'Decret de Infantil de la Comunidad Valenciana',
+    'Primaria': 'Decret 106/2022 de la Comunidad Valenciana',
+    'ESO': 'Decret 107/2022 de la Comunidad Valenciana',
+    'Bachillerato': 'Decret de Bachillerato de la Comunidad Valenciana',
+  },
+  'Comunidad de Madrid': {
+    'Infantil': 'Decreto de Infantil de la Comunidad de Madrid',
+    'Primaria': 'Decreto 61/2022 de la Comunidad de Madrid',
+    'ESO': 'Decreto 65/2022 de la Comunidad de Madrid',
+    'Bachillerato': 'Decreto de Bachillerato de la Comunidad de Madrid',
   }
 };
 

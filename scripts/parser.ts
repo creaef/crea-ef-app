@@ -1,6 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
+import fs from 'fs';
+import path from 'path';
+import * as pdfParseModule from 'pdf-parse';
+const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
 
 const LEGISLACION_DIR = path.join(process.cwd(), 'src/data/legislacion');
 const OUTPUT_DIR = path.join(process.cwd(), 'src/data');
@@ -11,14 +12,14 @@ const regionesToProcess = [
   { name: 'Madrid', community: 'Comunidad de Madrid', prefix: 'MADRID', hasESO: true }
 ];
 
-async function parsePdf(filePath) {
+async function parsePdf(filePath: string) {
   if (!fs.existsSync(filePath)) return null;
   const dataBuffer = fs.readFileSync(filePath);
   const data = await pdfParse(dataBuffer);
   return data.text;
 }
 
-function extractCompetencias(text) {
+function extractCompetencias(text: string) {
   const competencias = [];
   const regex = /CE\.EF\.(\d+):\s*([\s\S]*?)(?=CE\.EF\.\d+:|3\.\s*CRITERIOS)/g;
   let match;
@@ -35,7 +36,7 @@ function extractCompetencias(text) {
   return competencias;
 }
 
-function extractCriterios(text, isESO) {
+function extractCriterios(text: string, isESO: boolean) {
   const criterios = [];
   const ciclos = isESO 
     ? [{name: '1º Ciclo ESO', prefix: 'PRIMER CICLO'}, {name: '2º Ciclo ESO', prefix: 'SEGUNDO CICLO'}, {name: 'Bachillerato', prefix: 'BACHILLERATO'}]
@@ -71,7 +72,7 @@ function extractCriterios(text, isESO) {
   return criterios;
 }
 
-function extractSaberes(text, isESO) {
+function extractSaberes(text: string, isESO: boolean) {
   const saberes = [];
   const bloques = [
     { id: 'A', name: 'Resolución de problemas en situaciones motrices', keys: ['Acciones individuales', 'Acciones de oposición', 'Acciones de cooperación', 'Acciones de colaboración-oposición', 'Acciones en el medio natural', 'Acciones artístico-expresivas'] },

@@ -10,6 +10,7 @@ import * as pdfParseModule from 'pdf-parse';
 const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
 import * as XLSX from 'xlsx';
 import { formatGameDescription } from './src/types';
+import { getNormativaForEtapa } from './src/utils/documentHeader';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
@@ -290,14 +291,15 @@ app.post('/api/ai/generate-justification', async (req, res) => {
     }
 
     const ai = getGenAIClient();
-    const prompt = `Redacta una justificación pedagógica y motivadora (entre 120 y 200 palabras) para una Situación de Aprendizaje de Educación Física en ${comunidad}.
+    const normativa = getNormativaForEtapa(etapa, comunidad);
+    const prompt = `Redacta una justificación pedagógica y motivadora (entre 120 y 200 palabras) para una Situación de Aprendizaje de Educación Física.
 Título: "${titulo}"
 Curso/Nivel: ${curso} (${ciclo})
 Temática principal: ${tematica}
 
 Instrucciones:
 - Justifica la pertinencia de la temática según el desarrollo psicoevolutivo del alumnado de ${curso}.
-- Conecta con la relevancia para la vida diaria, el fomento de hábitos saludables, la inclusión DUA y los valores de la normativa vigente de ${comunidad}.
+- Conecta explícitamente y textualmente con la relevancia para la vida diaria, el fomento de hábitos saludables, la inclusión DUA y los valores de la normativa vigente de la Comunidad Autónoma de ${comunidad}: cumpliendo estricta y únicamente con lo que establece el ${normativa}. Debes mencionar explícitamente esta ley/decreto.
 - Devuelve únicamente el texto de la justificación redactado en Markdown limpio.`;
 
     const response = await callGeminiWithRetry(req, ai, {
@@ -319,13 +321,13 @@ Instrucciones:
 // API 2: Generar Rúbrica de Evaluación
 app.post('/api/ai/generate-rubric', async (req, res) => {
   try {
-    const { criterios, etapa } = req.body;
+    const { criterios, etapa, comunidad } = req.body;
     if (!criterios || !Array.isArray(criterios) || criterios.length === 0) {
       return res.status(400).json({ error: 'Se requiere una lista de criterios de evaluación.' });
     }
 
     const ai = getGenAIClient();
-    const prompt = `Genera los descriptores de una Rúbrica de Evaluación Formativa para los siguientes Criterios de Evaluación de Educación Física (LOMLOE Andalucía):
+    const prompt = `Genera los descriptores de una Rúbrica de Evaluación Formativa para los siguientes Criterios de Evaluación de Educación Física (LOMLOE ${comunidad || 'Andalucía'}):
 ${JSON.stringify(criterios, null, 2)}
 
 Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
@@ -492,10 +494,10 @@ Devuelve un JSON array de objetos con el siguiente esquema:
 // API 3: Generar o Enriquecer Reto / Producto Final
 app.post('/api/ai/generate-final-challenge', async (req, res) => {
   try {
-    const { titulo, curso, tematica, metodologia, etapa } = req.body;
+    const { titulo, curso, tematica, metodologia, etapa, comunidad } = req.body;
     const ai = getGenAIClient();
 
-    const prompt = `Propón un Producto Final o Reto Motor motivador, significativo e inclusivo para culminar una Situación de Aprendizaje de Educación Física en Andalucía.
+    const prompt = `Propón un Producto Final o Reto Motor motivador, significativo e inclusivo para culminar una Situación de Aprendizaje de Educación Física en ${comunidad || 'Andalucía'}.
 Título: "${titulo}"
 Curso: ${curso}
 Temática: ${tematica}
@@ -770,10 +772,10 @@ Devuelve una respuesta JSON estricta con este formato:
 // API: Enriquecer y Cumplimentar Explicación Completa de un Juego / Actividad
 app.post('/api/ai/enrich-game-description', async (req, res) => {
   try {
-    const { nombreJuego, descripcion, tematica, curso, etapa } = req.body;
+    const { nombreJuego, descripcion, tematica, curso, etapa, comunidad } = req.body;
     const ai = getGenAIClient();
 
-    const prompt = `Actúa como Catedrático Experto en Didáctica de la Educación Física y LOMLOE en Andalucía.
+    const prompt = `Actúa como Catedrático Experto en Didáctica de la Educación Física y LOMLOE en ${comunidad || 'Andalucía'}.
 Completa, re-genera o desarrolla en su totalidad el siguiente juego/actividad para Educación Física (${curso || 'Educación Primaria'}, temática: "${tematica || 'General'}"):
 
 Nombre del juego actual: "${nombreJuego || 'Juego o Actividad de EF'}"
@@ -1025,10 +1027,10 @@ Devuelve una respuesta JSON estricta con esta estructura:
 // API 6: Generar Instrumentos de Evaluación Formativa seleccionados por el usuario
 app.post('/api/ai/generate-evaluation-tools', async (req, res) => {
   try {
-    const { selectedInstrumentTypes, tematica, criteriosSeleccionados, curso, etapa } = req.body;
+    const { selectedInstrumentTypes, tematica, criteriosSeleccionados, curso, etapa, comunidad } = req.body;
     const ai = getGenAIClient();
 
-    const prompt = `Genera los Instrumentos de Evaluación Formativa seleccionados por el docente para una Situación de Aprendizaje de Educación Física en Andalucía (${curso}).
+    const prompt = `Genera los Instrumentos de Evaluación Formativa seleccionados por el docente para una Situación de Aprendizaje de Educación Física en ${comunidad || 'Andalucía'} (${curso}).
 Temática(s): ${tematica}
 Criterios de Evaluación seleccionados: ${JSON.stringify(criteriosSeleccionados || [])}
 Tipos de Instrumentos a generar obligatoriamente: ${JSON.stringify(selectedInstrumentTypes || [])}
@@ -1415,7 +1417,7 @@ app.post('/api/docs/create-doc', async (req, res) => {
 
     segments.push({ text: `1. JUSTIFICACIÓN DE LA PROPUESTA\n`, style: 'heading1' });
     segments.push({ text: `${sda.justificacion || 'Sin justificación.'}\n\n` });
-    const normativaText = sda.comunidad && sda.comunidad !== 'Andalucía' ? `(NORMATIVA VIGENTE DE ${sda.comunidad.toUpperCase()})` : `(DECRETO 101/2023 ANDALUCÍA)`;
+    const normativaText = `(NORMATIVA VIGENTE DE ${sda.comunidad ? sda.comunidad.toUpperCase() : 'ANDALUCÍA'})`;
     segments.push({ text: `2. CONEXIÓN CURRICULAR ${normativaText}\n`, style: 'heading1' });
     segments.push({ text: `Competencias Específicas: `, style: 'boldLabel' });
     segments.push({ text: `${(sda.competenciasSeleccionadas || []).join(', ')}\n` });

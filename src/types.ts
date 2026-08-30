@@ -1,4 +1,4 @@
-export type ComunidadAutonoma = 'Andalucía' | 'Castilla y León' | 'Castilla-La Mancha' | 'Extremadura' | 'Región de Murcia';
+export type ComunidadAutonoma = 'Andalucía' | 'Aragón' | 'Asturias' | 'Cantabria' | 'Castilla y León' | 'Castilla-La Mancha' | 'Extremadura' | 'Región de Murcia' | 'Galicia' | 'Comunidad de Madrid' | 'Comunidad Valenciana';
 export type EtapaEducativa = 'Infantil' | 'Primaria' | 'ESO' | 'Bachillerato';
 export type Ciclo = 'Infantil' | 'Primer Ciclo' | 'Segundo Ciclo' | 'Tercer Ciclo' | '1º Ciclo ESO' | '2º Ciclo ESO' | 'Bachillerato' | 'Todos';
 export type Curso = '3 años' | '4 años' | '5 años' | '1º Primaria' | '2º Primaria' | '3º Primaria' | '4º Primaria' | '5º Primaria' | '6º Primaria' | '1º ESO' | '2º ESO' | '3º ESO' | '4º ESO' | '1º Bachillerato' | '2º Bachillerato';

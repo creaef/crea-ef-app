@@ -215,10 +215,7 @@ export const Step1General: React.FC<Step1Props> = ({
               onChange={(e) => {
                 const newComunidad = e.target.value as ComunidadAutonoma;
                 setComunidad(newComunidad);
-                if (newComunidad === 'Región de Murcia' && etapa !== 'Primaria') {
-                  setEtapa('Primaria');
-                  setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
-                } else if ((newComunidad === 'Castilla-La Mancha' || newComunidad === 'Extremadura' || newComunidad === 'Castilla y León') && (etapa === 'Infantil' || etapa === 'Bachillerato')) {
+                if (newComunidad !== 'Andalucía' && (etapa === 'Infantil' || etapa === 'Bachillerato')) {
                   setEtapa('Primaria');
                   setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
                 }
@@ -226,9 +223,15 @@ export const Step1General: React.FC<Step1Props> = ({
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
             >
               <option value="Andalucía">Andalucía</option>
+              <option value="Aragón">Aragón</option>
+              <option value="Asturias">Asturias</option>
+              <option value="Cantabria">Cantabria</option>
               <option value="Castilla y León">Castilla y León</option>
               <option value="Castilla-La Mancha">Castilla-La Mancha</option>
+              <option value="Comunidad de Madrid">Comunidad de Madrid</option>
+              <option value="Comunidad Valenciana">Comunidad Valenciana</option>
               <option value="Extremadura">Extremadura</option>
+              <option value="Galicia">Galicia</option>
               <option value="Región de Murcia">Región de Murcia</option>
             </select>
           </div>
@@ -251,7 +254,7 @@ export const Step1General: React.FC<Step1Props> = ({
             >
               {comunidad === 'Andalucía' && <option value="Infantil">Infantil</option>}
               <option value="Primaria">Primaria</option>
-              {comunidad !== 'Región de Murcia' && <option value="ESO">ESO</option>}
+              <option value="ESO">ESO</option>
               {comunidad === 'Andalucía' && <option value="Bachillerato">Bachillerato</option>}
             </select>
           </div>

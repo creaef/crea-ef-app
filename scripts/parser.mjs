@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
+import fs from 'fs';
+import path from 'path';
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 
 const LEGISLACION_DIR = path.join(process.cwd(), 'src/data/legislacion');
 const OUTPUT_DIR = path.join(process.cwd(), 'src/data');
@@ -57,6 +57,7 @@ function extractCriterios(text, isESO) {
       const compNum = match[1];
       const critNum = match[2];
       const desc = match[3].trim().replace(/\s+/g, ' ');
+      // ignore anything that looks like a competency header in the chunk
       if (desc.startsWith('Integrar') || desc.startsWith('Comprender') || desc.length > 10) {
         criterios.push({
           id: `${compNum}.${critNum}`,

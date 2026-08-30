@@ -65,3 +65,69 @@ export const SABERES_BASICOS_MURCIA_PRIMARIA: SaberBasico[] = [
   { codigo: 'EFI.D.3', bloque: 'D', bloqueNombre: 'Cultura motriz', ciclo: 'Tercer Ciclo', descripcion: 'Deportes y juegos tradicionales de España y de otras culturas. El movimiento como medio de expresión artística y teatral (mimo, dramatización).' },
   { codigo: 'EFI.E.3', bloque: 'E', bloqueNombre: 'Interacción con el entorno natural y urbano', ciclo: 'Tercer Ciclo', descripcion: 'Lectura de mapas sencillos y uso de brújulas/tecnología para recorridos en la naturaleza. Organización de salidas al entorno natural minimizando el impacto ambiental (principios Leave No Trace). Promoción del uso activo de la bicicleta o desplazamiento a pie (educación vial).' }
 ];
+
+// ==========================================
+// MURCIA - ESO Y BACHILLERATO
+// ==========================================
+export const COMPETENCIAS_ESPECIFICAS_MURCIA_ESO: CompetenciaEspecifica[] = [
+  { id: 'CE.EF.1', numero: 1, nombre: 'Competencia Específica 1', descripcion: 'Planificar y autorregular una práctica de actividad física orientada a la salud, consolidando un estilo de vida activo y saludable que prevenga riesgos y mejore la calidad de vida integral (física, mental y social).' },
+  { id: 'CE.EF.2', numero: 2, nombre: 'Competencia Específica 2', descripcion: 'Desarrollar la capacidad de adaptación motriz mediante la ejecución de habilidades específicas en contextos sociomotores variados y complejos con eficacia, fluidez, control y creatividad.' },
+  { id: 'CE.EF.3', numero: 3, nombre: 'Competencia Específica 3', descripcion: 'Promover e integrar valores de inclusión, respeto a la diversidad, equidad de género, trabajo en equipo, juego limpio y resolución pacífica de conflictos en la práctica motriz.' },
+  { id: 'CE.EF.4', numero: 4, nombre: 'Competencia Específica 4', descripcion: 'Analizar, valorar y participar activamente en manifestaciones histórico-culturales, tradicionales (juegos populares y autóctonos de la Región de Murcia), artísticas y deportivas como elemento integrador del patrimonio.' },
+  { id: 'CE.EF.5', numero: 5, nombre: 'Competencia Específica 5', descripcion: 'Organizar y realizar actividades físicas en el medio natural y urbano de manera autónoma, segura y ambientalmente sostenible, promoviendo la movilidad activa y el residuo cero.' }
+];
+
+export const CRITERIOS_EVALUACION_MURCIA_ESO: CriterioEvaluacion[] = [
+  // 1º Ciclo ESO (mapped from 1º and 2º ESO)
+  { id: '1.1', codigo: 'EFI.1.1', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Identificar las capacidades físicas y los factores de la condición física orientada a la salud.' },
+  { id: '1.2', codigo: 'EFI.1.2', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Aplicar protocolos de calentamiento general guiado y normas de higiene postural y corporal.' },
+  { id: '2.1', codigo: 'EFI.2.1', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Ejecutar habilidades motrices específicas en situaciones de oposición e iniciación deportiva con eficacia técnica básica.' },
+  { id: '2.2', codigo: 'EFI.2.2', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Aplicar soluciones tácticas elementales en juegos reducidos de cancha compartida o dividida.' },
+  { id: '3.1', codigo: 'EFI.3.1', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Mostrar actitudes cooperativas y tolerantes en tareas grupales, respetando reglas y acuerdos de aula.' },
+  { id: '3.2', codigo: 'EFI.3.2', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Controlar emociones básicas asociadas al éxito y al fracaso en situaciones de competición escolar.' },
+  { id: '4.1', codigo: 'EFI.4.1', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Conocer y practicar juegos populares y tradicionales de la Región de Murcia (bolos murcianos, caliche, etc.).' },
+  { id: '4.2', codigo: 'EFI.4.2', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Reproducir secuencias rítmicas elementales y estructuras básicas de movimiento expresivo corporal.' },
+  { id: '5.1', codigo: 'EFI.5.1', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Realizar recorridos de orientación básica en el centro escolar o parques urbanos utilizando un mapa sencillo.' },
+  { id: '5.2', codigo: 'EFI.5.2', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Aplicar pautas elementales de seguridad y respeto al medio natural en actividades al aire libre.' },
+  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Evaluar la condición física personal aplicando test motores estandarizados y registrando su evolución.' },
+  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Diseñar y ejecutar calentamientos generales autónomos, aplicando pautas de hidratación y nutrición adecuada.' },
+  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Adaptar gestos técnicos y coordinativos ante situaciones dinámicas no estandarizadas y de oposición directa.' },
+  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Aplicar esquemas tácticos colectivos básicos de desmarque, apoyo y cobertura en deportes de invasión.' },
+  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Asumir roles de arbitraje escolar y mediación de discrepancias de forma dialogada y justa.' },
+  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Promover activamente la inclusión e igualdad efectiva de género en los grupos de práctica motriz.' },
+  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Practicar danzas tradicionales murcianas (parrandas, jotas) y compararlas con bailes urbanos contemporáneos.' },
+  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Crear pequeñas coreografías grupales utilizando técnicas básicas de improvisación corporal.' },
+  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Completar itinerarios en la naturaleza utilizando brújula y lectura básica de planos topográficos.' },
+  { id: '5.2b', codigo: 'EFI.5.2b', ciclo: '1º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Aplicar protocolos de residuo cero y conservación activa del medio ambiente en actividades de senderismo.' },
+
+  // 2º Ciclo ESO (mapped from 3º and 4º ESO)
+  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Diseñar y poner en práctica un plan personal de trabajo de una capacidad física orientada a la salud.' },
+  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Conocer y aplicar protocolos de primeros auxilios y soporte vital básico (conducta PAS, RCP y uso de DEA/DESA).' },
+  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Demostrar fluidez técnica en deportes individuales, de raqueta/implemento y colectivos avanzados.' },
+  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Elaborar y aplicar sistemas tácticos avanzados respondiendo a la lectura estratégica de los adversarios.' },
+  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Organizar y dinamizar encuentros deportivos escolares promoviendo el juego limpio y el liderazgo compartido.' },
+  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Autorregular la ansiedad y la frustración en contextos competitivos de juego real de forma asertiva.' },
+  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Analizar críticamente el impacto social, mediático y mercantil del deporte profesional y sus valores éticos.' },
+  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Diseñar montajes grupales de acrosport, dramatización o danzas urbanas con valor estético y técnico.' },
+  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Planificar recorridos en el medio natural contemplando previsiones meteorológicas y normas de seguridad.' },
+  { id: '5.2c', codigo: 'EFI.5.2c', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Emplear medios de transporte sostenibles (bicicleta, patinete) en actividades de exploración urbana.' },
+  { id: '1.1d', codigo: 'EFI.1.1d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Planificar, aplicar y evaluar un programa autónomo de acondicionamiento físico proyectado hacia la vida adulta.' },
+  { id: '1.2d', codigo: 'EFI.1.2d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.1', descripcion: 'Analizar críticamente mitos del fitness, dietas fraudulentas, suplementación y factores de riesgo para la salud.' },
+  { id: '2.1d', codigo: 'EFI.2.1d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Resolver situaciones motrices complejas adaptando componentes cualitativos (ritmo, precisión, fluidez y creatividad).' },
+  { id: '2.2d', codigo: 'EFI.2.2d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.2', descripcion: 'Diseñar y coordinar estrategias de equipo en deportes alternativos y convencionales con alta eficacia táctica.' },
+  { id: '3.1d', codigo: 'EFI.3.1d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Liderar y gestionar proyectos físico-deportivos comunitarios que promuevan la inclusión y la participación activa.' },
+  { id: '3.2d', codigo: 'EFI.3.2d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.3', descripcion: 'Demostrar madurez ética y autocontrol permanente ante momentos de máxima presión competitiva.' },
+  { id: '4.1d', codigo: 'EFI.4.1d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Adoptar una postura crítica fundada sobre el dopaje, los estereotipos de género y el mercantilismo deportivo.' },
+  { id: '4.2d', codigo: 'EFI.4.2d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.4', descripcion: 'Producir y presentar proyectos escénicos corporales integrales vinculando movimiento, música y tecnología.' },
+  { id: '5.1d', codigo: 'EFI.5.1d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Organizar actividades en el medio natural de forma autónoma gestionando riesgos y minimizando la huella ecológica.' },
+  { id: '5.2d', codigo: 'EFI.5.2d', ciclo: '2º Ciclo ESO', competenciaId: 'CE.EF.5', descripcion: 'Fomentar la movilidad activa y el uso sostenible de los espacios públicos e instalaciones deportivas comunitarias.' }
+];
+
+export const SABERES_BASICOS_MURCIA_ESO: SaberBasico[] = [
+  { codigo: 'EFI.ESO.A.1', bloque: 'A', bloqueNombre: 'Salud física, mental y social', ciclo: 'Todos', descripcion: 'Métodos de entrenamiento de las capacidades físicas orientadas a la salud; control de la frecuencia cardíaca y zonas de esfuerzo; nutrición deportiva, hidratación y balance energético; ergonomía y educación postural; análisis crítico de modelos corporales y prevención de trastornos (vigorexia, anorexia); autogestión de la vida activa.' },
+  { codigo: 'EFI.ESO.B.1', bloque: 'B', bloqueNombre: 'Resolución de situaciones motrices', ciclo: 'Todos', descripcion: 'Técnica y táctica en deportes individuales, de adversario (red/pared, lucha) y colectivos de invasión; deportes alternativos y emergentes (Ultimate, Goubak, Kin-ball, Datchball); análisis de la lógica interna y toma de decisiones tácticas dinámicas.' },
+  { codigo: 'EFI.ESO.C.1', bloque: 'C', bloqueNombre: 'Autorregulación emocional e interacción social', ciclo: 'Todos', descripcion: 'Gestión del estrés y competitividad; roles de organización, capitanía y arbitraje escolar; juego limpio y ética deportiva; prevención y erradicación de conductas violentas, sexistas o discriminatorias en el deporte.' },
+  { codigo: 'EFI.ESO.D.1', bloque: 'D', bloqueNombre: 'Organización y gestión de la actividad física', ciclo: 'Todos', descripcion: 'Planificación de calentamientos específicos autónomos; mantenimiento y seguridad del equipamiento; protocolos de seguridad y primeros auxilios (conducta PAS, soporte vital básico, maniobra de Heimlich, RCP y uso de DEA/DESA).' },
+  { codigo: 'EFI.ESO.E.1', bloque: 'E', bloqueNombre: 'Manifestaciones de la cultura motriz', ciclo: 'Todos', descripcion: 'Juegos y deportes tradicionales de la Región de Murcia (bolos murcianos, caliche, petanca autóctona); acrosport, dramatización y danzas contemporáneas/urbanas; análisis sociológico del deporte espectáculo y coeducación.' },
+  { codigo: 'EFI.ESO.F.1', bloque: 'F', bloqueNombre: 'Interacción eficiente y sostenible con el entorno', ciclo: 'Todos', descripcion: 'Carreras de orientación en el medio natural y urbano; senderismo y cicloturismo (BTT); escalada y cabuyería básica; normativa sobre espacios naturales protegidos, residuo cero y movilidad activa urbana.' }
+];
