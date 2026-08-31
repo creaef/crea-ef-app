@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
 import { google } from 'googleapis';
 import mammoth from 'mammoth';
@@ -321,7 +321,7 @@ Instrucciones:
 - Devuelve únicamente el texto de la justificación redactado en Markdown limpio.`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash-8b',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
@@ -342,6 +342,21 @@ app.post('/api/ai/generate-rubric', async (req, res) => {
     const { criterios, etapa, comunidad } = req.body;
     if (!criterios || !Array.isArray(criterios) || criterios.length === 0) {
       return res.status(400).json({ error: 'Se requiere una lista de criterios de evaluación.' });
+    }
+
+    const cacheId = `RUBRIC_${comunidad || 'Gen'}_${criterios.map((c: any) => c.codigo || 'XX').sort().join('_').replace(/[^a-zA-Z0-9_]/g, '_')}`;
+    try {
+      const cacheRef = doc(db, 'rubricasCache', cacheId);
+      const cacheSnap = await getDoc(cacheRef);
+      if (cacheSnap.exists()) {
+        const cachedData = cacheSnap.data();
+        if (cachedData && cachedData.rubrica) {
+          console.log(`[Cache Hit] Devolviendo rúbrica desde Firestore: ${cacheId}`);
+          return res.json({ rubrica: cachedData.rubrica });
+        }
+      }
+    } catch (cacheErr) {
+      console.warn(`[Firestore Cache Read Error] Ignorando y generando con IA:`, cacheErr);
     }
 
     const ai = getGenAIClient();
@@ -370,11 +385,37 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
           systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
           temperature: 0.3,
           responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                criterioCodigo: { type: Type.STRING },
+                criterioTexto: { type: Type.STRING },
+                niveles: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      nivel: { type: Type.STRING },
+                      descriptor: { type: Type.STRING }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
       });
 
       const parsed = safeParseAIJson(response.text, []);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        try {
+          const cacheRef = doc(db, 'rubricasCache', cacheId);
+          await setDoc(cacheRef, { rubrica: parsed, createdAt: new Date() }, { merge: true });
+        } catch (cacheErr) {
+          console.warn(`[Firestore Cache Write Error]:`, cacheErr);
+        }
         return res.json({ rubrica: parsed });
       }
     } catch (aiErr) {
@@ -525,11 +566,18 @@ Proporciona un título para el Reto y una descripción detallada (80-150 palabra
 Devuelve en formato JSON: { "tituloReto": "...", "descripcionReto": "..." }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash-8b',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
         responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            tituloReto: { type: Type.STRING },
+            descripcionReto: { type: Type.STRING }
+          }
+        },
       },
     });
 
