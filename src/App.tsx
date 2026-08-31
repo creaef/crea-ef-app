@@ -307,6 +307,7 @@ export default function App() {
           <Step2Curriculum
             comunidad={sda.comunidad}
             etapa={sda.etapa}
+            curso={sda.curso}
             ciclo={sda.ciclo}
             tematica={sda.tematica}
             competenciasSeleccionadas={sda.competenciasSeleccionadas}
@@ -322,6 +323,7 @@ export default function App() {
           <Step3Saberes
             comunidad={sda.comunidad}
             etapa={sda.etapa}
+            curso={sda.curso}
             ciclo={sda.ciclo}
             saberesSeleccionados={sda.saberesSeleccionados}
             setSaberesSeleccionados={(v) => updateSda({ saberesSeleccionados: v })}

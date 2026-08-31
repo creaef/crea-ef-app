@@ -27,6 +27,7 @@ export interface SaberBasico {
   bloque: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
   bloqueNombre: string;
   ciclo: Ciclo;
+  cursoRef?: string;
   descripcion: string;
 }
 

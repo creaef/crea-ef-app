@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { BookOpen, CheckSquare, Square, ArrowLeft, ArrowRight, Globe, Layers } from 'lucide-react';
-import { Ciclo, EtapaEducativa, ComunidadAutonoma } from '../types';
+import { Ciclo, EtapaEducativa, ComunidadAutonoma, Curso } from '../types';
 import { ODS_LIST, DESCRIPTORES_OPERATIVOS_MAP } from '../data/curriculumData';
 import { getSaberesByEtapa } from '../utils/curriculumHelpers';
 
 interface Step3Props {
   comunidad: ComunidadAutonoma;
   etapa: EtapaEducativa;
+  curso: Curso;
   ciclo: Ciclo;
   saberesSeleccionados: string[];
   setSaberesSeleccionados: (v: string[]) => void;
@@ -21,6 +22,7 @@ interface Step3Props {
 export const Step3Saberes: React.FC<Step3Props> = ({
   comunidad,
   etapa,
+  curso,
   ciclo,
   saberesSeleccionados,
   setSaberesSeleccionados,
@@ -32,7 +34,12 @@ export const Step3Saberes: React.FC<Step3Props> = ({
   onNext,
 }) => {
   const saberesEtapa = getSaberesByEtapa(etapa, comunidad);
-  const saberesDelCiclo = saberesEtapa.filter((s) => s.ciclo === ciclo || s.ciclo === 'Todos');
+  const saberesDelCiclo = saberesEtapa.filter((s) => {
+    if (s.cursoRef && curso) {
+      return s.cursoRef === curso || s.ciclo === 'Todos';
+    }
+    return s.ciclo === ciclo || s.ciclo === 'Todos';
+  });
 
   // Auto select default Saberes, ODS, and Descriptores if none are selected
   useEffect(() => {

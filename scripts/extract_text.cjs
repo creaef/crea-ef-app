@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const pdfParseModule = require('pdf-parse');
-const pdfParse = pdfParseModule.default || pdfParseModule;
-
+const pdfParse = require('pdf-parse');
 const LEGISLACION_DIR = path.join(process.cwd(), 'src/data/legislacion');
 const OUTPUT_DIR = path.join(process.cwd(), 'scripts', 'texts');
 

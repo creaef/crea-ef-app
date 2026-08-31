@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { BookmarkCheck, CheckSquare, Square, ArrowLeft, ArrowRight, Info } from 'lucide-react';
-import { Ciclo, TematicaEF, EtapaEducativa, ComunidadAutonoma } from '../types';
+import { Ciclo, TematicaEF, EtapaEducativa, ComunidadAutonoma, Curso } from '../types';
 import { getCompetenciasByEtapa, getCriteriosByEtapa } from '../utils/curriculumHelpers';
 
 interface Step2Props {
   comunidad: ComunidadAutonoma;
   etapa: EtapaEducativa;
+  curso: Curso;
   ciclo: Ciclo;
   tematica: TematicaEF;
   competenciasSeleccionadas: string[];
@@ -19,6 +20,7 @@ interface Step2Props {
 export const Step2Curriculum: React.FC<Step2Props> = ({
   comunidad,
   etapa,
+  curso,
   ciclo,
   tematica,
   competenciasSeleccionadas,
@@ -31,8 +33,13 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
   const competenciasEtapa = getCompetenciasByEtapa(etapa, comunidad);
   const criteriosEtapa = getCriteriosByEtapa(etapa, comunidad);
 
-  // Filter criterios matching current cycle
-  const criteriosDelCiclo = criteriosEtapa.filter((c) => c.ciclo === ciclo || c.ciclo === 'Todos');
+  // Filter criterios matching current cycle OR specific course if provided in the data
+  const criteriosDelCiclo = criteriosEtapa.filter((c) => {
+    if (c.cursoRef && curso) {
+      return c.cursoRef === curso || c.ciclo === 'Todos';
+    }
+    return c.ciclo === ciclo || c.ciclo === 'Todos';
+  });
 
   // Keep selected competencias in sync with selected criteria (without forcing default competencies when empty)
   useEffect(() => {
