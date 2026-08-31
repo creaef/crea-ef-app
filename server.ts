@@ -70,6 +70,8 @@ function getGenAIClient(keyIndexOrKey?: number | string): GoogleGenAI {
   });
 }
 
+let freeKeyPoolIndex = 0;
+
 // Helper to execute Gemini requests with multi-key rotation & free Flash model fallback on 429 / rate limit
 async function callGeminiWithRetry(
   req: any,
@@ -78,25 +80,41 @@ async function callGeminiWithRetry(
   maxRetries = 2
 ) {
   const userApiKey = req?.headers?.['x-user-api-key'] as string | undefined;
-  const keys = userApiKey ? [userApiKey] : getApiKeys();
-  const preferredModel = params.model || 'gemini-1.5-flash';
+  const allKeys = userApiKey ? [userApiKey] : getApiKeys();
+  
+  // Si hay más de 1 llave, asumimos que la última es la de PAGO (fallback absoluto).
+  const isMultiKey = !userApiKey && allKeys.length > 1;
+  const freeKeys = isMultiKey ? allKeys.slice(0, allKeys.length - 1) : allKeys;
+  const paidKey = isMultiKey ? allKeys[allKeys.length - 1] : null;
 
+  // Ordenamos las llaves para esta petición: rotación entre gratuitas + pago al final
+  const keysToTry: string[] = [];
+  if (userApiKey || allKeys.length === 1) {
+    keysToTry.push(allKeys[0]);
+  } else {
+    const startIndex = freeKeyPoolIndex % freeKeys.length;
+    freeKeyPoolIndex = (freeKeyPoolIndex + 1) % freeKeys.length; // Avanzar rotación para la siguiente petición
+    for (let i = 0; i < freeKeys.length; i++) {
+      keysToTry.push(freeKeys[(startIndex + i) % freeKeys.length]);
+    }
+    if (paidKey) keysToTry.push(paidKey);
+  }
+
+  const preferredModel = params.model || 'gemini-1.5-flash';
   const modelsToTry = [
     preferredModel,
     'gemini-1.5-flash',
-    'gemini-3.1-pro',
-    'gemini-2.5-flash',
-    'gemini-1.5-flash',
     'gemini-2.0-flash-lite',
+    'gemini-1.5-flash-8b',
     'gemini-flash-latest',
   ];
   const uniqueModels = Array.from(new Set(modelsToTry));
   let lastError: any = null;
 
-  // Loop through available API keys in pool
-  for (let kOffset = 0; kOffset < keys.length; kOffset++) {
-    const currentKeyIdx = (keyPoolIndex + kOffset) % keys.length;
-    const client = userApiKey ? getGenAIClient(userApiKey) : getGenAIClient(currentKeyIdx);
+  // Intentamos las llaves en el orden óptimo (gratuitas primero, pago al final)
+  for (let kIndex = 0; kIndex < keysToTry.length; kIndex++) {
+    const currentKey = keysToTry[kIndex];
+    const client = getGenAIClient(currentKey);
 
     for (const modelCandidate of uniqueModels) {
       let attempt = 0;
@@ -104,8 +122,8 @@ async function callGeminiWithRetry(
         try {
           const currentParams = { ...params, model: modelCandidate };
           const response = await client.models.generateContent(currentParams);
-          // On success, retain current working key index
-          keyPoolIndex = currentKeyIdx;
+          // OJO: Retornamos directo. Ya NO guardamos la llave como global ("sticky").
+          // Esto evita que el servidor se quede atascado en la llave de pago tras usarla una vez.
           return response;
         } catch (err: any) {
           lastError = err;
