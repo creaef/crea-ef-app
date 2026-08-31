@@ -24,7 +24,7 @@ export interface CriterioEvaluacion {
 
 export interface SaberBasico {
   codigo: string;
-  bloque: 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  bloque: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
   bloqueNombre: string;
   ciclo: Ciclo;
   descripcion: string;
