@@ -1,680 +1,172 @@
 import { CompetenciaEspecifica, CriterioEvaluacion, SaberBasico } from '../types';
 
 // ==========================================
-// COMUNIDAD DE MADRID - PRIMARIA
+// MADRID - PRIMARIA
 // ==========================================
 export const COMPETENCIAS_ESPECIFICAS_MADRID_PRIMARIA: CompetenciaEspecifica[] = [
-  {
-    "id": "CE.EF.1",
-    "numero": 1,
-    "nombre": "Competencia Específica 1",
-    "descripcion": "Adoptar un estilo de vida activo y saludable, practicando regularmente actividades físicas, lúdicas y deportivas, adoptando comportamientos que potencien la salud física, mental y social, así como medidas de seguridad y prevención de lesiones y accidentes."
-  },
-  {
-    "id": "CE.EF.2",
-    "numero": 2,
-    "nombre": "Competencia Específica 2",
-    "descripcion": "Adaptar los elementos del propio esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices básicas y específicas, a diferentes situaciones motrices lúdicas, deportivas y expresivas."
-  },
-  {
-    "id": "CE.EF.3",
-    "numero": 3,
-    "nombre": "Competencia Específica 3",
-    "descripcion": "Desarrollar procesos de autorregulación e interacción en la práctica motriz, con actitud empática, inclusiva y respetuosa, haciendo uso de habilidades sociales, trabajo en equipo y juego limpio, para contribuir a la convivencia pacífica."
-  },
-  {
-    "id": "CE.EF.4",
-    "numero": 4,
-    "nombre": "Competencia Específica 4",
-    "descripcion": "Reconocer y valorar las manifestaciones de la cultura motriz tradicional y contemporánea, integrándolas en la propia práctica para preservar el patrimonio cultural y motriz."
-  },
-  {
-    "id": "CE.EF.5",
-    "numero": 5,
-    "nombre": "Competencia Específica 5",
-    "descripcion": "Interactuar en el medio natural y urbano a través de la práctica de actividades motrices, conociendo las normas de seguridad, respetando el entorno y promoviendo la movilidad activa y sostenible."
-  }
+  { id: 'CE.EF.1', numero: 1, nombre: 'Vida activa y saludable', descripcion: 'Adoptar un estilo de vida activo y adecuado, practicando regularmente actividades físicas, lúdicas y deportivas, adoptando comportamientos que potencien la salud, así como medidas de responsabilidad durante la práctica motriz.' },
+  { id: 'CE.EF.2', numero: 2, nombre: 'Resolución motriz y esquema', descripcion: 'Adaptar los elementos propios del esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, aplicando procesos de percepción, decisión y ejecución, para dar respuesta a las demandas de proyectos motores y de prácticas motrices con distintas finalidades en contextos de la vida diaria.' },
+  { id: 'CE.EF.3', numero: 3, nombre: 'Regulación emocional e interacción', descripcion: 'Desarrollar procesos de regulación e interacción en el marco de la práctica motriz, haciendo uso de habilidades sociales y actitudes de respeto, trabajo en equipo y deportividad, con independencia de las diferencias y de las habilidades de los participantes, para contribuir a la convivencia.' },
+  { id: 'CE.EF.4', numero: 4, nombre: 'Cultura motriz y expresión', descripcion: 'Reconocer y practicar diferentes manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz, valorando su influencia y sus aportaciones a la cultura para integrarlas en las situaciones motrices que se utilizan regularmente en la vida cotidiana.' },
+  { id: 'CE.EF.5', numero: 5, nombre: 'Interacción con el entorno', descripcion: 'Valorar diferentes medios naturales y urbanos como contextos de práctica motriz, interactuando con ellos y comprendiendo la importancia de su conservación, adoptando medidas de responsabilidad durante la práctica de juegos y actividades físico-deportivas, para realizar una práctica eficiente y respetuosa con el entorno y participar en su cuidado y mejora.' }
 ];
 
 export const CRITERIOS_EVALUACION_MADRID_PRIMARIA: CriterioEvaluacion[] = [
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar los efectos beneficiosos de la actividad física sobre la salud y el bienestar personal."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Adquirir hábitos posturales y de higiene corporal básicos vinculados a la actividad física cotidiana."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Aplicar medidas elementales de seguridad y prevención de accidentes en las sesiones de Educación Física. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Tomar conciencia del propio cuerpo y desarrollar el esquema corporal, la lateralidad y el equilibrio."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar habilidades motrices básicas (desplazamientos, saltos, giros, lanzamientos y recepciones) en juegos simples."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Expresar emociones, ideas y personajes mediante el movimiento corporal y el juego dramático elemental. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Aceptar y cumplir las reglas de los juegos, demostrando actitudes de juego limpio y respeto mutuo."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Participar en actividades grupales cooperando con los compañeros sin discriminación de ningún tipo."
-  },
-  {
-    "id": "3.3",
-    "codigo": "EFI.3.3",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Reconocer y regular emociones básicas asociadas al éxito y al fracaso en los juegos motores. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Conocer y participar en juegos populares y tradicionales propios de la Comunidad de Madrid y de otras culturas."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Reproducir ritmos, danzas infantiles y coreografías sencillas de forma coordinada. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Realizar actividades motrices en espacios naturales o urbanos próximos aplicando pautas de seguridad."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Adoptar conductas de cuidado, respeto y conservación del entorno y de los materiales de juego. Comunidad Autónoma: Comunidad de MadridNormativa: Decreto 61/2022, de 13 de julio (BOCM n.º 167) Currículo de Educación Física Primaria — Comunidad de Madrid (Decreto 61/2022)Página 1 de 3"
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Reconocer los cambios fisiológicos provocados por el esfuerzo físico continuado."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Consolidar rutinas de calentamiento general, higiene y hábitos de alimentación equilibrada e hidratación."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar y prevenir situaciones de riesgo en la práctica motriz escolar y en el uso de materiales. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Coordinar y combinar habilidades motrices básicas para resolver problemas motores y situaciones lúdicas complejas."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Regular el control postural, la orientación espacial y la estructuración temporal ante situaciones imprevistas."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Crear secuencias de movimiento expresivo y rítmico individual y en pequeño grupo. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Demostrar deportividad, asumiendo diferentes roles (jugador, árbitro, organizador) y respetando las decisiones arbitrales."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Colaborar activamente en tareas colectivas anteponiendo el objetivo de equipo al individual."
-  },
-  {
-    "id": "3.3",
-    "codigo": "EFI.3.3",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Gestionar la frustración y resolver conflictos mediante el diálogo constructivo y empático. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Practicar y valorar juegos tradicionales y deportes autóctonos, reconociendo su valor histórico y cultural."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Participar en danzas tradicionales, folclóricas y modernas mostrando ajuste rítmico y expresividad. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Orientarse y desplazarse en entornos urbanos y naturales utilizando mapas o pistas básicas."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Aplicar hábitos de residuo cero y respeto por la biodiversidad durante las actividades al aire libre."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Planificar y autorregular actividades físicas orientadas a la mejora de la salud y la condición física general."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Valorar la repercusión de los estilos de vida activos frente al sedentarismo y los malos hábitos posturales y digitales."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Aplicar protocolos elementales de auxilio y primeros auxilios ante accidentes en la práctica física (conducta PAS). CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Adaptar habilidades motrices específicas y combinadas en situaciones deportivas y juegos modificados con eficacia."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar principios tácticos ofensivos y defensivos de anticipación y toma de decisiones rápida en deportes reglados."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Diseñar y ejecutar montajes expresivos grupales (acrosport, danzas urbanas, dramatizaciones) con estética y sincronización. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Promover la equidad de género, el juego limpio y la inclusión de todos los compañeros en la práctica física escolar."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Liderar y colaborar en dinámicas de grupo asumiendo responsabilidades en la organización de encuentros deportivos."
-  },
-  {
-    "id": "3.3",
-    "codigo": "EFI.3.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Emplear estrategias reflexivas de autorregulación emocional ante la presión o momentos de alta competitividad. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Reconocer el origen, evolución e impacto social de los juegos tradicionales, deportes y eventos deportivos contemporáneos."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Crear y presentar proyectos escénicos colectivos valorando la diversidad cultural del patrimonio motriz. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Planificar y realizar recorridos de orientación y senderismo en el medio natural y urbano de forma autónoma y segura."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Promover la movilidad activa y sostenible (desplazamientos a pie/bicicleta) en el centro y la comunidad. 4. CONTENIDOS / SABERES BÁSICOS (ORGANIZADOS EN BLOQUES A - F) Bloque A: Salud física, mental y social Contenidos clave: Efectos del ejercicio en el organismo; higiene corporal integral y atuendo; educación postural y ergonomía; hidratación y alimentación equilibrada; prevención del sedentarismo y uso equilibrado de pantallas; bienestar emocional e imagen corporal positiva. Bloque B: Resolución de situaciones motrices Contenidos clave: Esquema corporal, lateralidad y equilibrio estático/dinámico; habilidades motrices básicas (desplazamientos, saltos, giros, lanzamientos, recepciones); iniciación técnico-táctica en deportes individuales, de adversario y colectivos; toma de decisiones y lógica interna de los juegos. Bloque C: Autorregulación emocional e interacción social Contenidos clave: Autogestión emocional (éxito, fracaso, frustración); habilidades sociales y trabajo cooperativo; juego limpio, aceptación del reglamento y respeto a los árbitros; coeducación, equidad de género y resolución pacífica de conflictos. Bloque D: Organización y gestión de la actividad física Contenidos clave: Fases de la sesión (calentamiento general, parte principal, vuelta a la calma); uso responsable del material y espacios deportivos; protocolos básicos de primeros auxilios (conducta PAS, prevención de lesiones). Currículo de Educación Física Primaria — Comunidad de Madrid (Decreto 61/2022)Página 2 de 3 Bloque E: Manifestaciones de la cultura motriz Contenidos clave: Juegos tradicionales y populares de la Comunidad de Madrid y de otras culturas; expresión corporal, mimo, dramatización y acrosport; bailes y danzas tradicionales y contemporáneas; el deporte como fenómeno social y cultural. Bloque F: Interacción eficiente y sostenible con el entorno Contenidos clave: Orientación espacial y carreras de orientación con planos/mapas; senderismo y actividades en la naturaleza; prevención de riesgos al aire libre; movilidad activa, desplazamientos sostenibles y residuo cero. Currículo de Educación Física Primaria — Comunidad de Madrid (Decreto 61/2022)Página 3 de 3"
-  }
+  // PRIMER CICLO (1º y 2º de Primaria)
+  { id: '1.1', codigo: 'EFI.1.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Identificar los desplazamientos activos como práctica saludable, conociendo sus beneficios físicos y sociales para el establecimiento de un estilo de vida activo.' },
+  { id: '1.2', codigo: 'EFI.1.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Explorar las posibilidades de la propia motricidad y de la de los demás a través del juego, aplicando en distintas situaciones cotidianas medidas básicas de cuidado de la salud personal a través de la higiene corporal, el descanso, la educación postural y la alimentación.' },
+  { id: '1.3', codigo: 'EFI.1.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Participar en juegos de activación y vuelta a la calma, reconociendo su utilidad para adaptar el cuerpo a la actividad física y evitar lesiones, así como recuperar el equilibrio psicosomático después del esfuerzo manteniendo la calma y sabiendo cómo actuar en caso de que se produzca algún accidente en contextos de práctica motriz. Tomando medidas de seguridad previas a la práctica motriz y utilizando los diferentes materiales de forma correcta.' },
+  { id: '1.4', codigo: 'EFI.1.4', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Conocer los valores positivos que fomenta la práctica motriz, realizada ya sea de manera individual como compartida, reconociendo, vivenciando y disfrutando sus beneficios en contextos variados, y respetando a todos los participantes con independencia de sus diferencias.' },
+  { id: '2.1', codigo: 'EFI.2.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Reconocer la importancia de establecer metas y objetivos claros, conocer los recursos materiales, los roles de los participantes y las reglas básicas a la hora de desarrollar proyectos motores de carácter individual o grupal, valorando su consecución a partir de un análisis de los resultados obtenidos, ya sean de proceso o finales.' },
+  { id: '2.2', codigo: 'EFI.2.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adoptar decisiones en contextos de práctica motriz de manera ajustada según las circunstancias personales, materiales y ambientales.' },
+  { id: '2.3', codigo: 'EFI.2.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Descubrir, reconocer y emplear los componentes cualitativos y cuantitativos de la motricidad de manera lúdica responsable e integrada en diferentes situaciones y contextos, mejorando progresivamente su control y su dominio corporal.' },
+  { id: '3.1', codigo: 'EFI.3.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Identificar y reconocer las emociones que se producen durante el juego, intentando gestionarlas, disfrutando de la actividad física.' },
+  { id: '3.2', codigo: 'EFI.3.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Respetar las normas consensuadas, así como las reglas de juego, y actuar desde los parámetros de la deportividad y el juego limpio, gestionando la tolerancia a la frustración y aceptando las características y niveles de los participantes, así como los roles de juego asignado.' },
+  { id: '3.3', codigo: 'EFI.3.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Participar en las prácticas motrices cotidianas, comenzando a desarrollar habilidades sociales de acogida, ayuda y colaboración, iniciándose en la resolución de conflictos personales fomentando el diálogo y la mejora de la convivencia.' },
+  { id: '4.1', codigo: 'EFI.4.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en la reproducción de juegos y otras manifestaciones artístico-expresivas de carácter cultural del entorno, valorando su componente lúdico-festivo y disfrutando de su puesta en práctica.' },
+  { id: '4.2', codigo: 'EFI.4.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Conocer y valorar los logros de personas y distintos colectivos referentes del deporte de ambos géneros, reconociendo el esfuerzo, la dedicación su actitud ante la derrota y los sacrificios requeridos para alcanzar dichos éxitos.' },
+  { id: '4.3', codigo: 'EFI.4.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Adecuar los distintos usos comunicativos de la corporalidad (gestos, muecas, representación de personajes) y sus manifestaciones a diferentes ritmos y contextos expresivos.' },
+  { id: '5.1', codigo: 'EFI.5.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Participar en actividades lúdico-recreativas de forma segura en los entornos natural y urbano y en contextos terrestres o acuáticos, conociendo otros usos desde la motricidad y adoptando actitudes de cuidado y conservación de dichos entornos.' },
+
+  // SEGUNDO CICLO (3º y 4º de Primaria)
+  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer la actividad física como alternativa de ocio saludable, identificando desplazamientos activos y conociendo los efectos beneficiosos a nivel físico, social y mental que posee adoptar un estilo de vida activo.' },
+  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Aplicar medidas de educación postural, alimentación saludable, higiene corporal y preparación de la práctica motriz, asumiendo responsabilidades y generando hábitos y rutinas en situaciones cotidianas.' },
+  { id: '1.3b', codigo: 'EFI.1.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Tomar medidas de precaución, previa y durante la práctica motriz y prevención de lesiones en relación con la conservación y al mantenimiento del material en el marco de distintas prácticas físico-deportivas, conociendo protocolos básicos de actuación ante accidentes que se puedan producir en este contexto.' },
+  { id: '1.4b', codigo: 'EFI.1.4b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer la propia imagen corporal y la de los demás, identificar las propias fortalezas y debilidades ante mensajes nocivos, aceptando y respetando las diferencias individuales que puedan existir, superando y rechazando las conductas discriminatorias que se puedan producir en contextos de práctica motriz.' },
+  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Llevar a cabo proyectos motores de carácter individual o grupal, empleando estrategias de monitorización y seguimiento que permitan analizar los resultados obtenidos.' },
+  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adoptar decisiones en situaciones lúdicas, juegos y actividades deportivas, ajustándose a las demandas derivadas de los objetivos motores, de las características del grupo y de la lógica interna de situaciones individuales o grupales de oposición y de colaboración-oposición, en contextos simulados de actuación.' },
+  { id: '2.3b', codigo: 'EFI.2.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa en distintos contextos y situaciones motrices, adquiriendo un control y dominio corporal sobre ellos.' },
+  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Mostrar una disposición positiva hacia la práctica física y hacia el esfuerzo, controlando la impulsividad y las emociones que surjan en contextos de actividad motriz. Establecer estrategias para una adecuada regulación de las emociones.' },
+  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Respetar las normas consensuadas en clase, así como las reglas de juego, a los adversarios, compañeros, árbitros, espectadores y profesores y actuar desde los parámetros de la deportividad y el juego limpio, valorando la aportación de los participantes.' },
+  { id: '3.3b', codigo: 'EFI.3.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Desarrollar habilidades sociales de acogida, ayuda y colaboración al participar en prácticas motrices variadas, resolviendo los conflictos, mostrando un compromiso frente a las actuaciones discriminatorias y cualquier tipo de violencia.' },
+  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en juegos motores y otras manifestaciones artístico-expresivas con arraigo en la cultura tradicional o actual, así como otros procedentes de diversas culturas, contextualizando su origen, su aparición y su transmisión a lo largo del tiempo y valorando su importancia, repercusión e influencia en las sociedades pasadas y presentes.' },
+  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Apreciar los logros de personas y colectivos referentes del deporte, reconociendo el esfuerzo, la dedicación y los sacrificios requeridos para alcanzar el éxito y su actitud ante la derrota o los objetivos no conseguidos.' },
+  { id: '4.3b', codigo: 'EFI.4.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Estimar el esfuerzo como valor para conseguir un objetivo.' },
+  { id: '4.4b', codigo: 'EFI.4.4b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Asumir una visión abierta del deporte a partir del conocimiento de distintas ligas, acercándose al deporte federado e identificando comportamientos contrarios a la convivencia independientemente del contexto en el que tengan lugar.' },
+  { id: '4.5b', codigo: 'EFI.4.5b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Reproducir distintas combinaciones de movimientos o coreografías individuales y grupales que incorporen prácticas comunicativas que transmitan sentimientos, emociones o ideas a través del cuerpo, empleando los distintos recursos expresivos y rítmicos de la corporalidad.' },
+  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Desarrollar y explorar de forma consciente, respetuosa y controlada por el docente una práctica motriz segura en contextos naturales y urbanos de carácter terrestre o acuático, adecuando las acciones al análisis de cada situación y aplicando medidas de conservación ambiental.' },
+
+  // TERCER CICLO (5º y 6º de Primaria)
+  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer los efectos beneficiosos a nivel físico, social y mental de la actividad física como paso previo para su integración en la vida diaria.' },
+  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Integrar los procesos de activación corporal, dosificación del esfuerzo, relajación e higiene en la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.' },
+  { id: '1.3c', codigo: 'EFI.1.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Adoptar medidas de seguridad antes, durante y después de la práctica de actividad física, conocer los primeros auxilios fundamentales, reconocimiento básico y el protocolo PAS (proteger, avisar, socorrer) reconociendo los contextos de riesgo y actuando con precaución ante ellos.' },
+  { id: '1.4c', codigo: 'EFI.1.4c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Identificar y abordar conductas vinculadas al ámbito corporal, la actividad física y el deporte que resultan perjudiciales para la salud o afectan negativamente a la convivencia, adoptando posturas de rechazo a la violencia, a la discriminación y a la desigualdad, en los entornos sociales, tanto reales como virtuales, y evitando activamente su reproducción.' },
+  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Desarrollar proyectos motores de carácter individual o grupal, definiendo metas, secuenciando acciones, introduciendo cambios, si es preciso, durante el proceso, y generando producciones motrices de calidad, valorando el grado de ajuste al proceso seguido y al resultado obtenido.' },
+  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Aplicar principios básicos de toma de decisiones en situaciones lúdicas, juegos modificados y actividades deportivas a partir de la anticipación, ajustándolos a las demandas derivadas de los objetivos motores y a la lógica interna de situaciones individuales, de colaboración, de oposición y de colaboración-oposición, en contextos reales o simulados de actuación, reflexionando sobre las soluciones y resultados obtenidos.' },
+  { id: '2.3c', codigo: 'EFI.2.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adquirir un control y dominio corporal, empleando los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa y haciendo frente a las demandas de resolución de problemas en situaciones motrices transferibles a su espacio vivencial. Tomar conciencia de la importancia de la atención selectiva y la anticipación perceptiva en situaciones de juego regladas y su transferencia a situaciones cotidianas.' },
+  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Participar en actividades motrices, desde la regulación de su actuación, con predisposición, esfuerzo, perseverancia y mentalidad de crecimiento, controlando la impulsividad, gestionando las emociones (introspección, motivación) y expresándolas de forma asertiva. Gestionar estrategias para superar las diferencias individuales en una práctica lúdica.' },
+  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Respetar las normas consensuadas, así como las reglas de juego, y actuar desde los parámetros de la deportividad y el juego limpio, reconociendo la derrota como parte del mismo y las actuaciones de compañeros y rivales.' },
+  { id: '3.3c', codigo: 'EFI.3.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Poner en marcha actuaciones que se opongan a acciones contrarias a la buena práctica deportiva, aquellas que muestren una amenaza a la misma (hábitos no adecuados, conductas violentas y manipulación del juego).' },
+  { id: '3.4c', codigo: 'EFI.3.4c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Convivir mostrando en el contexto de las prácticas motrices habilidades sociales, de diálogo en la resolución de conflictos y respeto ante cualquier tipo de diversidad, haciendo especial hincapié en el fomento de la igualdad.' },
+  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en juegos motores y otras manifestaciones artístico-expresivas con arraigo en la cultura, tradicional o actual, así como otros procedentes de diversas culturas, reconociendo y transmitiendo su valor cultural y su potencial como espacio generador de buenas relaciones entre personas con orígenes diferentes y entendiendo las ventajas de su conservación.' },
+  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Valorar el deporte como fenómeno cultural y los comportamientos discriminatorios que a veces suceden en su contexto, rechazándolos y adoptando actitudes que eviten su reproducción en el futuro y que persigan la equidad.' },
+  { id: '4.3c', codigo: 'EFI.4.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Reconocer el esfuerzo, la dedicación y los sacrificios de personas y colectivos referentes del deporte, necesarios para alcanzar un rendimiento deportivo ejemplar, su respuesta y su actitud ante la competición, el éxito o la derrota.' },
+  { id: '4.4c', codigo: 'EFI.4.4c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Reproducir y crear composiciones con o sin soporte musical, y comunicar diferentes sensaciones, emociones e ideas, de forma estética y creativa, desde el uso de los recursos rítmicos y expresivos de la motricidad.' },
+  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Adaptar las acciones motrices a la incertidumbre propia del medio natural y urbano en contextos terrestres o acuáticos de forma eficiente y segura, valorando sus posibilidades para la práctica de actividad física y actuando desde una visión cuidadosa del entorno y comunitaria.' }
 ];
 
-export const SABERES_BASICOS_MADRID_PRIMARIA: SaberBasico[] = [];
+export const SABERES_BASICOS_MADRID_PRIMARIA: SaberBasico[] = [
+  { codigo: 'EFI.PRI.A', bloque: 'A', bloqueNombre: 'Vida activa y saludable', ciclo: 'Todos', descripcion: 'Salud física y nutricional: Efectos beneficiosos del ejercicio, alimentación e hidratación, educación postural cotidiana, higiene personal. Salud mental: Autoconcepto, fortalezas y debilidades, regulación emocional. Salud social: Derechos en el deporte escolar, respeto a la diversidad, prevención del sedentarismo y límites a la competitividad.' },
+  { codigo: 'EFI.PRI.B', bloque: 'B', bloqueNombre: 'Organización y gestión de la actividad física', ciclo: 'Todos', descripcion: 'Vestimenta deportiva e higiene. Prevención de accidentes, calentamiento y vuelta a la calma. Uso correcto del material y autoconstrucción de materiales. Conducta PAS (Proteger, Avisar, Socorrer) y Posición Lateral de Seguridad (PLS). Planificación y regulación guiada de proyectos motores sencillos.' },
+  { codigo: 'EFI.PRI.C', bloque: 'C', bloqueNombre: 'Resolución de problemas en situaciones motrices', ciclo: 'Todos', descripcion: 'Toma de decisiones: Adecuación de acciones coordinadas, anticipación defensiva y desmarques. Esquema corporal y capacidades perceptivas: Lateralidad, equilibrio, coordinación óculo-manual/pédica. Habilidades motrices básicas y específicas: Iniciación técnico-táctica en deportes individuales y colectivos. Creatividad motriz ante estímulos y retos.' },
+  { codigo: 'EFI.PRI.D', bloque: 'D', bloqueNombre: 'Regulación emocional e interacción social', ciclo: 'Todos', descripcion: 'Gestión emocional: Identificación y regulación asertiva de emociones en el juego. Habilidades sociales: Empatía, trabajo en equipo, estrategias de mediación y diálogo. Deportividad y convivencia: Juego limpio, respeto de normas y árbitros, asunción de roles, rechazo a la violencia y conductas discriminatorias.' },
+  { codigo: 'EFI.PRI.E', bloque: 'E', bloqueNombre: 'Manifestaciones de la cultura motriz', ciclo: 'Todos', descripcion: 'Juegos populares tradicionales de Madrid: El aro, las chapas, el clavo, canicas, tabas, pídola. Usos expresivos de la corporalidad: Gestos, muecas, representación mimética. Ritmo y expresión: Actividades rítmico-musicales, bailes y danzas tradicionales. Deporte e igualdad: Referentes deportivos masculinos y femeninos, superación y equidad.' },
+  { codigo: 'EFI.PRI.F', bloque: 'F', bloqueNombre: 'Interacción eficiente y cuidadosa con el entorno', ciclo: 'Todos', descripcion: 'Educación vial básica para peatones y sobre ruedas (bicicletas, patines). Uso lúdico y seguro de espacios urbanos y naturales. Actividades al aire libre (senderismo, kayak). Práctica segura y cuidado del entorno natural, animales y plantas. Sostenibilidad, reciclaje y reutilización de materiales.' }
+];
 
 // ==========================================
-// COMUNIDAD DE MADRID - ESO Y BACHILLERATO
+// MADRID - ESO Y BACHILLERATO
 // ==========================================
 export const COMPETENCIAS_ESPECIFICAS_MADRID_ESO: CompetenciaEspecifica[] = [
-  {
-    "id": "CE.EF.1",
-    "numero": 1,
-    "nombre": "Competencia Específica 1",
-    "descripcion": "Planificar y autorregular una práctica de actividad física orientada a la salud, consolidando un estilo de vida activo y saludable, reconociendo los factores que influyen en el bienestar integral y aplicando medidas de seguridad y prevención."
-  },
-  {
-    "id": "CE.EF.2",
-    "numero": 2,
-    "nombre": "Competencia Específica 2",
-    "descripcion": "Adaptar y ejecutar las habilidades motrices básicas y específicas a situaciones motrices de complejidad creciente, con eficacia, precisión, control postural y fluidez en contextos individuales, de adversario y colectivos."
-  },
-  {
-    "id": "CE.EF.3",
-    "numero": 3,
-    "nombre": "Competencia Específica 3",
-    "descripcion": "Fomentar relaciones interpersonales asertivas e inclusivas durante la práctica físico-deportiva, asumiendo normas, roles de organización y arbitraje, y gestionando las emociones para la resolución pacífica de conflictos."
-  },
-  {
-    "id": "CE.EF.4",
-    "numero": 4,
-    "nombre": "Competencia Específica 4",
-    "descripcion": "Valorar y participar activamente en manifestaciones de la cultura motriz tradicional, contemporánea y deportiva, analizando críticamente su evolución histórica, el fenómeno social del deporte y los estereotipos asociados."
-  },
-  {
-    "id": "CE.EF.5",
-    "numero": 5,
-    "nombre": "Competencia Específica 5",
-    "descripcion": "Desenvolverse de manera autónoma, segura y sostenible en el medio natural y urbano a través de la práctica de actividades físico-deportivas, promoviendo la conservación ambiental y la movilidad activa."
-  }
+  { id: 'CE.EF.1', numero: 1, nombre: 'Vida activa y saludable', descripcion: 'Adoptar un estilo de vida activo y saludable, seleccionando e incorporando intencionalmente actividades físicas y deportivas en las rutinas diarias, a partir de un análisis crítico de los modelos corporales y del rechazo de las prácticas que carezcan de base científica, para hacer un uso saludable y autónomo de su tiempo libre y así mejorar su calidad de vida.' },
+  { id: 'CE.EF.2', numero: 2, nombre: 'Resolución de problemas en situaciones motrices', descripcion: 'Adaptar, con progresiva autonomía en su ejecución, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, aplicando procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos de diferentes situaciones con dificultad variable, para resolver situaciones de carácter motor vinculadas con distintas actividades físicas, funcionales, deportivas, expresivas y recreativas, y consolidar actitudes de superación, crecimiento y resiliencia al enfrentarse a desafíos físicos.' },
+  { id: 'CE.EF.3', numero: 3, nombre: 'Emociones y relaciones sociales', descripcion: 'Compartir espacios de práctica físico-deportiva con independencia de cualquier diferencia, priorizando el respeto entre participantes y las reglas sobre los resultados, adoptando una actitud crítica ante comportamientos antideportivos y desarrollando procesos que canalicen el fracaso y el éxito en estas situaciones.' },
+  { id: 'CE.EF.4', numero: 4, nombre: 'Manifestaciones de la cultura motriz', descripcion: 'Practicar, analizar y valorar distintas manifestaciones de la cultura motriz aprovechando las posibilidades y recursos expresivos que ofrecen el cuerpo y el movimiento y profundizando en las consecuencias del deporte como fenómeno social, analizando críticamente sus manifestaciones desde la perspectiva de género y desde los intereses económico-políticos que lo rodean, para alcanzar una visión más realista, contextualizada y justa de la motricidad en el marco de las sociedades actuales.' },
+  { id: 'CE.EF.5', numero: 5, nombre: 'Interacción eficiente y sostenible con el entorno', descripcion: 'Adoptar un estilo de vida sostenible y responsable aplicando medidas de seguridad en la práctica físico-deportiva según el entorno, para contribuir activamente a la conservación del medio natural y urbano.' }
 ];
 
 export const CRITERIOS_EVALUACION_MADRID_ESO: CriterioEvaluacion[] = [
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar las capacidades físicas básicas (resistencia, fuerza, velocidad y flexibilidad) y su relación con la salud."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Realizar calentamientos generales guiados y aplicar normas básicas de higiene postural y corporal. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar habilidades motrices específicas en situaciones de oposición e iniciación deportiva con eficacia técnica básica."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Tomar decisiones tácticas sencillas de ataque y defensa en juegos reducidos y de cancha compartida. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Participar con actitud cooperativa y tolerante en actividades grupales, respetando las normas y el juego limpio."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Identificar y controlar emociones en situaciones de competición escolar, evitando actitudes antideportivas. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Conocer y practicar juegos y deportes tradicionales representativos de la Comunidad de Madrid y de otras regiones."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Ejecutar secuencias rítmicas corporales y estructuras de movimiento expresivo elementales. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Realizar recorridos de orientación básica en el centro escolar o parques urbanos utilizando un mapa sencillo."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Aplicar protocolos de seguridad y pautas de respeto medioambiental en salidas al aire libre."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Evaluar la condición física personal mediante test estandarizados y registrar la evolución de los resultados."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Diseñar y ejecutar calentamientos generales de forma autónoma y conocer pautas de hidratación y nutrición adecuada. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Adaptar gestos técnicos deportivos ante situaciones dinámicas variables y de oposición directa."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar esquemas tácticos colectivos básicos de apoyo, desmarque y cobertura en deportes de invasión. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Asumir roles de arbitraje escolar y mediación de conflictos de forma dialogada y justa."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Promover activamente la inclusión e igualdad de género, rechazando conductas discriminatorias. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Comparar manifestaciones lúdico-deportivas tradicionales con nuevas tendencias y deportes urbanos."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Crear pequeñas composiciones expresivas y coreografías grupales combinando música y movimiento. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Completar itinerarios en la naturaleza utilizando brújula y lectura básica de mapas topográficos."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Aplicar normas de residuo cero y conservación activa del medio ambiente en actividades de senderismo."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Diseñar y poner en práctica un plan personal de trabajo de una capacidad física orientada a la salud."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Conocer y aplicar protocolos de primeros auxilios y soporte vital básico (conducta PAS, RCP y uso de DESA). CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Ejecutar con precisión técnica y fluidez gestos en deportes individuales, de raqueta y colectivos reglados."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Elaborar y aplicar sistemas tácticos avanzados respondiendo a la estrategia del equipo rival. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Organizar y dinamizar torneos deportivos escolares fomentando el juego limpio y el liderazgo compartido."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Gestionar el estrés y la competitividad en situaciones de juego real manteniendo una actitud reflexiva. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Analizar críticamente el impacto social y mediático del deporte profesional y sus implicaciones económicas."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Diseñar montajes grupales de acrosport, dramatización o danzas urbanas con valor estético y técnico. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Planificar itinerarios en el medio natural considerando factores meteorológicos y normas de seguridad."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Emplear medios de transporte sostenibles (bicicleta, patinete) en actividades físicas de exploración urbana."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Planificar, aplicar y evaluar un programa autónomo de acondicionamiento físico orientado a la vida adulta."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Analizar críticamente mitos del fitness, dietas milagro, suplementación y factores de riesgo para la salud. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Resolver situaciones motrices complejas adaptando componentes cualitativos (ritmo, precisión, fluidez)."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Coordinar estrategias de equipo en deportes alternativos y convencionales con alta eficacia táctica. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Gestionar y liderar proyectos físico-deportivos inclusivos dirigidos a la comunidad educativa."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Demostrar madurez ética y autocontrol ante momentos de presión o decisiones arbitrales desfavorables. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Adoptar una postura crítica fundada sobre el dopaje, la mercantilización y los estereotipos en el deporte."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Producir y presentar proyectos artísticos corporales integrales vinculando música, movimiento y tecnología. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Organizar actividades en el medio natural con autonomía, gestionando riesgos y minimizando la huella ecológica."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Fomentar la movilidad activa y el uso responsable de instalaciones deportivas públicas y urbanas. 4. CONTENIDOS / SABERES BÁSICOS (BLOQUES A - F POR CURSOS) Bloque A: Salud física, mental y social Contenidos ESO: Métodos de entrenamiento de las capacidades físicas; control de la frecuencia cardíaca; nutrición deportiva, hidratación y balance energético; ergonomía y salud postural; análisis crítico de modelos corporales y prevención de trastornos (vigorexia, anorexia); autogestión de la vida activa. Bloque B: Resolución de situaciones motrices Contenidos ESO: Técnica y táctica en deportes individuales, de adversario (raqueta/red, lucha) y colectivos de invasión; deportes alternativos emergentes (Ultimate, Goubak, Kin-ball); análisis de la lógica interna y toma de decisiones táctica. Bloque C: Autorregulación emocional e interacción social Contenidos ESO: Gestión del estrés y competitividad; roles de organización, capitanía y arbitraje; juego limpio y ética deportiva; prevención y erradicación de conductas violentas, sexistas o discriminatorias. Bloque D: Organización y gestión de la actividad física Contenidos ESO: Diseño autónomo de calentamientos específicos; preparación y mantenimiento del equipamiento; protocolos de seguridad y primeros auxilios (conducta PAS, maniobra de Heimlich, RCP y uso de desfibriladores DESA). Bloque E: Manifestaciones de la cultura motriz Contenidos ESO: Juegos y deportes tradicionales de Madrid y España; acrosport y figuras grupales; danzas urbanas, tradicionales y de salón; análisis sociológico del deporte como espectáculo de masas y perspectiva de género. Bloque F: Interacción eficiente y sostenible con el entorno Contenidos ESO: Carreras de orientación en medio natural y urbano; senderismo y rutas en bicicleta (BTT); escalada y cabuyería básica; normativa de espacios naturales protegidos, residuo cero y movilidad activa."
-  }
+  // 1º ESO
+  { id: '1.1', codigo: 'EFI.1.1', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Establecer secuencias sencillas de actividad física orientadas al concepto integral de salud y al estilo de vida activo, a partir de una valoración del nivel inicial y respetando la propia realidad e identidad corporal.' },
+  { id: '1.2', codigo: 'EFI.1.2', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Comenzar a incorporar con progresiva autonomía procesos de activación corporal, dosificación del esfuerzo, alimentación saludable, educación postural, relajación e higiene durante la práctica de actividades motrices.' },
+  { id: '1.3', codigo: 'EFI.1.3', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Adoptar de manera responsable y con progresiva autonomía medidas generales para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.' },
+  { id: '1.4', codigo: 'EFI.1.4', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Actuar de acuerdo a los protocolos de intervención ante accidentes derivados de la práctica de actividad física y deportiva, aplicando medidas rudimentarias de primeros auxilios.' },
+  { id: '1.5', codigo: 'EFI.1.5', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Reconocer y admitir la incidencia que ciertas prácticas y comportamientos tienen en nuestra salud y en la convivencia, valorando su impacto y evitando activamente su reproducción.' },
+  { id: '1.6', codigo: 'EFI.1.6', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Conocer y explorar diferentes recursos y aplicaciones digitales reconociendo su potencial, así como sus riesgos para su uso en el ámbito de la actividad física y el deporte.' },
+  { id: '2.1', codigo: 'EFI.2.1', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, estableciendo mecanismos para reconducir los procesos de trabajo, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.' },
+  { id: '2.2', codigo: 'EFI.2.2', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Participar de forma activa y apropiada en contextos motrices variados, aplicando principios básicos decisionales en situaciones lúdicas, juegos modificados y actividades deportivas a partir de la anticipación, adecuándose a las demandas motrices, a la actuación del compañero y del oponente (si lo hubiera) y a la lógica interna en contextos reales o simulados de actuación.' },
+  { id: '2.3', codigo: 'EFI.2.3', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Demostrar interés por la adquisición de control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, haciendo frente a las demandas de resolución de problemas en situaciones motrices transferibles a su espacio vivencial con progresiva autonomía.' },
+  { id: '3.1', codigo: 'EFI.3.1', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Practicar una gran variedad de actividades motrices, valorando las implicaciones éticas de las actitudes antideportivas, actuando con deportividad al asumir los roles de público, participante u otros.' },
+  { id: '3.2', codigo: 'EFI.3.2', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Cooperar o colaborar en la práctica de diferentes producciones motrices para alcanzar el logro individual y grupal, participando en la toma de decisiones y asumiendo distintos roles asignados y responsabilidades.' },
+  { id: '3.3', codigo: 'EFI.3.3', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Hacer uso con progresiva autonomía de habilidades sociales y diálogo en la resolución de conflictos y respeto ante la diversidad.' },
+  { id: '4.1', codigo: 'EFI.4.1', ciclo: '1º ESO', competenciaId: 'CE.EF.4', descripcion: 'Gestionar la participación en juegos motores y otras manifestaciones artístico-expresivas vinculadas tanto con la cultura propia como con otras, favoreciendo su conservación y valorando sus orígenes, evolución e influencia en las sociedades contemporáneas.' },
+  { id: '4.2', codigo: 'EFI.4.2', ciclo: '1º ESO', competenciaId: 'CE.EF.4', descripcion: 'Clasificar y analizar objetivamente las diferentes actividades y modalidades deportivas según sus características y requerimientos.' },
+  { id: '4.3', codigo: 'EFI.4.3', ciclo: '1º ESO', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en la creación y representación de composiciones de expresión corporal individuales o colectivas con y sin base musical, utilizando intencionadamente y con progresiva autonomía el cuerpo como herramienta de expresión y comunicación a través de diversas técnicas expresivas.' },
+  { id: '5.1', codigo: 'EFI.5.1', ciclo: '1º ESO', competenciaId: 'CE.EF.5', descripcion: 'Desarrollar y explorar de forma consciente, respetuosa y controlada por el docente una práctica motriz segura en contextos naturales y urbanos de carácter terrestre o acuático, adecuando las acciones al análisis de cada situación y aplicando medidas de conservación ambiental.' },
+
+  // 2º ESO
+  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Fijar y organizar secuencias sencillas de actividad física orientada al concepto integral de salud y al estilo de vida activo, partiendo de una valoración del nivel inicial y respetando la propia realidad e identidad corporal.' },
+  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Incorporar progresivamente y con autonomía procesos de activación corporal, dosificación del esfuerzo, alimentación saludable, educación postural, relajación e higiene durante la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.' },
+  { id: '1.3b', codigo: 'EFI.1.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Adoptar de manera responsable y con progresiva autonomía medidas generales para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.' },
+  { id: '1.4b', codigo: 'EFI.1.4b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Actuar de acuerdo a los protocolos de intervención ante accidentes derivados de la práctica de actividad física y deportiva, aplicando medidas básicas de primeros auxilios.' },
+  { id: '1.5b', codigo: 'EFI.1.5b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Analizar y valorar de manera crítica la incidencia que ciertas prácticas y comportamientos tienen en nuestra salud y en la convivencia, valorando su impacto y evitando activamente su reproducción.' },
+  { id: '1.6b', codigo: 'EFI.1.6b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Emplear recursos y aplicaciones digitales variados, reconociendo su potencial, así como sus riesgos para su uso en el ámbito de la actividad física y el deporte.' },
+  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, estableciendo mecanismos para reconducir los procesos de trabajo, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.' },
+  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Interpretar y actuar correctamente en contextos motrices variados, aplicando principios básicos de toma de decisiones en situaciones lúdicas, juegos modificados y actividades deportivas a partir de la anticipación, adecuándose a las demandas motrices, a la actuación de los compañeros y de la persona oponente (si lo hubiera) y a la lógica interna en contextos reales o simulados de actuación, reflexionando sobre las soluciones y los resultados obtenidos.' },
+  { id: '2.3b', codigo: 'EFI.2.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Evidenciar control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, haciendo frente a las demandas de resolución de problemas en situaciones motrices transferibles a su espacio vivencial con progresiva autonomía.' },
+  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Practicar una gran variedad de actividades motrices, valorando las implicaciones éticas de las actitudes antideportivas, actuando con deportividad al asumir los roles de público, participante u otros.' },
+  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Cooperar o colaborar en la práctica de diferentes producciones motrices para alcanzar el logro individual y grupal, participando en la toma de decisiones y asumiendo distintos roles asignados y responsabilidades.' },
+  { id: '3.3b', codigo: 'EFI.3.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Emplear con autonomía habilidades sociales, diálogo en la resolución de conflictos y respeto ante la diversidad.' },
+  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.4', descripcion: 'Organizar y gestionar la participación en juegos motores y otras manifestaciones artístico-expresivas vinculadas tanto con la cultura propia como con otras, favoreciendo su conservación y valorando sus orígenes, evolución e influencia en las sociedades contemporáneas.' },
+  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.4', descripcion: 'Clasificar y analizar objetivamente las diferentes actividades y modalidades deportivas según sus características y requerimientos.' },
+  { id: '4.3b', codigo: 'EFI.4.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en la creación y representación de composiciones de expresión corporal individuales o colectivas con y sin base musical, utilizando intencionadamente y con progresiva autonomía el cuerpo como herramienta de expresión y comunicación a través de diversas técnicas expresivas.' },
+  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.5', descripcion: 'Participar en actividades físico-deportivas en entornos naturales, terrestres o acuáticos, disfrutando del entorno de manera sostenible, minimizando el impacto ambiental que estas puedan producir y siendo conscientes de su huella ecológica.' },
+  { id: '5.2b', codigo: 'EFI.5.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.5', descripcion: 'Practicar actividades físico-deportivas en el medio natural y urbano, identificando las normas de seguridad individuales y colectivas necesarias para disfrutar de una práctica segura.' },
+
+  // 3º ESO
+  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Planificar la práctica de actividad física orientada al concepto integral de salud y al estilo de vida activo, según las necesidades e intereses individuales y respetando la propia realidad e identidad corporal.' },
+  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Incorporar de forma autónoma los procesos de activación corporal, autorregulación y dosificación del esfuerzo, alimentación saludable, educación postural, relajación e higiene durante la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.' },
+  { id: '1.3c', codigo: 'EFI.1.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Adoptar de manera responsable y autónoma medidas específicas para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.' },
+  { id: '1.4c', codigo: 'EFI.1.4c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Actuar de acuerdo a los protocolos de intervención ante situaciones de emergencia o accidentes aplicando medidas específicas de primeros auxilios.' },
+  { id: '1.5c', codigo: 'EFI.1.5c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Adoptar actitudes comprometidas y transformadoras que rechacen cualquier estereotipo, y los comportamientos que pongan en riesgo la salud, contrastando con autonomía e independencia cualquier información basándose en criterios científicos de validez, fiabilidad y objetividad.' },
+  { id: '1.6c', codigo: 'EFI.1.6c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Planificar con seguridad la práctica física cotidiana manejando recursos y aplicaciones digitales, vinculados al ámbito de la actividad física y el deporte.' },
+  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, estableciendo mecanismos para reconducir los procesos de trabajo y asegurar una participación equilibrada, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.' },
+  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Mostrar habilidades para la adaptación y la actuación ante situaciones con una elevada incertidumbre, aprovechando eficientemente las propias capacidades y aplicando de manera automática procesos de percepción, decisión y ejecución en contextos reales o simulados de actuación, reflexionando sobre las soluciones y resultados obtenidos.' },
+  { id: '2.3c', codigo: 'EFI.2.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Evidenciar y movilizar estrategias de control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, resolviendo problemas en todo tipo de situaciones motrices transferibles a su espacio vivencial.' },
+  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Practicar y participar activamente en la organización de una gran variedad de actividades motrices, valorando las implicaciones éticas de las prácticas antideportivas actuando con deportividad al asumir los roles de público, participante u otros.' },
+  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Cooperar o colaborar en la práctica de diferentes producciones motrices y proyectos para alcanzar el logro individual y grupal, participando con autonomía en la toma de decisiones vinculadas a la asignación de roles.' },
+  { id: '3.3c', codigo: 'EFI.3.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Relacionarse y entenderse con el resto de participantes durante el desarrollo de diversas prácticas motrices con autonomía y haciendo uso efectivo de habilidades sociales de diálogo en la resolución de conflictos y respeto ante la diversidad.' },
+  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.4', descripcion: 'Comprender diversas modalidades relacionadas con la cultura propia, la tradicional o las procedentes de otros lugares del mundo, identificando y contextualizando la influencia social del deporte en las sociedades actuales.' },
+  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.4', descripcion: 'Adoptar actitudes comprometidas y conscientes acerca de los distintos estereotipos.' },
+  { id: '4.3c', codigo: 'EFI.4.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.4', descripcion: 'Participar en la elaboración y representación de composiciones individuales o colectivas con y sin base musical y de manera coordinada, utilizando intencionadamente y con autonomía el cuerpo y el movimiento como herramientas de expresión y comunicación a través de técnicas expresivas específicas, y ayudando a difundir y compartir dichas prácticas culturales entre compañeros u otros miembros de la comunidad.' },
+  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.5', descripcion: 'Participar en actividades físico-deportivas en entornos naturales terrestres o acuáticos, disfrutando del entorno de manera sostenible, minimizando el impacto ambiental que estas puedan producir, siendo conscientes de su huella ecológica y desarrollando actuaciones intencionadas dirigidas a la conservación y mejora de las condiciones de los espacios en los que se desarrollen.' },
+  { id: '5.2c', codigo: 'EFI.5.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.5', descripcion: 'Diseñar y organizar actividades físico-deportivas en el medio natural y urbano, asumiendo responsabilidades y aplicando normas de seguridad, individuales y colectivas.' },
+
+  // 4º ESO
+  { id: '1.1d', codigo: 'EFI.1.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Estructurar de manera crítica y autorregular la práctica de actividad física orientada al concepto integral de salud y al estilo de vida activo, según las necesidades e intereses individuales y respetando la propia realidad e identidad corporal.' },
+  { id: '1.2d', codigo: 'EFI.1.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Desarrollar y ampliar de forma autónoma los procesos de activación corporal, autorregulación y dosificación del esfuerzo, alimentación saludable, educación postural, relajación e higiene durante la práctica de actividades motrices, incorporando como hábitos las rutinas propias de una práctica motriz saludable y responsable.' },
+  { id: '1.3d', codigo: 'EFI.1.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Adoptar de manera responsable y autónoma medidas específicas para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.' },
+  { id: '1.4d', codigo: 'EFI.1.4d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Actuar de acuerdo a los protocolos de intervención ante situaciones de emergencia o accidentes aplicando medidas específicas de primeros auxilios y de carácter complementario.' },
+  { id: '1.5d', codigo: 'EFI.1.5d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Consolidar actitudes comprometidas y transformadoras que rechacen los estereotipos sociales asociados al ámbito de lo corporal, al género y a la diversidad sexual, y los comportamientos que pongan en riesgo la salud, contrastando con autonomía e independencia cualquier información basándose en a criterios científicos de validez, fiabilidad y objetividad.' },
+  { id: '1.6d', codigo: 'EFI.1.6d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Planificar, desarrollar y compartir con seguridad la práctica física cotidiana manejando y controlando recursos y aplicaciones digitales vinculados al ámbito de la actividad física y el deporte.' },
+  { id: '2.1d', codigo: 'EFI.2.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Desarrollar activamente proyectos motores de carácter individual, cooperativo o colaborativo, estableciendo mecanismos para reconducir los procesos de trabajo y garantizar una participación equilibrada, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.' },
+  { id: '2.2d', codigo: 'EFI.2.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Mostrar habilidades para la adaptación y la actuación ante situaciones con una elevada incertidumbre, aprovechando eficientemente las propias capacidades y aplicando de manera automática procesos de percepción, decisión y ejecución en contextos reales o simulados de actuación, reflexionando sobre las soluciones y resultados obtenidos.' },
+  { id: '2.3d', codigo: 'EFI.2.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Evidenciar control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, resolviendo problemas en todo tipo de situaciones motrices transferibles a su espacio vivencial con autonomía.' },
+  { id: '3.1d', codigo: 'EFI.3.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Practicar, participar y colaborar activamente asumiendo responsabilidades en la organización de una gran variedad de actividades motrices, valorando las implicaciones éticas de las prácticas antideportivas, evitando la competitividad desmedida y actuando con deportividad al asumir los roles de público, participante u otros.' },
+  { id: '3.2d', codigo: 'EFI.3.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Cooperar o colaborar en la práctica de diferentes producciones motrices, participando con autonomía en la toma de decisiones vinculadas a la asignación de roles, la gestión del tiempo de práctica y la optimización del resultado final.' },
+  { id: '3.3d', codigo: 'EFI.3.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Interactuar de manera comprensiva, relacionándose y entendiéndose, con el resto de participantes durante el desarrollo de diversas prácticas motrices, con autonomía y haciendo uso efectivo de habilidades sociales de diálogo en la resolución de conflictos y respeto ante la diversidad.' },
+  { id: '4.1d', codigo: 'EFI.4.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Comprender y practicar diversas modalidades relacionadas con la cultura propia, la tradicional o las procedentes de otros lugares del mundo.' },
+  { id: '4.2d', codigo: 'EFI.4.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Consolidar actitudes comprometidas y conscientes acerca de los distintos estereotipos.' },
+  { id: '4.3d', codigo: 'EFI.4.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Crear y representar composiciones individuales o colectivas con y sin base musical y de manera coordinada, utilizando intencionadamente y con autonomía el cuerpo y el movimiento como herramientas de expresión y comunicación a través de técnicas expresivas específicas, y ayudando a difundir y compartir dichas prácticas culturales entre compañeros y compañeras u otros miembros de la comunidad.' },
+  { id: '5.1d', codigo: 'EFI.5.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.5', descripcion: 'Intervenir y planificar actividades físico-deportivas en entornos naturales terrestres o acuáticos, disfrutando del entorno de manera sostenible, minimizando el impacto ambiental que estas puedan producir, siendo conscientes de su huella ecológica y desarrollando actuaciones intencionadas dirigidas a la conservación y mejora de las condiciones de los espacios en los que se desarrollen.' },
+  { id: '5.2d', codigo: 'EFI.5.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.5', descripcion: 'Diseñar, organizar y colaborar en la dirección de actividades físico-deportivas en el medio natural y urbano, aplicando normas de seguridad individuales y colectivas.' }
 ];
 
 export const SABERES_BASICOS_MADRID_ESO: SaberBasico[] = [
-  {
-    "codigo": "EFI.ESO.A.1",
-    "bloque": "A",
-    "bloqueNombre": "Salud física, mental y social",
-    "ciclo": "Todos",
-    "descripcion": "Salud física, mental y social Contenidos ESO: Métodos de entrenamiento de las capacidades físicas; control de la frecuencia cardíaca; nutrición deportiva, hidratación y balance energético; ergonomía y salud postural; análisis crítico de modelos corporales y prevención de trastornos (vigorexia, anorexia); autogestión de la vida activa."
-  },
-  {
-    "codigo": "EFI.ESO.B.1",
-    "bloque": "B",
-    "bloqueNombre": "Resolución de situaciones motrices",
-    "ciclo": "Todos",
-    "descripcion": "Resolución de situaciones motrices Contenidos ESO: Técnica y táctica en deportes individuales, de adversario (raqueta/red, lucha) y colectivos de invasión; deportes alternativos emergentes (Ultimate, Goubak, Kin-ball); análisis de la lógica interna y toma de decisiones táctica."
-  },
-  {
-    "codigo": "EFI.ESO.C.1",
-    "bloque": "C",
-    "bloqueNombre": "Autorregulación emocional e interacción social",
-    "ciclo": "Todos",
-    "descripcion": "Autorregulación emocional e interacción social Contenidos ESO: Gestión del estrés y competitividad; roles de organización, capitanía y arbitraje; juego limpio y ética deportiva; prevención y erradicación de conductas violentas, sexistas o discriminatorias."
-  },
-  {
-    "codigo": "EFI.ESO.D.1",
-    "bloque": "D",
-    "bloqueNombre": "Organización y gestión de la actividad física",
-    "ciclo": "Todos",
-    "descripcion": "Organización y gestión de la actividad física Contenidos ESO: Diseño autónomo de calentamientos específicos; preparación y mantenimiento del equipamiento; protocolos de seguridad y primeros auxilios (conducta PAS, maniobra de Heimlich, RCP y uso de desfibriladores DESA)."
-  },
-  {
-    "codigo": "EFI.ESO.E.1",
-    "bloque": "E",
-    "bloqueNombre": "Manifestaciones de la cultura motriz",
-    "ciclo": "Todos",
-    "descripcion": "Manifestaciones de la cultura motriz Contenidos ESO: Juegos y deportes tradicionales de Madrid y España; acrosport y figuras grupales; danzas urbanas, tradicionales y de salón; análisis sociológico del deporte como espectáculo de masas y perspectiva de género."
-  },
-  {
-    "codigo": "EFI.ESO.F.1",
-    "bloque": "F",
-    "bloqueNombre": "Interacción eficiente y sostenible con el entorno",
-    "ciclo": "Todos",
-    "descripcion": "Interacción eficiente y sostenible con el entorno Contenidos ESO: Carreras de orientación en medio natural y urbano; senderismo y rutas en bicicleta (BTT); escalada y cabuyería básica; normativa de espacios naturales protegidos, residuo cero y movilidad activa."
-  }
+  { codigo: 'EFI.ESO.A', bloque: 'A', bloqueNombre: 'Vida activa y saludable', ciclo: 'Todos', descripcion: 'Salud física: Tasa mínima de actividad física diaria. Alimentación, educación postural (core), calentamiento autónomo. Salud social y mental: Efectos de malos hábitos, superación personal, análisis de estereotipos corporales y modelos estéticos. Dopaje y suplementación. Diseño de dietas saludables y análisis crítico de la publicidad engañosa.' },
+  { codigo: 'EFI.ESO.B', bloque: 'B', bloqueNombre: 'Organización y gestión de la actividad física', ciclo: 'Todos', descripcion: 'Higiene deportiva, planificación y autorregulación de proyectos motores. Uso de herramientas digitales. Medidas de seguridad y protocolos ante emergencias: Conducta PAS, Soporte Vital Básico, RCP, maniobra de Heimlich, DEA/DESA. Elección crítica de la práctica física y reciclaje de materiales.' },
+  { codigo: 'EFI.ESO.C', bloque: 'C', bloqueNombre: 'Resolución de problemas en situaciones motrices', ciclo: 'Todos', descripcion: 'Toma de decisiones tácticas en contextos de cooperación-oposición. Capacidades físicas básicas y coordinación. Deportes individuales (atletismo), red/muro (bádminton), invasión (balonmano, colpbol) y blanco/diana (petanca). Desarrollo de sistemas de entrenamiento de fuerza y resistencia. Creatividad motriz en entornos urbanos y diseño de retos.' },
+  { codigo: 'EFI.ESO.D', bloque: 'D', bloqueNombre: 'Emociones y relaciones sociales', ciclo: 'Todos', descripcion: 'Gestión emocional: Reconocimiento del estrés, frustración, resiliencia. Habilidades sociales: Empatía, trabajo en equipo y liderazgo. Juego limpio y convivencia: Respeto de normas y compañeros, asunción de arbitrajes, rechazo a la violencia, discriminación y machismo. Técnicas de mediación y negociación asertiva.' },
+  { codigo: 'EFI.ESO.E', bloque: 'E', bloqueNombre: 'Manifestaciones de la cultura motriz', ciclo: 'Todos', descripcion: 'Juegos y deportes tradicionales, danzas universales y contemporáneas (chotis, jotas, sardanas, aeróbic). Expresión y ritmo: Mimo, lenguaje corporal, acrosport. Deporte y sociedad: Análisis del deporte espectáculo, mercantilismo, dopaje en el deporte profesional y evolución de la igualdad de género.' },
+  { codigo: 'EFI.ESO.F', bloque: 'F', bloqueNombre: 'Interacción eficiente y sostenible con el entorno', ciclo: 'Todos', descripcion: 'Educación vial activa (bicicletas, patines). Prácticas deportivas en el medio natural: Senderismo, escalada, piragüismo, orientación con mapas y GPS. Análisis y gestión del riesgo. Conservación del medio ambiente y movilidad sostenible en el espacio público.' }
 ];
-

@@ -228,10 +228,14 @@ export const Step1General: React.FC<Step1Props> = ({
               <option value="Cantabria">Cantabria</option>
               <option value="Castilla y León">Castilla y León</option>
               <option value="Castilla-La Mancha">Castilla-La Mancha</option>
+              <option value="Catalunya">Catalunya</option>
               <option value="Comunidad de Madrid">Comunidad de Madrid</option>
               <option value="Comunidad Valenciana">Comunidad Valenciana</option>
               <option value="Extremadura">Extremadura</option>
               <option value="Galicia">Galicia</option>
+              <option value="La Rioja">La Rioja</option>
+              <option value="Navarra">Navarra</option>
+              <option value="País Vasco">País Vasco</option>
               <option value="Región de Murcia">Región de Murcia</option>
             </select>
           </div>

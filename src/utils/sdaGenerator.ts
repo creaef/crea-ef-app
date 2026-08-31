@@ -8,6 +8,7 @@ import {
   ModeloEstructuraSesion,
   ElementoRubrica,
   formatGameDescription,
+  EtapaEducativa,
 } from '../types';
 import { BASE_DATOS_ACTIVIDADES } from '../data/activitiesDatabase';
 import { TODAS_LAS_COMPETENCIAS, TODOS_LOS_CRITERIOS, TODOS_LOS_SABERES } from './curriculumHelpers';

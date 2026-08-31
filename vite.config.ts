@@ -13,7 +13,7 @@ export default defineConfig(() => {
     },
     server: {
       watch: {
-        ignored: ['**/auth_users.json', '**/user_sdas.json', '**/*.json'],
+        ignored: ['**/auth_users.json', '**/user_sdas.json', '**/*.json', '**/src/data/legislacion/**/*.pdf'],
       },
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       hmr: process.env.DISABLE_HMR !== 'true',

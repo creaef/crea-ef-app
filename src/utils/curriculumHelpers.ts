@@ -55,6 +55,30 @@ import {
 } from '../data/curriculumGalicia';
 
 import {
+  COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_CATALUNYA_ESO,
+  CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA, CRITERIOS_EVALUACION_CATALUNYA_ESO,
+  SABERES_BASICOS_CATALUNYA_PRIMARIA, SABERES_BASICOS_CATALUNYA_ESO
+} from '../data/curriculumCatalunya';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_LA_RIOJA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_LA_RIOJA_ESO,
+  CRITERIOS_EVALUACION_LA_RIOJA_PRIMARIA, CRITERIOS_EVALUACION_LA_RIOJA_ESO,
+  SABERES_BASICOS_LA_RIOJA_PRIMARIA, SABERES_BASICOS_LA_RIOJA_ESO
+} from '../data/curriculumLa_Rioja';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_MADRID_PRIMARIA, COMPETENCIAS_ESPECIFICAS_MADRID_ESO,
+  CRITERIOS_EVALUACION_MADRID_PRIMARIA, CRITERIOS_EVALUACION_MADRID_ESO,
+  SABERES_BASICOS_MADRID_PRIMARIA, SABERES_BASICOS_MADRID_ESO
+} from '../data/curriculumMadrid';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_MURCIA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_MURCIA_ESO,
+  CRITERIOS_EVALUACION_MURCIA_PRIMARIA, CRITERIOS_EVALUACION_MURCIA_ESO,
+  SABERES_BASICOS_MURCIA_PRIMARIA, SABERES_BASICOS_MURCIA_ESO
+} from '../data/curriculumMurcia';
+
+import {
   COMPETENCIAS_ESPECIFICAS_VALENCIA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_VALENCIA_ESO,
   CRITERIOS_EVALUACION_VALENCIA_PRIMARIA, CRITERIOS_EVALUACION_VALENCIA_ESO,
   SABERES_BASICOS_VALENCIA_PRIMARIA, SABERES_BASICOS_VALENCIA_ESO
@@ -65,6 +89,24 @@ import {
   CRITERIOS_EVALUACION_MADRID_PRIMARIA, CRITERIOS_EVALUACION_MADRID_ESO,
   SABERES_BASICOS_MADRID_PRIMARIA, SABERES_BASICOS_MADRID_ESO
 } from '../data/curriculumMadrid';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_LA_RIOJA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_LA_RIOJA_ESO,
+  CRITERIOS_EVALUACION_LA_RIOJA_PRIMARIA, CRITERIOS_EVALUACION_LA_RIOJA_ESO,
+  SABERES_BASICOS_LA_RIOJA_PRIMARIA, SABERES_BASICOS_LA_RIOJA_ESO
+} from '../data/curriculumLa_Rioja';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_NAVARRA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_NAVARRA_ESO,
+  CRITERIOS_EVALUACION_NAVARRA_PRIMARIA, CRITERIOS_EVALUACION_NAVARRA_ESO,
+  SABERES_BASICOS_NAVARRA_PRIMARIA, SABERES_BASICOS_NAVARRA_ESO
+} from '../data/curriculumNavarra';
+
+import {
+  COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_PRIMARIA, COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_ESO,
+  CRITERIOS_EVALUACION_PAIS_VASCO_PRIMARIA, CRITERIOS_EVALUACION_PAIS_VASCO_ESO,
+  SABERES_BASICOS_PAIS_VASCO_PRIMARIA, SABERES_BASICOS_PAIS_VASCO_ESO
+} from '../data/curriculumPais_Vasco';
 export function getCompetenciasByEtapa(etapa: EtapaEducativa, comunidad: ComunidadAutonoma = 'Andalucía'): CompetenciaEspecifica[] {
   if (comunidad === 'Castilla y León') {
     switch (etapa) {
@@ -122,6 +164,13 @@ export function getCompetenciasByEtapa(etapa: EtapaEducativa, comunidad: Comunid
       default: return COMPETENCIAS_ESPECIFICAS_GALICIA_PRIMARIA;
     }
   }
+  if (comunidad === 'Catalunya' || comunidad === 'Cataluña') {
+    switch (etapa) {
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_CATALUNYA_ESO;
+      default: return COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad Valenciana') {
     switch (etapa) {
       case 'Primaria': return COMPETENCIAS_ESPECIFICAS_VALENCIA_PRIMARIA;
@@ -129,11 +178,39 @@ export function getCompetenciasByEtapa(etapa: EtapaEducativa, comunidad: Comunid
       default: return COMPETENCIAS_ESPECIFICAS_VALENCIA_PRIMARIA;
     }
   }
+  if (comunidad === 'La Rioja') {
+    switch (etapa) {
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_LA_RIOJA_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_LA_RIOJA_ESO;
+      default: return COMPETENCIAS_ESPECIFICAS_LA_RIOJA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad de Madrid') {
     switch (etapa) {
       case 'Primaria': return COMPETENCIAS_ESPECIFICAS_MADRID_PRIMARIA;
       case 'ESO': return COMPETENCIAS_ESPECIFICAS_MADRID_ESO;
       default: return COMPETENCIAS_ESPECIFICAS_MADRID_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Región de Murcia') {
+    switch (etapa) {
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_MURCIA_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_MURCIA_ESO;
+      default: return COMPETENCIAS_ESPECIFICAS_MURCIA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Navarra') {
+    switch (etapa) {
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_NAVARRA_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_NAVARRA_ESO;
+      default: return COMPETENCIAS_ESPECIFICAS_NAVARRA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'País Vasco') {
+    switch (etapa) {
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_ESO;
+      default: return COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_PRIMARIA;
     }
   }
 
@@ -203,6 +280,13 @@ export function getCriteriosByEtapa(etapa: EtapaEducativa, comunidad: ComunidadA
       default: return CRITERIOS_EVALUACION_GALICIA_PRIMARIA;
     }
   }
+  if (comunidad === 'Catalunya' || comunidad === 'Cataluña') {
+    switch (etapa) {
+      case 'Primaria': return CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_CATALUNYA_ESO;
+      default: return CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad Valenciana') {
     switch (etapa) {
       case 'Primaria': return CRITERIOS_EVALUACION_VALENCIA_PRIMARIA;
@@ -210,11 +294,39 @@ export function getCriteriosByEtapa(etapa: EtapaEducativa, comunidad: ComunidadA
       default: return CRITERIOS_EVALUACION_VALENCIA_PRIMARIA;
     }
   }
+  if (comunidad === 'La Rioja') {
+    switch (etapa) {
+      case 'Primaria': return CRITERIOS_EVALUACION_LA_RIOJA_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_LA_RIOJA_ESO;
+      default: return CRITERIOS_EVALUACION_LA_RIOJA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad de Madrid') {
     switch (etapa) {
       case 'Primaria': return CRITERIOS_EVALUACION_MADRID_PRIMARIA;
       case 'ESO': return CRITERIOS_EVALUACION_MADRID_ESO;
       default: return CRITERIOS_EVALUACION_MADRID_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Región de Murcia') {
+    switch (etapa) {
+      case 'Primaria': return CRITERIOS_EVALUACION_MURCIA_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_MURCIA_ESO;
+      default: return CRITERIOS_EVALUACION_MURCIA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Navarra') {
+    switch (etapa) {
+      case 'Primaria': return CRITERIOS_EVALUACION_NAVARRA_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_NAVARRA_ESO;
+      default: return CRITERIOS_EVALUACION_NAVARRA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'País Vasco') {
+    switch (etapa) {
+      case 'Primaria': return CRITERIOS_EVALUACION_PAIS_VASCO_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_PAIS_VASCO_ESO;
+      default: return CRITERIOS_EVALUACION_PAIS_VASCO_PRIMARIA;
     }
   }
 
@@ -283,6 +395,13 @@ export function getSaberesByEtapa(etapa: EtapaEducativa, comunidad: ComunidadAut
       default: return SABERES_BASICOS_GALICIA_PRIMARIA;
     }
   }
+  if (comunidad === 'Catalunya' || comunidad === 'Cataluña') {
+    switch (etapa) {
+      case 'Primaria': return SABERES_BASICOS_CATALUNYA_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_CATALUNYA_ESO;
+      default: return SABERES_BASICOS_CATALUNYA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad Valenciana') {
     switch (etapa) {
       case 'Primaria': return SABERES_BASICOS_VALENCIA_PRIMARIA;
@@ -290,11 +409,39 @@ export function getSaberesByEtapa(etapa: EtapaEducativa, comunidad: ComunidadAut
       default: return SABERES_BASICOS_VALENCIA_PRIMARIA;
     }
   }
+  if (comunidad === 'La Rioja') {
+    switch (etapa) {
+      case 'Primaria': return SABERES_BASICOS_LA_RIOJA_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_LA_RIOJA_ESO;
+      default: return SABERES_BASICOS_LA_RIOJA_PRIMARIA;
+    }
+  }
   if (comunidad === 'Comunidad de Madrid') {
     switch (etapa) {
       case 'Primaria': return SABERES_BASICOS_MADRID_PRIMARIA;
       case 'ESO': return SABERES_BASICOS_MADRID_ESO;
       default: return SABERES_BASICOS_MADRID_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Región de Murcia') {
+    switch (etapa) {
+      case 'Primaria': return SABERES_BASICOS_MURCIA_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_MURCIA_ESO;
+      default: return SABERES_BASICOS_MURCIA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'Navarra') {
+    switch (etapa) {
+      case 'Primaria': return SABERES_BASICOS_NAVARRA_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_NAVARRA_ESO;
+      default: return SABERES_BASICOS_NAVARRA_PRIMARIA;
+    }
+  }
+  if (comunidad === 'País Vasco') {
+    switch (etapa) {
+      case 'Primaria': return SABERES_BASICOS_PAIS_VASCO_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_PAIS_VASCO_ESO;
+      default: return SABERES_BASICOS_PAIS_VASCO_PRIMARIA;
     }
   }
 
@@ -329,10 +476,20 @@ export const TODAS_LAS_COMPETENCIAS = [
   ...COMPETENCIAS_ESPECIFICAS_CANTABRIA_ESO,
   ...COMPETENCIAS_ESPECIFICAS_GALICIA_PRIMARIA,
   ...COMPETENCIAS_ESPECIFICAS_GALICIA_ESO,
+  ...COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_CATALUNYA_ESO,
   ...COMPETENCIAS_ESPECIFICAS_VALENCIA_PRIMARIA,
   ...COMPETENCIAS_ESPECIFICAS_VALENCIA_ESO,
+  ...COMPETENCIAS_ESPECIFICAS_LA_RIOJA_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_LA_RIOJA_ESO,
   ...COMPETENCIAS_ESPECIFICAS_MADRID_PRIMARIA,
-  ...COMPETENCIAS_ESPECIFICAS_MADRID_ESO
+  ...COMPETENCIAS_ESPECIFICAS_MADRID_ESO,
+  ...COMPETENCIAS_ESPECIFICAS_MURCIA_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_MURCIA_ESO,
+  ...COMPETENCIAS_ESPECIFICAS_NAVARRA_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_NAVARRA_ESO,
+  ...COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_PAIS_VASCO_ESO
 ];
 
 export const TODOS_LOS_CRITERIOS = [
@@ -356,10 +513,20 @@ export const TODOS_LOS_CRITERIOS = [
   ...CRITERIOS_EVALUACION_CANTABRIA_ESO,
   ...CRITERIOS_EVALUACION_GALICIA_PRIMARIA,
   ...CRITERIOS_EVALUACION_GALICIA_ESO,
+  ...CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA,
+  ...CRITERIOS_EVALUACION_CATALUNYA_ESO,
   ...CRITERIOS_EVALUACION_VALENCIA_PRIMARIA,
   ...CRITERIOS_EVALUACION_VALENCIA_ESO,
+  ...CRITERIOS_EVALUACION_LA_RIOJA_PRIMARIA,
+  ...CRITERIOS_EVALUACION_LA_RIOJA_ESO,
   ...CRITERIOS_EVALUACION_MADRID_PRIMARIA,
-  ...CRITERIOS_EVALUACION_MADRID_ESO
+  ...CRITERIOS_EVALUACION_MADRID_ESO,
+  ...CRITERIOS_EVALUACION_MURCIA_PRIMARIA,
+  ...CRITERIOS_EVALUACION_MURCIA_ESO,
+  ...CRITERIOS_EVALUACION_NAVARRA_PRIMARIA,
+  ...CRITERIOS_EVALUACION_NAVARRA_ESO,
+  ...CRITERIOS_EVALUACION_PAIS_VASCO_PRIMARIA,
+  ...CRITERIOS_EVALUACION_PAIS_VASCO_ESO
 ];
 
 export const TODOS_LOS_SABERES = [
@@ -383,8 +550,18 @@ export const TODOS_LOS_SABERES = [
   ...SABERES_BASICOS_CANTABRIA_ESO,
   ...SABERES_BASICOS_GALICIA_PRIMARIA,
   ...SABERES_BASICOS_GALICIA_ESO,
+  ...SABERES_BASICOS_CATALUNYA_PRIMARIA,
+  ...SABERES_BASICOS_CATALUNYA_ESO,
   ...SABERES_BASICOS_VALENCIA_PRIMARIA,
   ...SABERES_BASICOS_VALENCIA_ESO,
+  ...SABERES_BASICOS_LA_RIOJA_PRIMARIA,
+  ...SABERES_BASICOS_LA_RIOJA_ESO,
   ...SABERES_BASICOS_MADRID_PRIMARIA,
-  ...SABERES_BASICOS_MADRID_ESO
+  ...SABERES_BASICOS_MADRID_ESO,
+  ...SABERES_BASICOS_MURCIA_PRIMARIA,
+  ...SABERES_BASICOS_MURCIA_ESO,
+  ...SABERES_BASICOS_NAVARRA_PRIMARIA,
+  ...SABERES_BASICOS_NAVARRA_ESO,
+  ...SABERES_BASICOS_PAIS_VASCO_PRIMARIA,
+  ...SABERES_BASICOS_PAIS_VASCO_ESO
 ];

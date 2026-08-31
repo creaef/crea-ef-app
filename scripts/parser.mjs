@@ -1,20 +1,25 @@
 import fs from 'fs';
 import path from 'path';
-import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pdfParseModule = require('pdf-parse');
+const pdfParse = pdfParseModule.default || pdfParseModule;
 
 const LEGISLACION_DIR = path.join(process.cwd(), 'src/data/legislacion');
 const OUTPUT_DIR = path.join(process.cwd(), 'src/data');
 
 const regionesToProcess = [
-  { name: 'Galicia', community: 'Galicia', prefix: 'GALICIA', hasESO: true },
-  { name: 'Valencia', community: 'Comunidad Valenciana', prefix: 'VALENCIA', hasESO: true },
-  { name: 'Madrid', community: 'Comunidad de Madrid', prefix: 'MADRID', hasESO: true }
+  { name: 'La_Rioja', community: 'La Rioja', prefix: 'LA_RIOJA', hasESO: true },
+  { name: 'Navarra', community: 'Navarra', prefix: 'NAVARRA', hasESO: true },
+  { name: 'Pais_Vasco', community: 'País Vasco', prefix: 'PAIS_VASCO', hasESO: true }
 ];
 
 async function parsePdf(filePath) {
   if (!fs.existsSync(filePath)) return null;
   const dataBuffer = fs.readFileSync(filePath);
-  const data = await pdfParse(dataBuffer);
+  const uint8Array = new Uint8Array(dataBuffer.buffer, dataBuffer.byteOffset, dataBuffer.byteLength);
+  const parser = new pdfParseModule.PDFParse(uint8Array);
+  const data = await parser.getText();
   return data.text;
 }
 

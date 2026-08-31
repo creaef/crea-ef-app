@@ -4,699 +4,151 @@ import { CompetenciaEspecifica, CriterioEvaluacion, SaberBasico } from '../types
 // GALICIA - PRIMARIA
 // ==========================================
 export const COMPETENCIAS_ESPECIFICAS_GALICIA_PRIMARIA: CompetenciaEspecifica[] = [
-  {
-    "id": "CE.EF.1",
-    "numero": 1,
-    "nombre": "Competencia Específica 1",
-    "descripcion": "Adoptar un estilo de vida activo y saludable, incorporando la práctica regular de actividad física, valorando los beneficios físicos, psíquicos y sociales, e integrando hábitos higiénicos, posturales y de prevención de riesgos."
-  },
-  {
-    "id": "CE.EF.2",
-    "numero": 2,
-    "nombre": "Competencia Específica 2",
-    "descripcion": "Adaptar los elementos del propio esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices básicas y específicas, a las exigencias de situaciones motrices variadas."
-  },
-  {
-    "id": "CE.EF.3",
-    "numero": 3,
-    "nombre": "Competencia Específica 3",
-    "descripcion": "Desarrollar procesos de autorregulación emocional y habilidades sociales durante la práctica motriz, fomentando la inclusión, el respeto a la diversidad, la igualdad de género y el juego limpio para una convivencia pacífica."
-  },
-  {
-    "id": "CE.EF.4",
-    "numero": 4,
-    "nombre": "Competencia Específica 4",
-    "descripcion": "Valorar e integrar la cultura motriz tradicional y contemporánea, reconociendo y practicando manifestaciones lúdico- deportivas propias de Galicia (xogos populares e tradicionais galegos) y expresiones artístico-expresivas como patrimonio cultural."
-  },
-  {
-    "id": "CE.EF.5",
-    "numero": 5,
-    "nombre": "Competencia Específica 5",
-    "descripcion": "Interactuar en el medio natural y urbano a través de la práctica motriz sostenible, autónoma y segura, promoviendo el cuidado del entorno y la movilidad activa."
-  }
+  { id: 'CE.EF.1', numero: 1, nombre: 'Vida activa y saludable', descripcion: 'Adoptar un estilo de vida activo y saludable, practicando regularmente actividades físicas y deportivas y adoptando comportamientos que potencien la salud física, mental y social, así como medidas de responsabilidad individual y colectiva durante la práctica motriz para interiorizar e integrar hábitos de actividad física sistemática que contribuyan al bienestar.' },
+  { id: 'CE.EF.2', numero: 2, nombre: 'Resolución motriz y esquema corporal', descripcion: 'Adaptar los elementos propios del esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y las destrezas motrices, aplicando procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos de diferentes situaciones, para dar respuesta a las demandas de proyectos motores y de prácticas motrices con distintas finalidades en contextos de la vida diaria.' },
+  { id: 'CE.EF.3', numero: 3, nombre: 'Autorregulación e interacción social', descripcion: 'Desarrollar procesos de autorregulación e interacción en el marco de la práctica motriz, con actitud empática e inclusiva, haciendo uso de habilidades sociales y actitudes de cooperación, respeto, trabajo en equipo y deportividad, con independencia de las diferencias etnoculturales, sociales, de género y de habilidad de los participantes, para contribuir a la convivencia social y al compromiso ético en los diferentes espacios en que se participa.' },
+  { id: 'CE.EF.4', numero: 4, nombre: 'Manifestaciones de la cultura motriz', descripcion: 'Reconocer y practicar diferentes manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz, valorando su influencia y sus aportaciones estéticas y creativas a la cultura tradicional y contemporánea, para integrarlas en las situaciones motrices que se utilizan regularmente en la vida cotidiana.' },
+  { id: 'CE.EF.5', numero: 5, nombre: 'Interacción con el entorno y sostenibilidad', descripcion: 'Valorar diferentes medios naturales y urbanos como contextos de práctica motriz, interactuando con ellos, comprendiendo la importancia de su conservación desde un enfoque sostenible y adoptando medidas de responsabilidad individual durante la práctica de juegos, de actividades físico-deportivas y de ocio, para realizar una práctica eficiente y respetuosa con el entorno y participar en su cuidado y mejora.' }
 ];
 
 export const CRITERIOS_EVALUACION_GALICIA_PRIMARIA: CriterioEvaluacion[] = [
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar las sensaciones corporales asociadas a la actividad física y sus beneficios para la salud cotidiana."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Adquirir hábitos elementales de higiene corporal, educación postural y vestimenta deportiva adecuada."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Aplicar pautas básicas de seguridad y prevención de accidentes en las sesiones de juego y Educación Física. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Desarrollar el esquema corporal, la dominancia lateral y el equilibrio estático y dinámico en juegos sencillos."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar habilidades motrices básicas (desplazamientos, saltos, giros, lanzamientos y recepciones) en situaciones lúdicas."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Experimentar el cuerpo como vehículo de expresión gestual, comunicación no verbal y juego dramático simple. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Aceptar y cumplir las reglas básicas de los juegos, colaborando activamente sin discriminación."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Expresar y regular emociones básicas asociadas al esfuerzo, la victoria o la derrota en situaciones lúdicas. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Conocer y participar en juegos tradicionales y populares del entorno gallego y de otras culturas."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Reproducir danzas infantiles y ritmos corporales elementales de forma coordinada. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Realizar actividades motrices en entornos naturales o urbanos próximos aplicando normas de seguridad básica."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Primer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Adoptar hábitos elementales de cuidado y respeto hacia los espacios, instalaciones y materiales deportivos. Comunidad Autónoma: GaliciaNormativa: Decreto 155/2022, de 15 de septiembre (DOG n.º 183) Currículo de Educación Física Primaria — Galicia (Decreto 155/2022)Página 1 de 3"
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Reconocer las respuestas fisiológicas inmediatas del cuerpo ante el esfuerzo físico continuado."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Consolidar rutinas de calentamiento general, vuelta a la calma, hidratación y alimentación equilibrada."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar situaciones de riesgo en la práctica físico-deportiva y aplicar medidas de autoprotección. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Combinar y ajustar habilidades motrices básicas para resolver retos motores y juegos modificados."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Regular el esfuerzo motriz adaptando el control postural, la orientación espacial y el ritmo a situaciones imprevistas."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Crear y representar secuencias expresivas y rítmicas individuales y colectivas con intención comunicativa. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Demostrar actitudes cooperativas, inclusivas y de deportividad asumiendo diferentes roles (participante, árbitro/juez)."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Resolver discrepancias interpersonales mediante el diálogo activo, la empatía y el respeto a las diferencias. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Identificar, practicar y valorar juegos populares y tradicionales de Galicia (a chave, a billarda, os zancos) y deportes autóctonos."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Participar en bailes tradicionales gallegos y danzas colectivas mostrando adecuación rítmica y respeto patrimonial. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Orientarse y desplazarse en espacios naturales o urbanos utilizando mapas sencillos, planos escolares o pistas."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Segundo Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Desarrollar comportamientos responsables de residuo cero y conservación del entorno durante las salidas."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Planificar y autorregular rutinas guiadas de actividad física orientadas a la mejora de la salud y condición física."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Analizar críticamente los riesgos derivados del sedentarismo, los malos hábitos posturales y el uso excesivo de pantallas."
-  },
-  {
-    "id": "1.3",
-    "codigo": "EFI.1.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Conocer y aplicar protocolos elementales de auxilio y primeros auxilios ante accidentes en la práctica física (conducta PAS). CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Adaptar habilidades motrices específicas y combinadas con eficacia en situaciones deportivas individuales y colectivas."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar soluciones tácticas de anticipación, ocupación espacial y toma de decisiones rápida en deportes reglados."
-  },
-  {
-    "id": "2.3",
-    "codigo": "EFI.2.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Diseñar y presentar montajes expresivos grupales complejos (acrosport, danzas urbanas, dramatizaciones) con fluidez. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Liderar y participar en dinámicas colaborativas promoviendo activamente la equidad de género y la inclusión efectiva."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Asumir responsabilidades en la organización de encuentros deportivos escolares bajo premisas de juego limpio y fair play."
-  },
-  {
-    "id": "3.3",
-    "codigo": "EFI.3.3",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Emplear estrategias de autorregulación emocional reflexiva ante momentos de presión o competitividad. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Valorar el origen e importancia cultural de los juegos y deportes autóctonos de Galicia como patrimonio inmaterial."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Analizar críticamente los estereotipos de género y comportamientos antideportivos o comerciales en el deporte actual. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Planificar y realizar recorridos de orientación y senderismo en el medio natural y urbano de forma autónoma y segura."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "Tercer Ciclo",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Promover la movilidad activa y sostenible (desplazamientos en bicicleta o a pie) en la vida comunitaria escolar."
-  }
+  // PRIMER CICLO (1º y 2º de Primaria)
+  { id: '1.1', codigo: 'EFI.1.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Identificar los desplazamientos activos como práctica saludable, conociendo sus beneficios físicos para el establecimiento de un estilo de vida activo.' },
+  { id: '1.2', codigo: 'EFI.1.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Explorar las posibilidades de la propia motricidad a través del juego, aplicando en distintas situaciones cotidianas medidas básicas de cuidado de la salud personal a través de la higiene corporal y de la educación postural.' },
+  { id: '1.3', codigo: 'EFI.1.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Conocer los valores positivos que fomenta la práctica motriz compartida reconociendo, vivenciando y disfrutando sus beneficios en contextos variados e inclusivos y respetando a todos los participantes independientemente de sus características individuales.' },
+  { id: '1.4', codigo: 'EFI.1.4', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Participar en juegos de activación y vuelta a la calma, reconociendo su utilidad para adaptar el cuerpo a la actividad física y evitar lesiones.' },
+  { id: '2.1', codigo: 'EFI.2.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Reconocer la importancia de desarrollar proyectos motores (individuales, cooperativos o colaborativos) y establecer metas claras, valorando su consecución a partir del análisis de resultados.' },
+  { id: '2.2', codigo: 'EFI.2.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adoptar decisiones en contextos de práctica motriz de manera ajustada según las circunstancias.' },
+  { id: '2.3', codigo: 'EFI.2.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Descubrir, reconocer y emplear los componentes cualitativos y cuantitativos de la motricidad de manera lúdica e integrada en diferentes situaciones y contextos, mejorando progresivamente su control y dominio corporal.' },
+  { id: '3.1', codigo: 'EFI.3.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Identificar las emociones producidas durante el juego, intentando gestionarlas y disfrutando de la actividad física.' },
+  { id: '3.2', codigo: 'EFI.3.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Respetar las normas consensuadas y reglas del juego, actuando desde los parámetros de la deportividad y aceptando las características y niveles de los participantes.' },
+  { id: '3.3', codigo: 'EFI.3.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Participar en prácticas motrices desarrollando habilidades sociales de acogida, inclusión, ayuda y cooperación; iniciándose en la resolución dialogada de conflictos y mostrando compromiso activo contra la discriminación y violencia.' },
+  { id: '4.1', codigo: 'EFI.4.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en juegos y otras manifestaciones artístico-expresivas de carácter cultural propias del entorno, valorando su componente lúdico-festivo y disfrutando de su práctica.' },
+  { id: '4.2', codigo: 'EFI.4.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Adaptar los distintos usos comunicativos de la corporalidad y sus manifestaciones a diferentes ritmos y contextos expresivos.' },
+  { id: '4.3', codigo: 'EFI.4.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Conocer y valorar los logros de referentes deportivos de ambos géneros, reconociendo el esfuerzo y dedicación requeridos.' },
+  { id: '5.1', codigo: 'EFI.5.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Participar y disfrutar de forma segura en actividades lúdico-recreativas en los entornos natural y urbano, conociendo sus usos motrices y adoptando actitudes de respeto, cuidado y conservación.' },
+  { id: '5.2', codigo: 'EFI.5.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Utilizar de forma adecuada el material, las instalaciones y los espacios de práctica física, ayudando a mantenerlos en buen estado.' },
+
+  // SEGUNDO CICLO (3º y 4º de Primaria)
+  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer la actividad física como alternativa de ocio saludable, identificando desplazamientos activos y sostenibles y conociendo los beneficios físicos, mentales y sociales de un estilo de vida activo.' },
+  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Aplicar medidas de educación postural, alimentación saludable, higiene corporal y preparación de la práctica motriz, asumiendo responsabilidades y consolidando rutinas cotidianas.' },
+  { id: '1.3b', codigo: 'EFI.1.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer la propia imagen corporal y la de los demás, aceptando las características individuales y rechazando conductas discriminatorias.' },
+  { id: '1.4b', codigo: 'EFI.1.4b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Tomar medidas de precaución y prevención de lesiones respecto al material, espacios e instalaciones, conociendo protocolos básicos ante accidentes.' },
+  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Realizar proyectos motores individuales, cooperativos o colaborativos empleando estrategias básicas de monitorización y seguimiento para analizar resultados.' },
+  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adoptar decisiones en situaciones lúdicas, juegos y actividades deportivas, ajustándose a los objetivos motores, grupo y lógica interna en contextos simulados.' },
+  { id: '2.3b', codigo: 'EFI.2.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Emplear los componentes cualitativos y cuantitativos de la motricidad adquiriendo progresivo control y dominio corporal.' },
+  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Mostrar disposición positiva hacia la práctica física y el esfuerzo, controlando la impulsividad y gestionando las emociones surgidas.' },
+  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Respetar normas y reglas del juego actuando bajo parámetros de deportividad y juego limpio, valorando las aportaciones de todos.' },
+  { id: '3.3b', codigo: 'EFI.3.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Desarrollar habilidades de acogida, inclusión, ayuda y cooperación, resolviendo conflictos mediante el diálogo y mostrando rechazo activo ante discriminación, violencia o estereotipos.' },
+  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar activamente en juegos motores y manifestaciones artístico-expresivas con arraigo en la cultura tradicional gallega y de diversas culturas, contextualizando su origen y transmisión.' },
+  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Reproducir combinaciones de movimientos o coreografías individuales y grupales con intención comunicativa, transmitiendo ideas/emociones con recursos expresivos y rítmicos.' },
+  { id: '4.3b', codigo: 'EFI.4.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Adquirir una visión abierta del deporte conociendo ligas femeninas, masculinas o mixtas, aproximándose al deporte escolar e identificando conductas contrarias a la convivencia.' },
+  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Desarrollar una práctica motriz segura en contextos naturales y urbanos (terrestres o acuáticos), adecuando las acciones a cada situación y aplicando medidas de conservación ambiental.' },
+
+  // TERCER CICLO (5º y 6º de Primaria)
+  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Planificar y autorregular proyectos motores o rutinas de práctica motriz orientadas a la mejora de la salud y el bienestar físico, mental y social.' },
+  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Analizar críticamente el impacto del sedentarismo, la mala postura y el uso abusivo de pantallas, adoptando medidas preventivas y hábitos de nutrición sana e hidratación.' },
+  { id: '1.3c', codigo: 'EFI.1.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Conocer y aplicar protocolos de seguridad, prevención de riesgos y primeros auxilios elementales (conducta PAS) en actividades físico-deportivas.' },
+  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Aplicar con eficacia y precisión soluciones tácticas de percepción, decisión y ejecución en juegos deportivos individuales, de oposición, cooperación y colaboración-oposición en contextos reales o adaptados.' },
+  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Consolidar y ajustar las capacidades físicas, perceptivo-motrices y habilidades específicas en proyectos motores y situaciones motrices complejas.' },
+  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Aplicar estrategias reflexivas de autorregulación emocional ante la presión competitiva, el éxito o la frustración, manteniendo una actitud prosocial constante.' },
+  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Liderar y coordinar dinámicas de grupo asumiendo responsabilidades compartidas (jugador/a, capitán/a, árbitro/a, anotador/a) bajo principios de juego limpio y equidad.' },
+  { id: '3.3c', codigo: 'EFI.3.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Mediar de forma pacífica y asertiva en la resolución de conflictos, rechazando cualquier manifestación violenta, sexista o discriminatoria.' },
+  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Valorar, preservar y recrear activamente el patrimonio cultural gallego a través de la práctica de juegos tradicionales, populares y deportes autóctonos.' },
+  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Diseñar y representar composiciones artísticas y escénicas (coreografías, danzas tradicionales y contemporáneas, acrosport, dramatización) con fluidez expresiva y técnica corporal.' },
+  { id: '4.3c', codigo: 'EFI.4.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Analizar críticamente el deporte contemporáneo, identificando desigualdades de género, mercantilización o conductas antideportivas.' },
+  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Planificar y realizar recorridos de orientación, retos motrices y actividades en el medio natural y urbano de manera autónoma, eficiente y segura.' },
+  { id: '5.2c', codigo: 'EFI.5.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Promover activamente la movilidad sostenible escolar y la preservación medioambiental aplicando principios de residuo cero ("no dejar huella").' }
 ];
 
 export const SABERES_BASICOS_GALICIA_PRIMARIA: SaberBasico[] = [
-  {
-    "codigo": "EFI.PRI.B.1",
-    "bloque": "B",
-    "bloqueNombre": "Manifestaciones de la cultura motriz",
-    "ciclo": "Todos",
-    "descripcion": "Organización y gestión de la actividad física Contenidos clave: Fases de la sesión (activación/calentamiento, desarrollo, vuelta a la calma); normas de uso y cuidado responsable del material e instalaciones; pautas de prevención de accidentes y primeros auxilios básicos (conducta PAS)."
-  },
-  {
-    "codigo": "EFI.PRI.C.2",
-    "bloque": "C",
-    "bloqueNombre": "Autorregulación emocional e interacción social",
-    "ciclo": "Todos",
-    "descripcion": "Resolución de problemas en situaciones motrices Contenidos clave: Esquema corporal, dominancia lateral, orientación y equilibrio; habilidades motrices básicas y específicas; iniciación técnico-táctica en deportes individuales, de adversario y colectivos; toma de decisiones y lógica interna de los juegos."
-  },
-  {
-    "codigo": "EFI.PRI.D.3",
-    "bloque": "D",
-    "bloqueNombre": "Interacción eficiente y sostenible con el entorno",
-    "ciclo": "Todos",
-    "descripcion": "Autorregulación emocional e interacción social en situaciones motrices Contenidos clave: Gestión emocional ante el éxito, el fracaso y la frustración; habilidades sociales, empatía y trabajo cooperativo; juego limpio, asunción de roles arbitrales y respeto a las normas; coeducación, equidad de género y resolución pacífica de conflictos. Currículo de Educación Física Primaria — Galicia (Decreto 155/2022)Página 2 de 3"
-  },
-  {
-    "codigo": "EFI.PRI.E.4",
-    "bloque": "E",
-    "bloqueNombre": "Organización y gestión de la actividad física",
-    "ciclo": "Todos",
-    "descripcion": "Manifestaciones de la cultura motriz Contenidos clave: Juegos populares y tradicionales de Galicia (a chave, a billarda, a corda, os zancos); expresión corporal, mimo, dramatización y acrosport; bailes tradicionales gallegos (muñeiras, jotas) y danzas del mundo; análisis social del deporte."
-  },
-  {
-    "codigo": "EFI.PRI.F.5",
-    "bloque": "F",
-    "bloqueNombre": "Vida activa y saludable",
-    "ciclo": "Todos",
-    "descripcion": "Interacción eficiente y sostenible con el entorno Contenidos clave: Técnicas de orientación espacial con planos y mapas; actividades de senderismo en el medio natural y litoral gallego; prevención de riesgos al aire libre; movilidad activa, desplazamientos sostenibles y cultura de residuo cero. Currículo de Educación Física Primaria — Galicia (Decreto 155/2022)Página 3 de 3"
-  }
+  { codigo: 'EFI.PRI.A', bloque: '1', bloqueNombre: 'Salud integral', ciclo: 'Todos', descripcion: 'Efectos beneficiosos del ejercicio; clasificación de alimentos naturales y procesados; pautas de hidratación y educación postural en acciones habituales; prevención del ocio nocivo y límites de competitividad. Condición física saludable.' },
+  { codigo: 'EFI.PRI.B', bloque: '2', bloqueNombre: 'Organización y gestión', ciclo: 'Todos', descripcion: 'Atuendo adecuado y rutinas de aseo personal. Cuidado de material e instalaciones; pautas higiénicas consolidadas; mecanismos de prevención y control corporal ante lesiones. Calentamiento y protocolos de emergencia (PAS).' },
+  { codigo: 'EFI.PRI.C', bloque: '3', bloqueNombre: 'Resolución de problemas motrices', ciclo: 'Todos', descripcion: 'Lateralidad y equilibrio; capacidades físicas lúdicas; habilidades motrices combinadas; creatividad motriz. Principios tácticos de deportes de invasión, red/muro y campo/bate; toma de decisiones y marcaje.' },
+  { codigo: 'EFI.PRI.D', bloque: '4', bloqueNombre: 'Convivencia y mediación', ciclo: 'Todos', descripcion: 'Identificación y regulación de emociones propias y ajenas; autoestima y autoeficacia. Escucha activa y negociación en desacuerdos; asunción de normas. Prevención activa del sexismo y conductas contrarias a la convivencia.' },
+  { codigo: 'EFI.PRI.E', bloque: '5', bloqueNombre: 'Patrimonio gallego y artes escénicas', ciclo: 'Todos', descripcion: 'Juegos y deportes tradicionales gallegos (a chave, billarda, birlos, zancos, tiro de corda); bailes tradicionales (muiñeiras, jotas). Montajes artístico-expresivos complejos (acrosport, teatro de sombras); perspectiva crítica de género.' },
+  { codigo: 'EFI.PRI.F', bloque: '6', bloqueNombre: 'Práctica sostenible en la naturaleza', ciclo: 'Todos', descripcion: 'Técnicas de orientación espacial mediante mapas topográficos y brújulas; rutas de senderismo y actividades físicas en el entorno natural/litoral; movilidad urbana activa (bicicleta/patinete); educación ambiental y residuo cero.' }
 ];
 
 // ==========================================
 // GALICIA - ESO Y BACHILLERATO
 // ==========================================
 export const COMPETENCIAS_ESPECIFICAS_GALICIA_ESO: CompetenciaEspecifica[] = [
-  {
-    "id": "CE.EF.1",
-    "numero": 1,
-    "nombre": "Competencia Específica 1",
-    "descripcion": "Planificar y autorregular una práctica de actividad física orientada a la salud, consolidando un estilo de vida activo y saludable, reconociendo los factores condicionantes del bienestar integral y aplicando medidas de seguridad y prevención."
-  },
-  {
-    "id": "CE.EF.2",
-    "numero": 2,
-    "nombre": "Competencia Específica 2",
-    "descripcion": "Adaptar y ejecutar las habilidades motrices básicas y específicas a situaciones sociomotrices complejas y dinámicas, con eficacia, control postural, fluidez y creatividad en contextos individuales, de oposición y de colaboración."
-  },
-  {
-    "id": "CE.EF.3",
-    "numero": 3,
-    "nombre": "Competencia Específica 3",
-    "descripcion": "Fomentar relaciones interpersonales inclusivas, respetuosas y asertivas en la práctica físico-deportiva, asumiendo la autorregulación emocional, el trabajo cooperativo, la equidad de género y el juego limpio para la resolución pacífica de conflictos."
-  },
-  {
-    "id": "CE.EF.4",
-    "numero": 4,
-    "nombre": "Competencia Específica 4",
-    "descripcion": "Valorar y participar en manifestaciones de la cultura motriz tradicional gallega, contemporánea y deportiva, analizando críticamente el deporte como fenómeno social, sus implicaciones económicas y mediáticas y preservando el patrimonio autóctono."
-  },
-  {
-    "id": "CE.EF.5",
-    "numero": 5,
-    "nombre": "Competencia Específica 5",
-    "descripcion": "Desenvolverse de manera autónoma, eficiente y segura en el medio natural y urbano a través de actividades físico- deportivas sostenibles, promoviendo la preservación ambiental y la movilidad activa cotidiana."
-  }
+  { id: 'CE.EF.1', numero: 1, nombre: 'Vida activa y saludable', descripcion: 'Adoptar un estilo de vida activo y saludable, practicando regularmente actividades físicas y deportivas y adoptando comportamientos que potencien la salud física, mental y social, así como medidas de responsabilidad individual y colectiva durante la práctica motriz para interiorizar e integrar hábitos de actividad física sistemática que contribuyan al bienestar.' },
+  { id: 'CE.EF.2', numero: 2, nombre: 'Resolución motriz', descripcion: 'Adaptar los elementos propios del esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, aplicando procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos de diferentes situaciones, para dar respuesta a las demandas de proyectos motores y de prácticas motrices.' },
+  { id: 'CE.EF.3', numero: 3, nombre: 'Autorregulación e interacción social', descripcion: 'Desarrollar procesos de autorregulación e interacción en el marco de la práctica motriz, con actitud empática e inclusiva, haciendo uso de habilidades sociales y actitudes de cooperación, respeto, trabajo en equipo y deportividad, con independencia de las diferencias etnoculturales, sociales, de género y de habilidad de los participantes.' },
+  { id: 'CE.EF.4', numero: 4, nombre: 'Cultura motriz', descripcion: 'Reconocer y practicar diferentes manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz, valorando su influencia y sus aportaciones estéticas y creativas a la cultura tradicional y contemporánea, para integrarlas en las situaciones motrices que se utilizan regularmente en la vida cotidiana.' },
+  { id: 'CE.EF.5', numero: 5, nombre: 'Interacción con el medio natural', descripcion: 'Valorar diferentes medios naturales y urbanos como contextos de práctica motriz, interactuando con ellos, comprendiendo la importancia de su conservación desde un enfoque sostenible y adoptando medidas de responsabilidad individual durante la práctica de juegos, de actividades físico-deportivas y de ocio.' }
 ];
 
 export const CRITERIOS_EVALUACION_GALICIA_ESO: CriterioEvaluacion[] = [
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Identificar las capacidades físicas básicas (resistencia, fuerza, flexibilidad, velocidad) y su vinculación con la salud."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Realizar calentamientos generales guiados y aplicar hábitos de higiene postural y corporal tras la práctica. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Ejecutar habilidades motrices específicas en situaciones de oposición e iniciación deportiva con eficacia técnica elemental."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Tomar decisiones tácticas sencillas en juegos reducidos de cooperación-oposición y deportes colectivos. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Participar con actitud de cooperación y respeto hacia los compañeros, rechazando cualquier discriminación."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Aceptar y cumplir los reglamentos escolares, actuando con deportividad al asumir diversos roles de juego. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Conocer y practicar juegos y deportes tradicionales gallegos (a chave, a billarda, o varapau)."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Ejecutar secuencias rítmicas elementales y estructuras de movimiento expresivo corporal. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Realizar recorridos de orientación básica en el centro escolar o parques urbanos siguiendo un mapa."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Aplicar protocolos elementales de prevención de riesgos y respeto al entorno natural."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Evaluar la condición física personal aplicando pruebas estandarizadas y registrando la evolución."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Diseñar y ejecutar calentamientos generales autónomos y aplicar pautas de nutrición deportiva e hidratación. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Adaptar gestos técnicos y coordinativos ante situaciones dinámicas no estandarizadas y de oposición directa."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Aplicar principios tácticos colectivos de apoyo, desmarque y cobertura en deportes de invasión. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Asumir roles de arbitraje escolar y mediación de conflictos de forma dialogada y con juego limpio."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Promover la inclusión y la igualdad efectiva de género en todas las dinámicas motrices del grupo. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Practicar danzas tradicionales gallegas (muiñeiras, jotas) y compararlas con bailes urbanos contemporáneos."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Crear coreografías o montajes expresivos grupales sencillos con adecuación rítmica y música. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Completar itinerarios en la naturaleza utilizando brújula y lectura básica de planos topográficos."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Aplicar medidas de residuo cero y conservación activa del medio ambiente en actividades de senderismo."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Diseñar y poner en práctica un plan sistemático personal de trabajo de una capacidad física orientada a la salud."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Conocer y aplicar protocolos de primeros auxilios y soporte vital básico (conducta PAS, RCP y uso de DEA/DESA). CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Demostrar precisión técnica y fluidez en deportes individuales, de raqueta/implemento y colectivos avanzados."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Elaborar y aplicar sistemas tácticos avanzados respondiendo a la lectura estratégica de los rivales. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Organizar y dinamizar torneos escolares inclusivos promoviendo el liderazgo compartido y la cooperación."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Autorregular la ansiedad y la frustración en contextos competitivos de juego real de forma asertiva. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Analizar críticamente el impacto social, mediático y mercantil del deporte profesional y sus valores éticos."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Diseñar composiciones grupales de acrosport, danza urbana o mimo combinando calidad estética y coordinación. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Planificar recorridos en el medio natural contemplando previsiones meteorológicas y normas de seguridad."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "1º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Utilizar medios de transporte activos y sostenibles (bicicleta, patinete) en actividades de exploración urbana."
-  },
-  {
-    "id": "1.1",
-    "codigo": "EFI.1.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Planificar, autorregular y evaluar un programa autónomo de actividad física orientada a la vida adulta."
-  },
-  {
-    "id": "1.2",
-    "codigo": "EFI.1.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.1",
-    "descripcion": "Analizar críticamente mitos del fitness, dietas milagro, suplementación y factores de riesgo para la salud integral. CE.EF.2"
-  },
-  {
-    "id": "2.1",
-    "codigo": "EFI.2.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Resolver proyectos motores complejos adaptando componentes cualitativos (ritmo, precisión, fluidez y creatividad)."
-  },
-  {
-    "id": "2.2",
-    "codigo": "EFI.2.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.2",
-    "descripcion": "Diseñar y coordinar estrategias de equipo en deportes convencionales y alternativos con alta eficacia táctica. CE.EF.3"
-  },
-  {
-    "id": "3.1",
-    "codigo": "EFI.3.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Liderar y gestionar proyectos físico-deportivos comunitarios que promuevan la inclusión y la participación activa."
-  },
-  {
-    "id": "3.2",
-    "codigo": "EFI.3.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.3",
-    "descripcion": "Demostrar madurez ética y autocontrol permanente ante momentos de máxima presión competitiva. CE.EF.4"
-  },
-  {
-    "id": "4.1",
-    "codigo": "EFI.4.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Adoptar una postura crítica fundada sobre el dopaje, los estereotipos de género y el mercantilismo deportivo."
-  },
-  {
-    "id": "4.2",
-    "codigo": "EFI.4.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.4",
-    "descripcion": "Producir y presentar proyectos escénicos corporales integrales vinculando movimiento, música y tecnología. CE.EF.5"
-  },
-  {
-    "id": "5.1",
-    "codigo": "EFI.5.1",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Organizar de forma autónoma actividades en el medio natural gestionando riesgos y minimizando la huella ecológica."
-  },
-  {
-    "id": "5.2",
-    "codigo": "EFI.5.2",
-    "ciclo": "2º Ciclo ESO",
-    "competenciaId": "CE.EF.5",
-    "descripcion": "Promover la movilidad activa y el uso sostenible de los espacios públicos e instalaciones deportivas comunitarias."
-  }
+  // 1º ESO
+  { id: '1.1', codigo: 'EFI.1.1', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Identificar las capacidades físicas básicas y los efectos de la práctica de actividad física sobre la salud física, mental y social.' },
+  { id: '1.2', codigo: 'EFI.1.2', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Realizar calentamientos generales guiados y aplicar hábitos de higiene postural y corporal tras la actividad motriz.' },
+  { id: '1.3', codigo: 'EFI.1.3', ciclo: '1º ESO', competenciaId: 'CE.EF.1', descripcion: 'Aplicar medidas y pautas de seguridad elementales en el uso de espacios y equipamientos deportivos para prevenir lesiones.' },
+  { id: '2.1', codigo: 'EFI.2.1', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Ejecutar habilidades motrices específicas en situaciones sociomotrices individuales y de oposición directa con eficacia técnica elemental.' },
+  { id: '2.2', codigo: 'EFI.2.2', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Tomar decisiones tácticas básicas en juegos modificados y deportes reducidos colectivos (ocupación de espacios, apoyos, desmarques).' },
+  { id: '2.3', codigo: 'EFI.2.3', ciclo: '1º ESO', competenciaId: 'CE.EF.2', descripcion: 'Resolver desafíos físicos cooperativos aplicando recursos coordinativos y variaciones motrices creativas.' },
+  { id: '3.1', codigo: 'EFI.3.1', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Participar en actividades motrices con actitud cooperativa, inclusiva y de respeto a los demás, rechazando cualquier discriminación.' },
+  { id: '3.2', codigo: 'EFI.3.2', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Aceptar y respetar las normas consensuadas y reglas de juego, actuando con deportividad (fair play).' },
+  { id: '3.3', codigo: 'EFI.3.3', ciclo: '1º ESO', competenciaId: 'CE.EF.3', descripcion: 'Identificar emociones derivadas del juego y resolver discrepancias mediante el diálogo guiado y la asertividad.' },
+  { id: '4.1', codigo: 'EFI.4.1', ciclo: '1º ESO', competenciaId: 'CE.EF.4', descripcion: 'Conocer y practicar juegos y deportes tradicionales gallegos (a chave, a billarda, o varapau, os birlos), valorando su arraigo cultural.' },
+  { id: '4.2', codigo: 'EFI.4.2', ciclo: '1º ESO', competenciaId: 'CE.EF.4', descripcion: 'Ejecutar secuencias rítmicas elementales y coordinar movimientos expresivos corporales con apoyo rítmico o musical.' },
+  { id: '5.1', codigo: 'EFI.5.1', ciclo: '1º ESO', competenciaId: 'CE.EF.5', descripcion: 'Realizar recorridos de orientación básica en el recinto escolar y parques urbanos utilizando planos sencillos.' },
+  { id: '5.2', codigo: 'EFI.5.2', ciclo: '1º ESO', competenciaId: 'CE.EF.5', descripcion: 'Aplicar normas de seguridad vial y respeto ambiental en los desplazamientos activos y actividades al aire libre (residuo cero).' },
+
+  // 2º ESO
+  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Evaluar la condición física personal aplicando baterías de pruebas estandarizadas orientadas a la salud y registrando la evolución.' },
+  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Diseñar y ejecutar calentamientos generales autónomos y aplicar pautas de nutrición deportiva e hidratación continua.' },
+  { id: '1.3b', codigo: 'EFI.1.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.1', descripcion: 'Identificar factores de riesgo asociados a la inactividad física, malos hábitos posturales y consumo excesivo de productos ultraprocesados.' },
+  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Adaptar gestos técnicos y coordinativos ante situaciones dinámicas no estandarizadas y de oposición directa.' },
+  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Aplicar principios tácticos colectivos (anticipación defensiva, coberturas y líneas de pase) en deportes de invasión y red/muro.' },
+  { id: '2.3b', codigo: 'EFI.2.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.2', descripcion: 'Ajustar la precisión, ritmo y fluidez motriz en secuencias técnicas complejas y deportes individuales.' },
+  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Asumir roles de arbitraje escolar, anotación y mediación de conflictos de forma dialogada, imparcial y con juego limpio.' },
+  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Promover la inclusión efectiva y la equidad de género en todas las dinámicas y agrupamientos motrices del aula.' },
+  { id: '3.3b', codigo: 'EFI.3.3b', ciclo: '2º ESO', competenciaId: 'CE.EF.3', descripcion: 'Controlar la frustración y la impulsividad en situaciones de competencia deportiva escolar.' },
+  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.4', descripcion: 'Practicar danzas tradicionales gallegas (muiñeiras, jotas) y contextualizarlas comparándolas con bailes urbanos contemporáneos.' },
+  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.4', descripcion: 'Crear coreografías o montajes expresivos grupales sencillos integrando movimiento, ritmo y acompañamiento musical.' },
+  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: '2º ESO', competenciaId: 'CE.EF.5', descripcion: 'Completar itinerarios en la naturaleza y espacios urbanos utilizando brújula y mapas topográficos sencillos.' },
+  { id: '5.2b', codigo: 'EFI.5.2b', ciclo: '2º ESO', competenciaId: 'CE.EF.5', descripcion: 'Aplicar medidas de residuo cero y conservación activa del medio ambiente en actividades de senderismo y salidas al exterior.' },
+
+  // 3º ESO
+  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Diseñar y poner en práctica un plan sistemático personal de trabajo de una capacidad física orientada a la salud (resistencia aeróbica o flexibilidad).' },
+  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Analizar críticamente la influencia de la publicidad, los modelos estéticos corporales impuestos y su impacto en la salud mental.' },
+  { id: '1.3c', codigo: 'EFI.1.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.1', descripcion: 'Conocer y aplicar protocolos de primeros auxilios y soporte vital básico (conducta PAS, RCP básica y desobstrucción de vía aérea).' },
+  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Demostrar precisión técnica y fluidez táctica en deportes individuales, de implemento/raqueta y colectivos avanzados.' },
+  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Elaborar y aplicar sistemas tácticos avanzados respondiendo a la lectura estratégica de los rivales y de las fases de juego.' },
+  { id: '2.3c', codigo: 'EFI.2.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.2', descripcion: 'Resolver situaciones sociomotrices en deportes alternativos y emergentes (ultimate, goubak, colpbol, kin-ball).' },
+  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Organizar y dinamizar torneos escolares inclusivos promoviendo el liderazgo compartido y la cooperación de grupo.' },
+  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Autorregular la ansiedad, la presión competitiva y la frustración en contextos de juego real de forma asertiva.' },
+  { id: '3.3c', codigo: 'EFI.3.3c', ciclo: '3º ESO', competenciaId: 'CE.EF.3', descripcion: 'Mostrar compromiso ético y rechazo explícito frente a conductas violentas, antideportivas, racistas o machistas en el deporte.' },
+  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.4', descripcion: 'Analizar críticamente el impacto social, mediático y mercantil del deporte profesional y sus repercusiones éticas y de género.' },
+  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.4', descripcion: 'Diseñar composiciones grupales de acrosport, danza urbana o mimo combinando calidad estética, sincronización y coordinación.' },
+  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: '3º ESO', competenciaId: 'CE.EF.5', descripcion: 'Planificar recorridos en el medio natural contemplando factores de riesgo, logística, equipamiento y previsiones meteorológicas.' },
+  { id: '5.2c', codigo: 'EFI.5.2c', ciclo: '3º ESO', competenciaId: 'CE.EF.5', descripcion: 'Utilizar medios de transporte activos y sostenibles (bicicleta, patinete) promoviendo la movilidad activa comunitaria y el residuo cero.' },
+
+  // 4º ESO
+  { id: '1.1d', codigo: 'EFI.1.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Planificar, autorregular y evaluar de forma autónoma un programa global de actividad física y condición física orientado a la vida adulta y a la salud.' },
+  { id: '1.2d', codigo: 'EFI.1.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Analizar críticamente mitos del fitness, dietas milagro, vigorexia, suplementación innecesaria y riesgos asociados al dopaje.' },
+  { id: '1.3d', codigo: 'EFI.1.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.1', descripcion: 'Actuar con seguridad dominando técnicas de primeros auxilios y soporte vital básico (reanimación cardiopulmonar RCP y uso del desfibrilador DEA/DESA).' },
+  { id: '2.1d', codigo: 'EFI.2.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Resolver proyectos motores complejos integrando componentes cualitativos (precisión, ritmo, fluidez, economía y creatividad).' },
+  { id: '2.2d', codigo: 'EFI.2.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Diseñar y coordinar estrategias de equipo en modalidades deportivas regladas, de raqueta y alternativas con alta eficacia táctica.' },
+  { id: '2.3d', codigo: 'EFI.2.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.2', descripcion: 'Demostrar capacidad de adaptación rápida de las respuestas técnico-tácticas ante situaciones de alta incertidumbre y exigencia.' },
+  { id: '3.1d', codigo: 'EFI.3.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Liderar y gestionar proyectos físico-deportivos comunitarios o de aprendizaje-servicio que promuevan la inclusión y la participación ciudadana.' },
+  { id: '3.2d', codigo: 'EFI.3.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Demostrar madurez ética y autocontrol permanente en momentos de máxima presión competitiva o conflicto motriz.' },
+  { id: '3.3d', codigo: 'EFI.3.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.3', descripcion: 'Defender y difundir activamente los valores del juego limpio y la equidad social y de género en todos los ámbitos deportivos.' },
+  { id: '4.1d', codigo: 'EFI.4.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Investigar, recrear y difundir el patrimonio etnomotor gallego organizando jornadas escolares de juegos y deportes autóctonos.' },
+  { id: '4.2d', codigo: 'EFI.4.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Producir y presentar proyectos escénicos corporales integrales vinculando movimiento expresivo, música, vestuario y recursos digitales.' },
+  { id: '4.3d', codigo: 'EFI.4.3d', ciclo: '4º ESO', competenciaId: 'CE.EF.4', descripcion: 'Analizar de manera fundada problemas éticos del deporte contemporáneo (corrupción, hipercompetitividad, discriminación mediática).' },
+  { id: '5.1d', codigo: 'EFI.5.1d', ciclo: '4º ESO', competenciaId: 'CE.EF.5', descripcion: 'Organizar y llevar a cabo de forma autónoma y segura expediciones o actividades en el medio natural (senderismo, orientación técnica, escalada, náuticas).' },
+  { id: '5.2d', codigo: 'EFI.5.2d', ciclo: '4º ESO', competenciaId: 'CE.EF.5', descripcion: 'Liderar acciones comunitarias a favor de la movilidad activa sostenible y la protección de los ecosistemas naturales gallegos ("Leave No Trace").' }
 ];
 
 export const SABERES_BASICOS_GALICIA_ESO: SaberBasico[] = [
-  {
-    "codigo": "EFI.ESO.A.1",
-    "bloque": "A",
-    "bloqueNombre": "Salud física, mental y social",
-    "ciclo": "Todos",
-    "descripcion": "Salud física, mental y social Contenidos ESO: Métodos y sistemas de acondicionamiento físico orientados a la salud; control de la frecuencia cardíaca y zonas de esfuerzo; nutrición deportiva, hidratación y balance energético; ergonomía y educación postural; análisis crítico de modelos estéticos y prevención de trastornos (vigorexia, anorexia); autogestión de la vida activa."
-  },
-  {
-    "codigo": "EFI.ESO.B.1",
-    "bloque": "B",
-    "bloqueNombre": "Resolución de situaciones motrices",
-    "ciclo": "Todos",
-    "descripcion": "Organización y gestión de la actividad física Contenidos ESO: Planificación de calentamientos específicos autónomos; mantenimiento del equipamiento; protocolos de seguridad y primeros auxilios (conducta PAS, soporte vital básico, maniobra de Heimlich, RCP y uso de DEA/DESA)."
-  },
-  {
-    "codigo": "EFI.ESO.C.1",
-    "bloque": "C",
-    "bloqueNombre": "Autorregulación emocional e interacción social",
-    "ciclo": "Todos",
-    "descripcion": "Resolución de problemas en situaciones motrices Contenidos ESO: Técnica y táctica en deportes individuales, de adversario (red/pared, lucha) y colectivos de invasión; deportes alternativos y emergentes (Ultimate, Goubak, Kin-ball, Datchball); análisis de la lógica interna y toma de decisiones tácticas dinámicas."
-  },
-  {
-    "codigo": "EFI.ESO.D.1",
-    "bloque": "D",
-    "bloqueNombre": "Organización y gestión de la actividad física",
-    "ciclo": "Todos",
-    "descripcion": "Autorregulación emocional e interacción social en situaciones motrices Contenidos ESO: Gestión del estrés y competitividad; roles de organización, capitanía y arbitraje escolar; juego limpio y ética deportiva; prevención y erradicación de conductas violentas, sexistas o discriminatorias en el deporte."
-  },
-  {
-    "codigo": "EFI.ESO.E.1",
-    "bloque": "E",
-    "bloqueNombre": "Manifestaciones de la cultura motriz",
-    "ciclo": "Todos",
-    "descripcion": "Manifestaciones de la cultura motriz Contenidos ESO: Juegos y deportes tradicionales gallegos (a chave, a billarda, o varapau); acrosport, dramatización y danzas contemporáneas/urbanas; análisis sociológico del deporte espectáculo y coeducación."
-  },
-  {
-    "codigo": "EFI.ESO.F.1",
-    "bloque": "F",
-    "bloqueNombre": "Interacción eficiente y sostenible con el entorno",
-    "ciclo": "Todos",
-    "descripcion": "Interacción eficiente y sostenible con el entorno Contenidos ESO: Carreras de orientación en el medio natural y urbano; senderismo y cicloturismo (BTT); actividades acuáticas y de deslizamiento; escalada y cabuyería básica; normativa sobre espacios naturales protegidos, residuo cero y movilidad activa urbana."
-  }
+  { codigo: 'EFI.ESO.A', bloque: '1', bloqueNombre: 'Salud física, mental y social', ciclo: 'Todos', descripcion: 'Métodos de entrenamiento; nutrición avanzada; prevención de adicciones y dopaje. Análisis crítico del mercado del fitness y modelos estéticos.' },
+  { codigo: 'EFI.ESO.B', bloque: '2', bloqueNombre: 'Organización y gestión', ciclo: 'Todos', descripcion: 'Diseño autónomo de calentamientos; soporte vital básico y primeros auxilios (RCP, DESA, maniobra de Heimlich).' },
+  { codigo: 'EFI.ESO.C', bloque: '3', bloqueNombre: 'Resolución de problemas motrices', ciclo: 'Todos', descripcion: 'Táctica de deportes individuales y colectivos; optimización técnico-táctica; evaluación audiovisual motriz; deportes emergentes.' },
+  { codigo: 'EFI.ESO.D', bloque: '4', bloqueNombre: 'Gestión emocional e interacción', ciclo: 'Todos', descripcion: 'Modelos de Educación Deportiva; gestión del estrés y arbitraje ético. Liderazgo, mediación escolar y prevención activa de la violencia y conductas sexistas.' },
+  { codigo: 'EFI.ESO.E', bloque: '5', bloqueNombre: 'Patrimonio y cultura motriz', ciclo: 'Todos', descripcion: 'Recuperación de tradiciones gallegas; diseño de montajes corporales (acrosport, danza); análisis crítico de la industria deportiva y perspectiva de género.' },
+  { codigo: 'EFI.ESO.F', bloque: '6', bloqueNombre: 'Entorno natural y urbano', ciclo: 'Todos', descripcion: 'Planificación de rutas (orientación, BTT, senderismo); movilidad activa sostenible; ecología deportiva ("Leave No Trace") y aprendizaje-servicio ambiental.' }
 ];
-
