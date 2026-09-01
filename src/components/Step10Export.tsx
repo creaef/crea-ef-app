@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
+import { logEvent } from 'firebase/analytics';
+import { analytics } from '../lib/firebase';
 import {
   Download,
   Copy,
@@ -109,6 +111,18 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
   const [docUrl, setDocUrl] = useState<string | null>(null);
   const [errorDoc, setErrorDoc] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'vistaDocumento' | 'texto' | 'fichasSesion'>('vistaDocumento');
+
+  useEffect(() => {
+    if (analytics) {
+      logEvent(analytics, 'sda_completed', {
+        etapa: sda.etapa,
+        comunidad: sda.comunidad,
+        curso: sda.curso,
+        ciclo: sda.ciclo,
+        tematica: sda.tematica
+      });
+    }
+  }, []);
 
   // Compute active curriculum elements for relational matrix
   const activeCompetenciasList = COMPETENCIAS_ESPECIFICAS_EF.filter((ce) =>
