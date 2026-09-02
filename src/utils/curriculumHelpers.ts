@@ -3,6 +3,11 @@ import { COMPETENCIAS_ESPECIFICAS_EF, CRITERIOS_EVALUACION_EF, SABERES_BASICOS_E
 import { COMPETENCIAS_ESPECIFICAS_INFANTIL, CRITERIOS_EVALUACION_INFANTIL, SABERES_BASICOS_INFANTIL } from '../data/curriculumInfantil';
 import { COMPETENCIAS_ESPECIFICAS_ESO, CRITERIOS_EVALUACION_ESO, SABERES_BASICOS_ESO } from '../data/curriculumESO';
 import { COMPETENCIAS_ESPECIFICAS_BACHILLERATO, CRITERIOS_EVALUACION_BACHILLERATO, SABERES_BASICOS_BACHILLERATO } from '../data/curriculumBachillerato';
+import {
+  COMPETENCIAS_ESPECIFICAS_ANDALUCIA_PRIMARIA, COMPETENCIAS_ESPECIFICAS_ANDALUCIA_ESO,
+  CRITERIOS_EVALUACION_ANDALUCIA_PRIMARIA, CRITERIOS_EVALUACION_ANDALUCIA_ESO,
+  SABERES_BASICOS_ANDALUCIA_PRIMARIA, SABERES_BASICOS_ANDALUCIA_ESO
+} from '../data/curriculumAndalucia';
 import { 
   COMPETENCIAS_ESPECIFICAS_CYL_PRIMARIA, 
   COMPETENCIAS_ESPECIFICAS_CYL_ESO,
@@ -190,9 +195,20 @@ export function getCompetenciasByEtapa(etapa: EtapaEducativa, comunidad: Comunid
     }
   }
 
-  // Andalucía (Fallback)
+  if (comunidad === 'Andalucía') {
+    switch (etapa) {
+      case 'Infantil': return COMPETENCIAS_ESPECIFICAS_INFANTIL;
+      case 'Primaria': return COMPETENCIAS_ESPECIFICAS_ANDALUCIA_PRIMARIA;
+      case 'ESO': return COMPETENCIAS_ESPECIFICAS_ANDALUCIA_ESO;
+      case 'Bachillerato': return COMPETENCIAS_ESPECIFICAS_BACHILLERATO;
+      default: return COMPETENCIAS_ESPECIFICAS_ANDALUCIA_PRIMARIA;
+    }
+  }
+
+  // Fallback para cualquier otra comunidad sin datos específicos
   switch (etapa) {
     case 'Infantil': return COMPETENCIAS_ESPECIFICAS_INFANTIL;
+    case 'Primaria': return COMPETENCIAS_ESPECIFICAS_EF;
     case 'ESO': return COMPETENCIAS_ESPECIFICAS_ESO;
     case 'Bachillerato': return COMPETENCIAS_ESPECIFICAS_BACHILLERATO;
     default: return COMPETENCIAS_ESPECIFICAS_EF;
@@ -299,8 +315,20 @@ export function getCriteriosByEtapa(etapa: EtapaEducativa, comunidad: ComunidadA
     }
   }
 
+  if (comunidad === 'Andalucía') {
+    switch (etapa) {
+      case 'Infantil': return CRITERIOS_EVALUACION_INFANTIL;
+      case 'Primaria': return CRITERIOS_EVALUACION_ANDALUCIA_PRIMARIA;
+      case 'ESO': return CRITERIOS_EVALUACION_ANDALUCIA_ESO;
+      case 'Bachillerato': return CRITERIOS_EVALUACION_BACHILLERATO;
+      default: return CRITERIOS_EVALUACION_ANDALUCIA_PRIMARIA;
+    }
+  }
+
+  // Fallback
   switch (etapa) {
     case 'Infantil': return CRITERIOS_EVALUACION_INFANTIL;
+    case 'Primaria': return CRITERIOS_EVALUACION_EF;
     case 'ESO': return CRITERIOS_EVALUACION_ESO;
     case 'Bachillerato': return CRITERIOS_EVALUACION_BACHILLERATO;
     default: return CRITERIOS_EVALUACION_EF;
@@ -407,8 +435,20 @@ export function getSaberesByEtapa(etapa: EtapaEducativa, comunidad: ComunidadAut
     }
   }
 
+  if (comunidad === 'Andalucía') {
+    switch (etapa) {
+      case 'Infantil': return SABERES_BASICOS_INFANTIL;
+      case 'Primaria': return SABERES_BASICOS_ANDALUCIA_PRIMARIA;
+      case 'ESO': return SABERES_BASICOS_ANDALUCIA_ESO;
+      case 'Bachillerato': return SABERES_BASICOS_BACHILLERATO;
+      default: return SABERES_BASICOS_ANDALUCIA_PRIMARIA;
+    }
+  }
+
+  // Fallback
   switch (etapa) {
     case 'Infantil': return SABERES_BASICOS_INFANTIL;
+    case 'Primaria': return SABERES_BASICOS_EF;
     case 'ESO': return SABERES_BASICOS_ESO;
     case 'Bachillerato': return SABERES_BASICOS_BACHILLERATO;
     default: return SABERES_BASICOS_EF;
@@ -422,6 +462,8 @@ export const TODAS_LAS_COMPETENCIAS = [
   ...COMPETENCIAS_ESPECIFICAS_INFANTIL,
   ...COMPETENCIAS_ESPECIFICAS_ESO,
   ...COMPETENCIAS_ESPECIFICAS_BACHILLERATO,
+  ...COMPETENCIAS_ESPECIFICAS_ANDALUCIA_PRIMARIA,
+  ...COMPETENCIAS_ESPECIFICAS_ANDALUCIA_ESO,
   ...COMPETENCIAS_ESPECIFICAS_CYL_PRIMARIA,
   ...COMPETENCIAS_ESPECIFICAS_CYL_ESO,
   ...COMPETENCIAS_ESPECIFICAS_CLM_PRIMARIA,
@@ -457,6 +499,8 @@ export const TODOS_LOS_CRITERIOS = [
   ...CRITERIOS_EVALUACION_INFANTIL,
   ...CRITERIOS_EVALUACION_ESO,
   ...CRITERIOS_EVALUACION_BACHILLERATO,
+  ...CRITERIOS_EVALUACION_ANDALUCIA_PRIMARIA,
+  ...CRITERIOS_EVALUACION_ANDALUCIA_ESO,
   ...CRITERIOS_EVALUACION_CYL_PRIMARIA,
   ...CRITERIOS_EVALUACION_CYL_ESO,
   ...CRITERIOS_EVALUACION_CLM_PRIMARIA,
@@ -492,6 +536,8 @@ export const TODOS_LOS_SABERES = [
   ...SABERES_BASICOS_INFANTIL,
   ...SABERES_BASICOS_ESO,
   ...SABERES_BASICOS_BACHILLERATO,
+  ...SABERES_BASICOS_ANDALUCIA_PRIMARIA,
+  ...SABERES_BASICOS_ANDALUCIA_ESO,
   ...SABERES_BASICOS_CYL_PRIMARIA,
   ...SABERES_BASICOS_CYL_ESO,
   ...SABERES_BASICOS_CLM_PRIMARIA,
