@@ -144,10 +144,10 @@ async function callGeminiWithRetry(
           if (isQuotaOrTransient && attempt < maxRetries) {
             attempt++;
             const delayMs = attempt * 800 + Math.floor(Math.random() * 300);
-            console.warn(`[Gemini API Key #${currentKeyIdx + 1} - ${modelCandidate}] Reintento ${attempt}/${maxRetries} en ${delayMs}ms...`);
+            console.warn(`[Gemini API Key #${kIndex + 1} - ${modelCandidate}] Reintento ${attempt}/${maxRetries} en ${delayMs}ms...`);
             await new Promise((resolve) => setTimeout(resolve, delayMs));
           } else {
-            console.warn(`[Gemini API Key #${currentKeyIdx + 1} - ${modelCandidate}] Rotando a siguiente modelo/clave por: ${errStr.substring(0, 100)}`);
+            console.warn(`[Gemini API Key #${kIndex + 1} - ${modelCandidate}] Rotando a siguiente modelo/clave por: ${errStr.substring(0, 100)}`);
             break; // Try next model or next API key
           }
         }

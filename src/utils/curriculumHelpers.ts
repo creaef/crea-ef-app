@@ -152,7 +152,7 @@ export function getCompetenciasByEtapa(etapa: EtapaEducativa, comunidad: Comunid
       default: return COMPETENCIAS_ESPECIFICAS_GALICIA_PRIMARIA;
     }
   }
-  if (comunidad === 'Catalunya' || comunidad === 'Catalunya') {
+  if (comunidad === 'Catalunya') {
     switch (etapa) {
       case 'Primaria': return COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA;
       case 'ESO': return COMPETENCIAS_ESPECIFICAS_CATALUNYA_ESO;
@@ -272,7 +272,7 @@ export function getCriteriosByEtapa(etapa: EtapaEducativa, comunidad: ComunidadA
       default: return CRITERIOS_EVALUACION_GALICIA_PRIMARIA;
     }
   }
-  if (comunidad === 'Catalunya' || comunidad === 'Catalunya') {
+  if (comunidad === 'Catalunya') {
     switch (etapa) {
       case 'Primaria': return CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA;
       case 'ESO': return CRITERIOS_EVALUACION_CATALUNYA_ESO;
@@ -392,7 +392,7 @@ export function getSaberesByEtapa(etapa: EtapaEducativa, comunidad: ComunidadAut
       default: return SABERES_BASICOS_GALICIA_PRIMARIA;
     }
   }
-  if (comunidad === 'Catalunya' || comunidad === 'Catalunya') {
+  if (comunidad === 'Catalunya') {
     switch (etapa) {
       case 'Primaria': return SABERES_BASICOS_CATALUNYA_PRIMARIA;
       case 'ESO': return SABERES_BASICOS_CATALUNYA_ESO;

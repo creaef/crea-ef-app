@@ -6,65 +6,483 @@ import { COMPETENCIAS_ESPECIFICAS_BACHILLERATO, CRITERIOS_EVALUACION_BACHILLERAT
 // CATALUNYA - PRIMARIA
 // ==========================================
 export const COMPETENCIAS_ESPECIFICAS_CATALUNYA_PRIMARIA: CompetenciaEspecifica[] = [
-  { id: 'CE.EF.1', numero: 1, nombre: 'Vida activa y saludable', descripcion: 'Adoptar un estilo de vida activo y saludable, incorporando la práctica regular de actividad física, el cuidado del cuerpo, la higiene postural y la prevención de riesgos, valorando los beneficios para la salud integral (física, mental y social).' },
-  { id: 'CE.EF.2', numero: 2, nombre: 'Resolución motriz', descripcion: 'Adaptar el esquema corporal, las capacidades perceptivo-motrices, físicas y coordinativas, así como las habilidades motrices básicas y específicas, a situaciones motrices variadas con eficacia, iniciativa y seguridad.' },
-  { id: 'CE.EF.3', numero: 3, nombre: 'Autorregulación e interacción social', descripcion: 'Desarrollar procesos de autorregulación emocional y habilidades sociales durante la práctica motriz, fomentando la inclusión, el respeto a la diversidad, la igualdad de género y el juego limpio para una convivencia pacífica.' },
-  { id: 'CE.EF.4', numero: 4, nombre: 'Cultura motriz catalana y contemporánea', descripcion: 'Valorar e integrar la cultura motriz tradicional catalana y contemporánea, reconociendo y practicando juegos populares (jocs tradicionals de Catalunya: bitlles, castells/figuras cooperativas), danzas tradicionales y expresiones artístico-expresivas.' },
-  { id: 'CE.EF.5', numero: 5, nombre: 'Interacción con el medio y sostenibilidad', descripcion: 'Interactuar en el medio natural y urbano de manera autónoma, segura y ecosostenible a través de la práctica de actividades motrices, promoviendo el cuidado ambiental y la movilidad activa.' }
+  {
+    "descripcion": "Adoptar y mantener un estilo de vida activo y saludable, a partir de la toma de conciencia de las posibilidades y el funcionamiento del propio cuerpo, de la adquisición de pautas de higiene y de la práctica habitual de actividad física, para mejorar la salud física, emocional y social.",
+    "id": "CE1",
+    "nombre": "Competencia Específica 1",
+    "numero": 1
+  },
+  {
+    "descripcion": "Adaptar y aplicar las habilidades y capacidades motrices en diferentes contextos lúdicos, motrices y deportivos, mediante la experimentación de situaciones motrices variadas, para resolver problemas motores y mejorar la competencia motriz.",
+    "id": "CE2",
+    "nombre": "Competencia Específica 2",
+    "numero": 2
+  },
+  {
+    "descripcion": "Desarrollar y aplicar procesos de comunicación y expresión corporal a través del uso expresivo del cuerpo, del movimiento y de la danza, para transmitir emociones, ideas y sentimientos, y enriquecer el bagaje cultural y artístico.",
+    "id": "CE3",
+    "nombre": "Competencia Específica 3",
+    "numero": 3
+  },
+  {
+    "descripcion": "Participar e interactuar de forma constructiva, inclusiva y cooperativa en actividades motrices y juegos, aplicando el juego limpio y el respeto a las normas, para favorecer la convivencia democrática, la igualdad de género y la gestión positiva de los conflictos.",
+    "id": "CE4",
+    "nombre": "Competencia Específica 4",
+    "numero": 4
+  },
+  {
+    "descripcion": "Desarrollar y practicar actividades físicas en el medio natural y urbano de forma segura y sostenible, mostrando respeto por el entorno, para fomentar la educación ambiental y el compromiso con la sostenibilidad del planeta.",
+    "id": "CE5",
+    "nombre": "Competencia Específica 5",
+    "numero": 5
+  }
 ];
 
 export const CRITERIOS_EVALUACION_CATALUNYA_PRIMARIA: CriterioEvaluacion[] = [
-  // PRIMER CICLO (1º y 2º de Primaria)
-  { id: '1.1', codigo: 'EFI.1.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Identificar las sensaciones corporales asociadas al ejercicio y sus beneficios para la salud cotidiana.' },
-  { id: '1.2', codigo: 'EFI.1.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Adquirir hábitos básicos de higiene corporal, educación postural y vestimenta deportiva adecuada.' },
-  { id: '1.3', codigo: 'EFI.1.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Aplicar pautas básicas de seguridad y prevención de accidentes en los juegos escolares.' },
-  { id: '2.1', codigo: 'EFI.2.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Afianzar el esquema corporal, la lateralidad y el equilibrio estático y dinámico en juegos sencillos.' },
-  { id: '2.2', codigo: 'EFI.2.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Aplicar habilidades motrices básicas (desplazamientos, saltos, giros, lanzamientos) en tareas lúdicas.' },
-  { id: '2.3', codigo: 'EFI.2.3', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Experimentar el cuerpo como vehículo de expresión gestual, ritmo y dramatización simple.' },
-  { id: '3.1', codigo: 'EFI.3.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Aceptar y cumplir las reglas de los juegos, colaborando activamente sin discriminación.' },
-  { id: '3.2', codigo: 'EFI.3.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Expresar y regular emociones básicas asociadas al esfuerzo, la victoria o la derrota en el juego.' },
-  { id: '4.1', codigo: 'EFI.4.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Conocer y participar en juegos tradicionales y populares de Catalunya y de otras culturas.' },
-  { id: '4.2', codigo: 'EFI.4.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Reproducir danzas infantiles y secuencias rítmicas corporales elementales de forma coordinada.' },
-  { id: '5.1', codigo: 'EFI.5.1', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Realizar actividades motrices en entornos naturales o urbanos próximos aplicando pautas de seguridad.' },
-  { id: '5.2', codigo: 'EFI.5.2', ciclo: 'Primer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Adoptar hábitos elementales de cuidado y respeto hacia los materiales y espacios deportivos.' },
-
-  // SEGUNDO CICLO (3º y 4º de Primaria)
-  { id: '1.1b', codigo: 'EFI.1.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Reconocer las adaptaciones fisiológicas inmediatas del cuerpo ante el esfuerzo continuado.' },
-  { id: '1.2b', codigo: 'EFI.1.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Consolidar rutinas de calentamiento general, vuelta a la calma, hidratación y alimentación saludable.' },
-  { id: '1.3b', codigo: 'EFI.1.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Identificar situaciones de riesgo en la práctica físico-deportiva y aplicar medidas de autoprotección.' },
-  { id: '2.1b', codigo: 'EFI.2.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Combinar y ajustar habilidades motrices básicas para resolver retos motores y juegos modificados.' },
-  { id: '2.2b', codigo: 'EFI.2.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Regular el control postural, la orientación espacial y el ritmo ante situaciones imprevistas.' },
-  { id: '2.3b', codigo: 'EFI.2.3b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Crear y representar secuencias expresivas y rítmicas individuales y colectivas con intención comunicativa.' },
-  { id: '3.1b', codigo: 'EFI.3.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Demostrar deportividad asumiendo diferentes roles (participante, árbitro/juez) y respetando decisiones colectivas.' },
-  { id: '3.2b', codigo: 'EFI.3.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Resolver discrepancias interpersonales mediante el diálogo activo, la empatía y el respeto a las diferencias.' },
-  { id: '4.1b', codigo: 'EFI.4.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Identificar, practicar y valorar juegos tradicionales y deportes autóctonos catalanes (bitlles catalanes, juegos de calle tradicionales).' },
-  { id: '4.2b', codigo: 'EFI.4.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Participar en danzas tradicionales de Catalunya (sardanes, balls de bastons) y bailes colectivos mostrando ajuste rítmico.' },
-  { id: '5.1b', codigo: 'EFI.5.1b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Orientarse y desplazarse en espacios naturales o urbanos utilizando mapas sencillos, planos escolares o pistas.' },
-  { id: '5.2b', codigo: 'EFI.5.2b', ciclo: 'Segundo Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Desarrollar comportamientos responsables de residuo cero y conservación del entorno durante las salidas.' },
-
-  // TERCER CICLO (5º y 6º de Primaria)
-  { id: '1.1c', codigo: 'EFI.1.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Planificar y autorregular rutinas guiadas de actividad física orientadas a la salud y condición física general.' },
-  { id: '1.2c', codigo: 'EFI.1.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Analizar críticamente los riesgos del sedentarismo, malos hábitos posturales y el uso abusivo de pantallas.' },
-  { id: '1.3c', codigo: 'EFI.1.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.1', descripcion: 'Conocer y aplicar protocolos elementales de auxilio y primeros auxilios ante accidentes en la práctica motriz (conducta PAS).' },
-  { id: '2.1c', codigo: 'EFI.2.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Adaptar habilidades motrices específicas y combinadas con eficacia en situaciones deportivas individuales y colectivas.' },
-  { id: '2.2c', codigo: 'EFI.2.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Aplicar soluciones tácticas de anticipación, ocupación espacial y toma de decisiones rápida en deportes reglados.' },
-  { id: '2.3c', codigo: 'EFI.2.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.2', descripcion: 'Diseñar y presentar montajes expresivos grupales complejos (acrosport/figuras cooperativas, danzas urbanas, dramatizaciones).' },
-  { id: '3.1c', codigo: 'EFI.3.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Liderar y participar en dinámicas colaborativas promoviendo activamente la equidad de género y la inclusión efectiva.' },
-  { id: '3.2c', codigo: 'EFI.3.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Asumir responsabilidades en la organización de encuentros deportivos escolares bajo premisas de juego limpio y fair play.' },
-  { id: '3.3c', codigo: 'EFI.3.3c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.3', descripcion: 'Emplear estrategias de autorregulación emocional reflexiva ante momentos de presión o competitividad.' },
-  { id: '4.1c', codigo: 'EFI.4.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Valorar el origen e importancia cultural de los juegos y tradiciones lúdicas catalanas como patrimonio inmaterial.' },
-  { id: '4.2c', codigo: 'EFI.4.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.4', descripcion: 'Analizar críticamente los estereotipos de género y comportamientos comerciales en el deporte actual.' },
-  { id: '5.1c', codigo: 'EFI.5.1c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Planificar y realizar recorridos de orientación y senderismo en el medio natural con autonomía y seguridad.' },
-  { id: '5.2c', codigo: 'EFI.5.2c', ciclo: 'Tercer Ciclo', competenciaId: 'CE.EF.5', descripcion: 'Promover la movilidad activa y sostenible (desplazamientos en bicicleta o a pie) en la vida comunitaria escolar.' }
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "1.1",
+    "competenciaId": "CE1",
+    "descripcion": "Reconocer y practicar hábitos de higiene corporal y postural y de cuidado personal de manera guiada.",
+    "id": "CE1-1.1-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "1.2",
+    "competenciaId": "CE1",
+    "descripcion": "Identificar los efectos beneficiosos de la actividad física sobre la salud y el bienestar en situaciones cotidianas.",
+    "id": "CE1-1.2-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "1.3",
+    "competenciaId": "CE1",
+    "descripcion": "Identificar las posibilidades motrices del propio cuerpo y la evolución de las capacidades físicas a través del movimiento guiado.",
+    "id": "CE1-1.3-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "1.4",
+    "competenciaId": "CE1",
+    "descripcion": "Participar activamente en actividades físico-motrices y juegos reconociendo la importancia del esfuerzo personal.",
+    "id": "CE1-1.4-C1"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "1.1",
+    "competenciaId": "CE1",
+    "descripcion": "Aplicar de forma autónoma hábitos de higiene personal, postural y cuidado antes, durante y después de la actividad.",
+    "id": "CE1-1.1-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "1.2",
+    "competenciaId": "CE1",
+    "descripcion": "Relacionar la práctica regular con la salud, la alimentación equilibrada, el descanso y el bienestar emocional y social.",
+    "id": "CE1-1.2-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "1.3",
+    "competenciaId": "CE1",
+    "descripcion": "Conocer y experimentar posibilidades corporales identificando capacidades físicas y habilidades motrices.",
+    "id": "CE1-1.3-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "1.4",
+    "competenciaId": "CE1",
+    "descripcion": "Actitud activa y de perseverancia en actividades y juegos, valorando el esfuerzo propio y ajeno sobre el resultado.",
+    "id": "CE1-1.4-C2"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "1.1",
+    "competenciaId": "CE1",
+    "descripcion": "Consolidar hábitos de vida activa integrando actividad física, nutrición equilibrada, higiene y ergonomía postural diaria.",
+    "id": "CE1-1.1-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "1.2",
+    "competenciaId": "CE1",
+    "descripcion": "Analizar críticamente el impacto del sedentarismo y hábitos poco saludables, proponiendo ocio activo.",
+    "id": "CE1-1.2-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "1.3",
+    "competenciaId": "CE1",
+    "descripcion": "Evaluar el desarrollo de las propias capacidades físicas básicas y habilidades motrices, planificando actividades de mejora.",
+    "id": "CE1-1.3-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "1.4",
+    "competenciaId": "CE1",
+    "descripcion": "Participar de manera comprometida y regular en actividades físico-deportivas, mostrando afán de autosuperación.",
+    "id": "CE1-1.4-C3"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "2.1",
+    "competenciaId": "CE2",
+    "descripcion": "Explorar y utilizar las habilidades motrices básicas en situaciones lúdicas sencillas.",
+    "id": "CE2-2.1-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "2.2",
+    "competenciaId": "CE2",
+    "descripcion": "Ajustar la posición corporal y los movimientos a diferentes espacios, tiempos y objetos guiados.",
+    "id": "CE2-2.2-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "2.3",
+    "competenciaId": "CE2",
+    "descripcion": "Proponer respuestas motrices sencillas y creativas ante retos o problemas motores planteados.",
+    "id": "CE2-2.3-C1"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "2.1",
+    "competenciaId": "CE2",
+    "descripcion": "Combinar y consolidar las habilidades motrices básicas en situaciones de juego con coordinación y fluidez.",
+    "id": "CE2-2.1-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "2.2",
+    "competenciaId": "CE2",
+    "descripcion": "Ajustar esquemas motores al espacio, tiempo y trayectorias de móviles y compañeros en juegos prelúdicos.",
+    "id": "CE2-2.2-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "2.3",
+    "competenciaId": "CE2",
+    "descripcion": "Resolver situaciones y retos motores aplicando estrategias sencillas de acción individual y colectiva.",
+    "id": "CE2-2.3-C2"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "2.1",
+    "competenciaId": "CE2",
+    "descripcion": "Dominar y aplicar habilidades motrices complejas y específicas en situaciones predeportivas con eficacia y control postural.",
+    "id": "CE2-2.1-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "2.2",
+    "competenciaId": "CE2",
+    "descripcion": "Adaptar las habilidades motrices a entornos cambiantes e inciertos de forma eficiente y segura.",
+    "id": "CE2-2.2-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "2.3",
+    "competenciaId": "CE2",
+    "descripcion": "Diseñar y aplicar tácticas y estrategias colectivas para resolver problemas motores, valorando el proceso.",
+    "id": "CE2-2.3-C3"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "3.1",
+    "competenciaId": "CE3",
+    "descripcion": "Expresar emociones, ideas y estados de ánimo mediante el movimiento espontáneo y el juego simbólico o dramático.",
+    "id": "CE3-3.1-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "3.2",
+    "competenciaId": "CE3",
+    "descripcion": "Experimentar y seguir secuencias de ritmo y percusión corporal sencillas, guiadas e individuales o colectivas.",
+    "id": "CE3-3.2-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "3.3",
+    "competenciaId": "CE3",
+    "descripcion": "Participar en representaciones corporales y danzas tradicionales infantiles con respeto y desinhibición.",
+    "id": "CE3-3.3-C1"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "3.1",
+    "competenciaId": "CE3",
+    "descripcion": "Comunicar sentimientos, personajes e historias utilizando recursos expresivos corporales no verbales.",
+    "id": "CE3-3.1-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "3.2",
+    "competenciaId": "CE3",
+    "descripcion": "Reproducir y crear secuencias de movimiento rítmico y danzas sencillas adaptadas al compás y a la música.",
+    "id": "CE3-3.2-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "3.3",
+    "competenciaId": "CE3",
+    "descripcion": "Participar en la creación y puesta en escena de composiciones corporales colectivas valorando aportaciones del grupo.",
+    "id": "CE3-3.3-C2"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "3.1",
+    "competenciaId": "CE3",
+    "descripcion": "Crear y representar montajes expresivos o coreografías grupales combinando movimiento, música y lenguajes artísticos.",
+    "id": "CE3-3.1-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "3.2",
+    "competenciaId": "CE3",
+    "descripcion": "Valorar y practicar danzas populares, tradicionales y contemporáneas de diferentes culturas como patrimonio cultural.",
+    "id": "CE3-3.2-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "3.3",
+    "competenciaId": "CE3",
+    "descripcion": "Analizar críticamente las manifestaciones expresivas desterrando estereotipos sexistas o socioculturales.",
+    "id": "CE3-3.3-C3"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "4.1",
+    "competenciaId": "CE4",
+    "descripcion": "Participar en juegos aceptando las normas básicas y el resultado con actitud de juego limpio.",
+    "id": "CE4-4.1-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "4.2",
+    "competenciaId": "CE4",
+    "descripcion": "Relacionarse positivamente con los compañeros durante el juego con conductas de cooperación y empatía.",
+    "id": "CE4-4.2-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "4.3",
+    "competenciaId": "CE4",
+    "descripcion": "Resolver conflictos sencillos a través del diálogo guiado, evitando conductas agresivas o discriminatorias.",
+    "id": "CE4-4.3-C1"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "4.1",
+    "competenciaId": "CE4",
+    "descripcion": "Respetar y hacer respetar las normas consensuadas en actividades regladas, asumiendo victoria y derrota con deportividad.",
+    "id": "CE4-4.1-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "4.2",
+    "competenciaId": "CE4",
+    "descripcion": "Trabajar en equipo solidariamente sin discriminación por razones de género, capacidad u origen.",
+    "id": "CE4-4.2-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "4.3",
+    "competenciaId": "CE4",
+    "descripcion": "Aplicar estrategias de mediación y diálogo para solucionar discrepancias pacíficamente.",
+    "id": "CE4-4.3-C2"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "4.1",
+    "competenciaId": "CE4",
+    "descripcion": "Promover activamente el juego limpio, compañerismo y cumplimiento normativo en contextos escolares y recreativos.",
+    "id": "CE4-4.1-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "4.2",
+    "competenciaId": "CE4",
+    "descripcion": "Fomentar la inclusión real adaptando roles o reglas para garantizar participación equitativa de todos.",
+    "id": "CE4-4.2-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "4.3",
+    "competenciaId": "CE4",
+    "descripcion": "Gestionar conflictos autónomamente mediante asertividad, consenso y mediación entre iguales.",
+    "id": "CE4-4.3-C3"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "5.1",
+    "competenciaId": "CE5",
+    "descripcion": "Desplazarse y realizar juegos en espacios naturales o urbanos próximos con seguridad vial y respeto ambiental.",
+    "id": "CE5-5.1-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "5.2",
+    "competenciaId": "CE5",
+    "descripcion": "Identificar elementos y posibles riesgos del entorno inmediato durante actividades al aire libre.",
+    "id": "CE5-5.2-C1"
+  },
+  {
+    "ciclo": "Primer Ciclo",
+    "codigo": "5.3",
+    "competenciaId": "CE5",
+    "descripcion": "Cuidado y respeto hacia los espacios físicos y materiales compartidos.",
+    "id": "CE5-5.3-C1"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "5.1",
+    "competenciaId": "CE5",
+    "descripcion": "Participar en orientación y motricidad en espacios naturales o urbanos aplicando normas de seguridad vial y prevención.",
+    "id": "CE5-5.1-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "5.2",
+    "competenciaId": "CE5",
+    "descripcion": "Valorar entornos naturales y urbanos como espacios idóneos para actividad física y ocio activo.",
+    "id": "CE5-5.2-C2"
+  },
+  {
+    "ciclo": "Segundo Ciclo",
+    "codigo": "5.3",
+    "competenciaId": "CE5",
+    "descripcion": "Acciones de recogida de residuos y respeto ambiental durante y después de la práctica al aire libre.",
+    "id": "CE5-5.3-C2"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "5.1",
+    "competenciaId": "CE5",
+    "descripcion": "Planificar y realizar recorridos motrices en la naturaleza y ciudad usando mapas, brújula o geolocalización autónomamente.",
+    "id": "CE5-5.1-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "5.2",
+    "competenciaId": "CE5",
+    "descripcion": "Evaluar riesgos aplicando protocolos básicos de autoprotección, primeros auxilios y seguridad colectiva.",
+    "id": "CE5-5.2-C3"
+  },
+  {
+    "ciclo": "Tercer Ciclo",
+    "codigo": "5.3",
+    "competenciaId": "CE5",
+    "descripcion": "Promover la movilidad activa sostenible (bici, patinete) y evaluar la huella ecológica de prácticas deportivas.",
+    "id": "CE5-5.3-C3"
+  }
 ];
 
 export const SABERES_BASICOS_CATALUNYA_PRIMARIA: SaberBasico[] = [
-  { codigo: 'EFI.PRI.A', bloque: 'A', bloqueNombre: 'Salud física, mental y social', ciclo: 'Todos', descripcion: 'Efectos del ejercicio sobre la salud física y psicológica; higiene corporal integral y atuendo adecuado; educación postural y descanso; nutrición equilibrada e hidratación; prevención del sedentarismo y riesgos derivados de las pantallas; imagen corporal positiva y bienestar emocional.' },
-  { codigo: 'EFI.PRI.B', bloque: 'B', bloqueNombre: 'Organización y gestión de la actividad física', ciclo: 'Todos', descripcion: 'Fases de la sesión (activación/calentamiento, desarrollo, vuelta a la calma); normas de uso y cuidado responsable del material e instalaciones; pautas de prevención de accidentes y primeros auxilios básicos (conducta PAS).' },
-  { codigo: 'EFI.PRI.C', bloque: 'C', bloqueNombre: 'Resolución de problemas en situaciones motrices', ciclo: 'Todos', descripcion: 'Esquema corporal, dominancia lateral, orientación y equilibrio; habilidades motrices básicas y específicas; iniciación técnico-táctica en deportes individuales, de adversario y colectivos; toma de decisiones y lógica interna de los juegos.' },
-  { codigo: 'EFI.PRI.D', bloque: 'D', bloqueNombre: 'Autorregulación emocional e interacción social', ciclo: 'Todos', descripcion: 'Gestión emocional ante el éxito, el fracaso y la frustración; habilidades sociales, empatía y trabajo cooperativo; juego limpio, asunción de roles arbitrales y respeto a las normas; coeducación, equidad de género y resolución pacífica de conflictos.' },
-  { codigo: 'EFI.PRI.E', bloque: 'E', bloqueNombre: 'Manifestaciones de la cultura motriz', ciclo: 'Todos', descripcion: 'Jocs tradicionals de Catalunya (bitlles catalanes, mocador, curses de sacs); expresión corporal, mimo, dramatización y acrosport/estructures cooperatives; bailes tradicionales catalanes (sardanes, balls de bastons) y danzas del mundo; análisis social del deporte.' },
-  { codigo: 'EFI.PRI.F', bloque: 'F', bloqueNombre: 'Interacción eficiente y sostenible con el entorno', ciclo: 'Todos', descripcion: 'Técnicas de orientación espacial con planos y mapas; actividades de senderismo y actividades en el medio natural y litoral; prevención de riesgos al aire libre; movilidad activa, desplazamientos sostenibles y cultura de residuo cero.' }
+  {
+    "bloque": "Bloque A",
+    "bloqueNombre": "Vida activa y saludable",
+    "ciclo": "Primer Ciclo",
+    "codigo": "SAB-A-C1",
+    "descripcion": "Conocimiento del esquema corporal global y segmentario; hábitos de higiene y lavado de manos; la actividad física como fuente de diversión y salud; higiene postural en situaciones cotidianas; alimentación saludable y consumo de agua."
+  },
+  {
+    "bloque": "Bloque A",
+    "bloqueNombre": "Vida activa y saludable",
+    "ciclo": "Segundo Ciclo",
+    "codigo": "SAB-A-C2",
+    "descripcion": "Las capacidades físicas básicas vinculadas a la salud (resistencia, fuerza, flexibilidad, velocidad) y su autopercepción; calentamiento básico y vuelta a la calma; postura corporal y ergonomía en el transporte de cargas escolares; prevención de lesiones y hábitos alimentarios saludables."
+  },
+  {
+    "bloque": "Bloque A",
+    "bloqueNombre": "Vida activa y saludable",
+    "ciclo": "Tercer Ciclo",
+    "codigo": "SAB-A-C3",
+    "descripcion": "Autonomía en el calentamiento específico y vuelta a la calma; relación entre condición física, descanso, alimentación equilibrada y bienestar mental; análisis del sedentarismo y uso saludable de las pantallas; relajación, respiración consciente y gestión del estrés."
+  },
+  {
+    "bloque": "Bloque B",
+    "bloqueNombre": "Competencia motriz (Resolución de problemas en situaciones motrices)",
+    "ciclo": "Primer Ciclo",
+    "codigo": "SAB-B-C1",
+    "descripcion": "Esquema corporal, lateralidad, control tónico y respiratorio; habilidades motrices básicas (desplazamientos, saltos, giros, manipulaciones); juego libre, simbólico, tradicional y cooperativo; nociones espaciotemporales (arriba/abajo, dentro/fuera, antes/después)."
+  },
+  {
+    "bloque": "Bloque B",
+    "bloqueNombre": "Competencia motriz (Resolución de problemas en situaciones motrices)",
+    "ciclo": "Segundo Ciclo",
+    "codigo": "SAB-B-C2",
+    "descripcion": "Habilidades motrices genéricas y combinadas; coordinación dinámica general y segmentaria (óculo-manual/pedal); anticipación de trayectorias, distancias y velocidades; juegos tradicionales populares de Cataluña y otras culturas; iniciación a estrategias de cooperación-oposición."
+  },
+  {
+    "bloque": "Bloque B",
+    "bloqueNombre": "Competencia motriz (Resolución de problemas en situaciones motrices)",
+    "ciclo": "Tercer Ciclo",
+    "codigo": "SAB-B-C3",
+    "descripcion": "Habilidades motrices específicas y técnicas de base adaptadas a juegos deportivos y deportes alternativos; toma de decisiones y pensamiento estratégico; arbitraje, autogestión de reglas y roles tácticos; juegos modificados y deportes colectivos e individuales."
+  },
+  {
+    "bloque": "Bloque C",
+    "bloqueNombre": "Expresión y comunicación corporal (Actividades motrices lúdicas, culturales y expressivas)",
+    "ciclo": "Primer Ciclo",
+    "codigo": "SAB-C-C1",
+    "descripcion": "Posibilidades expresivas del cuerpo y el gesto; imitación y juego dramático; rítmica elemental, palmadas y percusión corporal; bailes sencillos y canciones motrices."
+  },
+  {
+    "bloque": "Bloque C",
+    "bloqueNombre": "Expresión y comunicación corporal (Actividades motrices lúdicas, culturales y expressivas)",
+    "ciclo": "Segundo Ciclo",
+    "codigo": "SAB-C-C2",
+    "descripcion": "Recursos expresivos no verbales (mirada, mimo, postura, movimiento); dramatización de historias reales o fantásticas; danzas populares y tradicionales catalanas; coordinación corporal con soportes musicales."
+  },
+  {
+    "bloque": "Bloque C",
+    "bloqueNombre": "Expresión y comunicación corporal (Actividades motrices lúdicas, culturales y expressivas)",
+    "ciclo": "Tercer Ciclo",
+    "codigo": "SAB-C-C3",
+    "descripcion": "Composiciones coreográficas grupales (acrosport, danzas urbanas, contemporáneas); técnicas de expresión corporal y dramatización abstracta; la danza como manifestación cultural desvinculada de prejuicios sexistas."
+  },
+  {
+    "bloque": "Bloque D",
+    "bloqueNombre": "Interacción social, juego limpio y resolución de conflictos (Autoregulación emocional e interacción social)",
+    "ciclo": "Primer Ciclo",
+    "codigo": "SAB-D-C1",
+    "descripcion": "Respeto de las reglas básicas en el juego; empatía y cooperación; rechazo del insulto y la burla; diálogo con mediación adulta en la resolución de problemas lúdicos."
+  },
+  {
+    "bloque": "Bloque D",
+    "bloqueNombre": "Interacción social, juego limpio y resolución de conflictos (Autoregulación emocional e interacción social)",
+    "ciclo": "Segundo Ciclo",
+    "codigo": "SAB-D-C2",
+    "descripcion": "Aceptación de la diversidad funcional y de género; estrategias de juego limpio y deportividad en victoria y derrota; distribución equitativa de responsabilidades en tareas de equipo."
+  },
+  {
+    "bloque": "Bloque D",
+    "bloqueNombre": "Interacción social, juego limpio y resolución de conflictos (Autoregulación emocional e interacción social)",
+    "ciclo": "Tercer Ciclo",
+    "codigo": "SAB-D-C3",
+    "descripcion": "Liderazgo positivo, asertividad y mediación de conflictos entre iguales; inclusión activa de alumnado con necesidades específicas; coeducación e igualdad efectiva en el deporte escolar."
+  },
+  {
+    "bloque": "Bloque E",
+    "bloqueNombre": "Entornos sostenibles y actividades en la naturaleza (Interacción con el entorno en tiempo de ocio)",
+    "ciclo": "Primer Ciclo",
+    "codigo": "SAB-E-C1",
+    "descripcion": "Práctica de juegos al aire libre; normas básicas de circulación peatonal en salidas escolares; cuidado de instalaciones y material compartido."
+  },
+  {
+    "bloque": "Bloque E",
+    "bloqueNombre": "Entornos sostenibles y actividades en la naturaleza (Interacción con el entorno en tiempo de ocio)",
+    "ciclo": "Segundo Ciclo",
+    "codigo": "SAB-E-C2",
+    "descripcion": "Orientación básica en espacios abiertos escolares y del entorno cercano; normas de seguridad en el medio natural; educación vial activa y peatonal; recogida selectiva y reciclaje en salidas."
+  },
+  {
+    "bloque": "Bloque E",
+    "bloqueNombre": "Entornos sostenibles y actividades en la naturaleza (Interacción con el entorno en tiempo de ocio)",
+    "ciclo": "Tercer Ciclo",
+    "codigo": "SAB-E-C3",
+    "descripcion": "Carreras de orientación y uso de mapas, brújulas y apps móviles; actividades motrices en entornos naturales (senderismo, trepa, ruedas); movilidad activa sostenible y seguridad vial; valoración y protección ecológica del patrimonio natural local."
+  }
 ];
 
 // ==========================================

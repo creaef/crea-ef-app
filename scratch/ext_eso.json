@@ -1,0 +1,1418 @@
+{
+  "competenciasEspecificas": [
+    {
+      "id": "CE.EF.1",
+      "numero": 1
+    },
+    {
+      "nombre": "Estilo de vida activo y saludable",
+      "numero": 1
+    },
+    {
+      "descripcion": "Adoptar un estilo de vida activo y saludable, seleccionando e incorporando intencionalmente actividades físicas y deportivas en las rutinas diarias, a partir de un análisis crítico de los modelos corporales y del rechazo de las prácticas que carezcan de base científica, haciendo un uso saludable de su tiempo libre y mejorando su calidad de vida.",
+      "id": "CE.EF.1",
+      "nombre": "Estilo de vida activo y saludable",
+      "numero": 1
+    },
+    {
+      "descripcion": "Adaptar y mejorar, con progresiva autonomía, las capacidades físicas perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, aplicando procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos de diferentes situaciones, con dificultad variable, para resolver situaciones de carácter motor vinculadas con distintas actividades físicas funcionales, deportivas, expresivas y recreativas, consolidando actitudes de superación, crecimiento y resiliencia.",
+      "id": "CE.EF.2",
+      "nombre": "Capacidades motrices y toma de decisiones",
+      "numero": 2
+    },
+    {
+      "descripcion": "Compartir espacios de práctica físico-deportiva con independencia de las diferencias culturales, sociales, de género y de habilidad, priorizando el respeto entre los participantes y a las reglas sobre los resultados, adoptando una actitud crítica ante comportamientos antideportivos o contrarios a la convivencia y desarrollando procesos de autorregulación emocional que canalicen el fracaso y el éxito en estas situaciones, para contribuir, con progresiva autonomía, al entendimiento social y al compromiso ético en los diferentes espacios en los que se participa.",
+      "id": "CE.EF.3",
+      "nombre": "Interacción social, juego limpio e inclusión",
+      "numero": 3
+    },
+    {
+      "descripcion": "Practicar, analizar y valorar las distintas manifestaciones de la cultura motriz aprovechando las posibilidades y recursos expresivos que ofrecen el cuerpo y el movimiento, profundizando en las consecuencias de la práctica motriz y del deporte como fenómenos sociales, y analizando críticamente sus manifestaciones desde la perspectiva de género y desde los intereses económico-políticos que los rodean, con una visión realista, contextualizada y justa de la motricidad en el marco de las sociedades actuales.",
+      "id": "CE.EF.4",
+      "nombre": "Cultura motriz y dimensión artística",
+      "numero": 4
+    },
+    {
+      "descripcion": "Practicar actividades físico-deportivas saludables en el entorno natural y urbano, adoptando e integrando un estilo de vida sostenible y ecosocialmente responsable, aplicando medidas de seguridad individuales y colectivas según el entorno, así como desarrollando colaborativa y cooperativamente acciones de servicio a la comunidad vinculadas a la actividad física y al deporte, y así contribuir activamente a la conservación del medio.",
+      "id": "CE.EF.5",
+      "nombre": "Medio natural, urbano y sostenibilidad",
+      "numero": 5
+    }
+  ],
+  "criteriosEvaluacion": [
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.1",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Establecer, organizar y poner en práctica secuencias sencillas de actividad física orientadas al concepto integral de salud y al estilo de vida activo, a partir de una valoración del nivel inicial y respetando la propia realidad e identidad corporal.",
+      "id": "1.1"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.2",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Comenzar a incorporar, con progresiva autonomía, procesos de activación corporal, dosificación del esfuerzo, alimentación saludable, educación postural, relajación e higiene durante la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.",
+      "id": "1.2"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.3",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Adoptar de manera responsable y con progresiva autonomía medidas generales para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.",
+      "id": "1.3"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.4",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Actuar de acuerdo a los protocolos de intervención ante accidentes derivados de la práctica de actividad física, aplicando medidas básicas de primeros auxilios.",
+      "id": "1.4"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.5",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Analizar y valorar la incidencia que ciertas prácticas y comportamientos tienen en nuestra salud y en la convivencia, valorando su impacto y evitando activamente su reproducción.",
+      "id": "1.5"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.1.6",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Explorar diferentes recursos y aplicaciones digitales reconociendo su potencial, así como sus riesgos para su uso en el ámbito de la actividad física y el deporte.",
+      "id": "1.6"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.2.1",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Desarrollar proyectos motores o deportivos de carácter individual o colectivo, cooperativo o colaborativo, con o sin oposición y estableciendo mecanismos para reconducir los procesos de trabajo, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.",
+      "id": "2.1"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.2.2",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Interpretar y actuar correctamente en contextos motrices variados, aplicando principios básicos de toma de decisiones en situaciones lúdicas, juegos modificados y actividades deportivas a partir de la anticipación, adecuándose a las demandas motrices, a la actuación del compañero o de la compañera, y del oponente (si lo hubiera) y a la lógica interna en contextos reales o simulados de actuación, reflexionando sobre las soluciones y los resultados obtenidos.",
+      "id": "2.2"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.2.3",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Evidenciar control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, haciendo frente a las demandas de resolución de problemas en situaciones motrices transferibles a su espacio vivencial con progresiva autonomía.",
+      "id": "2.3"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.3.1",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Identificar y aplicar las capacidades físicas y habilidades motrices necesarias para el desarrollo eficaz en situaciones motrices individuales o colectivas, cooperativas o colaborativas, con o sin oposición.",
+      "id": "3.1"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.3.2",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Practicar una gran variedad de actividades motrices, valorando las implicaciones éticas de las actitudes antideportivas, evitando la competitividad desmedida y actuando con deportividad al asumir los papeles de público, participante u otros.",
+      "id": "3.2"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.3.3",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Cooperar o colaborar en la práctica de diferentes situaciones motrices para alcanzar el logro individual y grupal, participando en la toma de decisiones y asumiendo distintos papeles asignados y responsabilidades.",
+      "id": "3.3"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.3.4",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Hacer uso, con progresiva autonomía, de habilidades sociales, diálogo en la resolución de conflictos y respeto ante la diversidad, ya sea de género, afectivo-sexual, de origen nacional, étnica, socio-económica o de competencia motriz, mostrando una actitud crítica y un compromiso activo frente a los estereotipos, las actuaciones discriminatorias y de cualquier tipo de violencia, haciendo respetar el propio cuerpo y el de los demás.",
+      "id": "3.4"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.4.1",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Gestionar la participación en juegos motores y otras manifestaciones artístico-expresivas vinculadas tanto con la cultura propia como con otras, favoreciendo su conservación y valorando sus orígenes, evolución e influencia en las sociedades contemporáneas.",
+      "id": "4.1"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.4.2",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Analizar objetivamente las diferentes actividades y modalidades deportivas según sus características y requerimientos, evitando los posibles estereotipos de género o capacidad o los comportamientos sexistas vinculados a dichas manifestaciones.",
+      "id": "4.2"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.4.3",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Utilizar intencionadamente y con progresiva autonomía el cuerpo como herramienta de expresión y comunicación a través de diversas técnicas expresivas, participando activamente en la creación y representación de composiciones individuales o colectivas con y sin base musical.",
+      "id": "4.3"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.4.4",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Valorar positivamente la importancia que las actividades artístico-expresivas tienen en la mejora de la inteligencia emocional.",
+      "id": "4.4"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.4.5",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Identificar los aspectos positivos y negativos de la comunicación no verbal observados en las redes sociales y medios de comunicación.",
+      "id": "4.5"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.5.1",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Participar en actividades físico-deportivas en entornos naturales y urbanos, terrestres, acuáticos o aéreos, valorándolas y disfrutando del entorno de manera sostenible, minimizando el impacto ambiental que estas puedan producir y siendo conscientes de su huella ecológica.",
+      "id": "5.1"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.5.2",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Practicar actividades físico-deportivas en el medio natural y urbano, aplicando normas de seguridad individuales y colectivas.",
+      "id": "5.2"
+    },
+    {
+      "ciclo": "1º y 2º ESO",
+      "codigo": "EFI.5.3",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Colaborar y cooperar en el diseño y organización de actividades sencillas que permitan aprovechar el espacio natural y urbano cercano, respetando y asumiendo las fases de trabajo y las responsabilidades asignadas.",
+      "id": "5.3"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.1b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Planificar y autorregular la práctica de actividad física orientada al concepto integral de salud y al estilo de vida activo, según las necesidades e intereses individuales y respetando la propia realidad e identidad corporal.",
+      "id": "1.1b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.2b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Incorporar de forma autónoma los procesos de activación corporal, autorregulación y dosificación del esfuerzo, alimentación saludable, desarrollo y mantenimiento de las capacidades físicas básicas, educación postural, relajación e higiene durante la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.",
+      "id": "1.2b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.3b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Adoptar de manera responsable y autónoma medidas específicas para la prevención de lesiones antes, durante y después de la práctica de actividad física, aprendiendo a reconocer situaciones de riesgo para actuar preventivamente.",
+      "id": "1.3b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.4b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Actuar de acuerdo a los protocolos de intervención ante situaciones de emergencia o accidentes aplicando medidas específicas de primeros auxilios.",
+      "id": "1.4b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.5b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Adoptar actitudes comprometidas y transformadoras que rechacen los estereotipos sociales asociados al ámbito de lo corporal, al género y a la diversidad sexual, y los comportamientos que pongan en riesgo la salud, contrastando con autonomía e independencia cualquier información en base a criterios científicos de validez, fiabilidad y objetividad.",
+      "id": "1.5b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.1.6b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Planificar, desarrollar y compartir con seguridad la práctica física cotidiana manejando recursos y aplicaciones digitales vinculados al ámbito de la actividad física y el deporte.",
+      "id": "1.6b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.2.1b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Desarrollar proyectos motores o deportivos de carácter individual o colectivo, cooperativo o colaborativo, con o sin oposición, estableciendo mecanismos para reconducir los procesos de trabajo y asegurar una participación equilibrada, incluyendo estrategias de autoevaluación y coevaluación tanto del proceso como del resultado.",
+      "id": "2.1b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.2.2b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Mostrar habilidades para la adaptación y la actuación ante situaciones con una elevada incertidumbre, aprovechando eficientemente las propias capacidades y aplicando de manera automática procesos de percepción, decisión y ejecución en contextos reales o simulados de actuación.",
+      "id": "2.2b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.2.3b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Evidenciar control y dominio corporal al emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, resolviendo problemas en todo tipo de situaciones motrices transferibles a su espacio vivencial con autonomía.",
+      "id": "2.3b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.2.4b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Expresar la comprensión de la actuación en diferentes situaciones motrices reales o adaptadas reflexionando sobre las soluciones y resultados obtenidos a través de la autoevaluación y coevaluación.",
+      "id": "2.4b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.3.1b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Resolver eficazmente situaciones motrices individuales o colectivas, cooperativas o colaborativas, con o sin oposición, aplicando los elementos técnico-tácticos necesarios para el desarrollo de diferentes prácticas físico-deportivas.",
+      "id": "3.1b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.3.2b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Practicar y participar activamente asumiendo responsabilidades en la organización de una gran variedad de actividades motrices, valorando las implicaciones éticas de las prácticas antideportivas, evitando la competitividad desmedida y actuando con deportividad al asumir los papeles de público, participante u otros.",
+      "id": "3.2b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.3.3b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Cooperar o colaborar en la práctica de diferentes situaciones motrices y proyectos para alcanzar el logro individual y grupal, participando con autonomía en la toma de decisiones vinculadas a la asignación de funciones, la gestión del tiempo de práctica y la optimización del resultado final.",
+      "id": "3.3b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.3.4b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Relacionarse y entenderse con el resto de participantes durante el desarrollo de diversas prácticas motrices con autonomía y haciendo uso efectivo de habilidades sociales de diálogo en la resolución de conflictos y respeto ante la diversidad, ya sea de género, afectivo-sexual, de origen nacional, étnica, socio-económica o de competencia motriz, y posicionándose activamente frente a los estereotipos, las actuaciones discriminatorias y cualquier tipo de violencia, haciendo respetar el propio cuerpo y el de los demás.",
+      "id": "3.4b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.4.1b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Comprender y practicar diversas modalidades relacionadas con la cultura propia, la tradicional o las procedentes de otros lugares del mundo, identificando y contextualizando la influencia social del deporte en las sociedades actuales y valorando sus orígenes, evolución, distintas manifestaciones e intereses económico-políticos.",
+      "id": "4.1b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.4.2b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Adoptar actitudes comprometidas y conscientes acerca de los distintos estereotipos de género y comportamientos sexistas que se siguen produciendo en algunos contextos de la motricidad, identificando los factores que contribuyen a su mantenimiento y ayudando a difundir referentes de ambos géneros en el ámbito físico-deportivo.",
+      "id": "4.2b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.4.3b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Crear y representar composiciones individuales o colectivas con y sin base musical de manera coordinada, utilizando intencionadamente y con autonomía el cuerpo y el movimiento como herramienta de expresión y comunicación a través de diversas técnicas expresivas específicas, y ayudando a difundir y compartir dichas prácticas culturales entre compañeros u otros miembros de la comunidad.",
+      "id": "4.3b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.4.4b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Valorar positivamente la importancia que las actividades artístico-expresivas tienen en la mejora de la inteligencia emocional y su contribución al crecimiento de nuestra sociedad.",
+      "id": "4.4b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.4.5b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Adoptar una postura crítica ante los aspectos negativos de comunicación no verbal que se pueden observar en las redes sociales y medios de comunicación, actuando adecuadamente para evitar que se produzcan.",
+      "id": "4.5b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.5.1b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Participar en las actividades físico-deportivas en entornos naturales y urbanos, terrestres, acuáticos o aéreos, valorándolas y disfrutando del entorno de manera sostenible, minimizando el impacto ambiental que estas puedan producir, siendo conscientes de su huella ecológica y desarrollando actuaciones intencionadas dirigidas a la conservación y mejora de las condiciones de los espacios en los que se desarrollen.",
+      "id": "5.1b"
+    },
+    {
+      "ciclo": "3º y 4º ESO",
+      "codigo": "EFI.5.2b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Diseñar y organizar actividades físico-deportivas en el medio natural y urbano, asumiendo responsabilidades y aplicando normas de seguridad individuales y colectivas.",
+      "id": "5.2b"
+    }
+  ],
+  "saberesBasicos": [
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.1",
+      "descripcion": "tasa mínima de actividad física"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.2",
+      "descripcion": "volumen e intensidad"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.3",
+      "descripcion": "alimentación y nutrición"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.4",
+      "descripcion": "control postural y relajación"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.5",
+      "descripcion": "dolor muscular tardío"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.6",
+      "descripcion": "musculatura del core"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.1.2.7",
+      "descripcion": "calentamiento general autónomo"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.2.2.1",
+      "descripcion": "malos hábitos sociales"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.2.2.2",
+      "descripcion": "estereotipos corporales y de género"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.2.2.3",
+      "descripcion": "violencia y odio en el deporte"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.3.2.1",
+      "descripcion": "limitaciones y mejora"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.3.2.2",
+      "descripcion": "disfrute y cohesión"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.3.2.3",
+      "descripcion": "actitudes negativas y prejuicios"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "A.3.2.4",
+      "descripcion": "trastornos alimenticios"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.3.2.1",
+      "descripcion": "higiene"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.4.2.2",
+      "descripcion": "herramientas digitales"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.5.2.1",
+      "descripcion": "calzado y ergonomía"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.5.2.2",
+      "descripcion": "seguridad"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.6.2.1",
+      "descripcion": "SVB y cadena de supervivencia"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.6.2.2",
+      "descripcion": "conducta PAS"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.6.2.3",
+      "descripcion": "aviso al 112"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.6.2.4",
+      "descripcion": "protocolo RCP"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización y accidentes",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.6.2.5",
+      "descripcion": "actuaciones ante lesiones comunes"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Proyectos motores",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.4.2.1",
+      "descripcion": "autoevaluación de procesos"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Proyectos motores",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.4.2.3",
+      "descripcion": "proyectos deportivo-motrices sencillos"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.1.2.1",
+      "descripcion": "conciencia corporal espacio-temporal individual"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.1.2.2",
+      "descripcion": "pautas grupales cooperativas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.1.2.3",
+      "descripcion": "análisis del rival en móvil/persecución"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.1.2.4",
+      "descripcion": "oposición"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.1.2.5",
+      "descripcion": "estrategias ataque/defensa colaboración-oposición"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.2.2.1",
+      "descripcion": "esquema corporal y coordinación"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.3.2.1",
+      "descripcion": "capacidades físicas básicas globales"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.3.2.2",
+      "descripcion": "autoevaluación de condición física"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.4.2.1",
+      "descripcion": "habilidades técnicas específicas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.4.2.2",
+      "descripcion": "evaluación de solución motriz"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.5.2.1",
+      "descripcion": "creatividad motriz en retos"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Elección de práctica",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "B.1.2.1",
+      "descripcion": "lógica, respeto al rival y motivación en competición"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.1.2.1",
+      "descripcion": "identificación y gestión del estrés"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.1.2.2",
+      "descripcion": "autorregulación del esfuerzo"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.1.2.3",
+      "descripcion": "tolerancia a la frustración"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.2.2.1",
+      "descripcion": "conductas prosociales colectivas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.3.2.1",
+      "descripcion": "reglas como integración social"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.3.2.2",
+      "descripcion": "arbitraje deportivo"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.4.2.1",
+      "descripcion": "rechazo de conductas violentas, racistas, xenófobas, sexistas o LGTBIfóbicas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "D.4.2.2",
+      "descripcion": "asertividad y autocuidado"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Cultura motriz",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.1.2.1",
+      "descripcion": "herencia cultural motriz de Extremadura"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Cultura motriz",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.1.2.2",
+      "descripcion": "juegos, danzas y bailes interculturales"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.2.2.1",
+      "descripcion": "lenguajes corporales"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.2.2.2",
+      "descripcion": "técnicas de expresión: mimo, imitación, juego expresivo"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.2.2.3",
+      "descripcion": "expresión de emociones en historias/conflictos"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.2.2.4",
+      "descripcion": "creatividad corporal"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.2.2.5",
+      "descripcion": "educación emocional por la expresión"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.3.2.1",
+      "descripcion": "actividades rítmico-musicales"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.3.2.2",
+      "descripcion": "danzas extremeñas/mundo"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.4.2.1",
+      "descripcion": "medios y deporte en igualdad"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.4.2.2",
+      "descripcion": "figuras del deporte"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.4.2.3",
+      "descripcion": "estereotipos de competencia y género"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "E.5.2.1",
+      "descripcion": "el deporte como fenómeno de masas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Espacios deportivos",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "C.6.2.1",
+      "descripcion": "crítica a obstáculos de accesibilidad universal y movilidad activa"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.1.2.1",
+      "descripcion": "normas viales cotidianas seguras y accesibles"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.1.2.2",
+      "descripcion": "uso de instalaciones urbanas y naturales"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.1.2.3",
+      "descripcion": "reglamentos de senderos, campismo, escalada"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.2.2.1",
+      "descripcion": "parkour, skate, senderos, BTT, medios acuáticos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.2.2.2",
+      "descripcion": "organización de actividades en el entorno próximo"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.3.2.1",
+      "descripcion": "medidas de seguridad"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.4.2.1",
+      "descripcion": "reducción, reutilización y reciclaje de materiales"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.4.2.2",
+      "descripcion": "autoconstrucción"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.5.2.1",
+      "descripcion": "cuidado del entorno como servicio a la comunidad"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "1º y 2º ESO",
+      "codigo": "F.5.2.2",
+      "descripcion": "movilidad sostenible: bicicleta, patines"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.1",
+      "descripcion": "variables fisiológicas y adaptaciones"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.2",
+      "descripcion": "planificación del entrenamiento"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.3",
+      "descripcion": "crítica de publicidad, dietas milagro y alimentos insanos"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.4",
+      "descripcion": "postura y estiramientos ante dolores"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.5",
+      "descripcion": "prevención del dolor muscular tardío"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.6",
+      "descripcion": "ergonomía laboral/pantallas"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.7",
+      "descripcion": "calentamiento específico autónomo"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.1.4.8",
+      "descripcion": "mitos y falsas creencias"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.2.4.1",
+      "descripcion": "suplementación y dopaje"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.2.4.2",
+      "descripcion": "soluciones ante estereotipos de género/competencia"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.2.4.3",
+      "descripcion": "ética deportiva"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.1",
+      "descripcion": "presión en competición"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.2",
+      "descripcion": "liberación de tensiones"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.3",
+      "descripcion": "crítica a modelos estéticos en medios"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.4",
+      "descripcion": "identidad corporal sin sexismo"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.5",
+      "descripcion": "vigorexia, anorexia, bulimia"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "A.3.4.6",
+      "descripcion": "trastornos alimenticios"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.2.4.1",
+      "descripcion": "mantenimiento de material"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.2.4.2",
+      "descripcion": "mantenimiento de material"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.3.4.1",
+      "descripcion": "higiene crítica"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.4.4.3",
+      "descripcion": "gestión digital"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.5.4.1",
+      "descripcion": "gestión del riesgo colectivo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.5.4.2",
+      "descripcion": "gestión del riesgo colectivo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.1",
+      "descripcion": "SVB"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.2",
+      "descripcion": "desfibrilador DEA/DESA"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.3",
+      "descripcion": "algoritmo RCP"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.4",
+      "descripcion": "indicios de ictus"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.5",
+      "descripcion": "accidentes deportivos"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Gestión y primeros auxilios",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.6.4.6",
+      "descripcion": "maniobra de Heimlich"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Planificación",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.4.4.1",
+      "descripcion": "control de aportaciones grupales"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Planificación",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.4.4.2",
+      "descripcion": "técnicas de coevaluación/autoevaluación"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Planificación",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.4.4.4",
+      "descripcion": "fases completas del proyecto motor"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.1.4.1",
+      "descripcion": "adaptaciones complejas individuales"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.1.4.2",
+      "descripcion": "coordinación táctica colectiva"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.1.4.3",
+      "descripcion": "optimización de envíos con ventaja"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.1.4.4",
+      "descripcion": "organización anticipada en oposición"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.1.4.5",
+      "descripcion": "estrategias tácticas de ataque/defensa en colaboración-oposición"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.2.4.1",
+      "descripcion": "decisión previa espacio-temporal"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.2.4.2",
+      "descripcion": "autorregulación motriz"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.3.4.1",
+      "descripcion": "capacidades físicas orientadas a la salud"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.3.4.2",
+      "descripcion": "autoevaluación de la condición física"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.3.4.3",
+      "descripcion": "planificación del entrenamiento a medio plazo"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.3.4.4",
+      "descripcion": "sistemas de entrenamiento"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.4.4.1",
+      "descripcion": "corrección técnica específica"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.4.4.2",
+      "descripcion": "corrección técnica específica"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.4.4.3",
+      "descripcion": "coevaluación técnica"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "C.2 / C.3 / C.4 / C.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.5.4.1",
+      "descripcion": "creación y resolución de retos"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Elección de práctica",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "B.1.4.1",
+      "descripcion": "usos catárticos, lúdicos, cooperativos, competitivos y agonísticos"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.1.4.1",
+      "descripcion": "control del fracaso"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.1.4.2",
+      "descripcion": "habilidades volitivas y resiliencia"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.1.4.3",
+      "descripcion": "tolerancia a la frustración"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.2.4.1",
+      "descripcion": "estrategias de mediación y negociación activa en juego"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas y Fair Play",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.3.4.1",
+      "descripcion": "valoración ética de las normas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas y Fair Play",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.3.4.2",
+      "descripcion": "arbitraje"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas y Fair Play",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.3.4.3",
+      "descripcion": "normas como autorregulación"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas y Fair Play",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.3.4.4",
+      "descripcion": "juego limpio y respeto a decisiones arbitrales"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.4.4.1",
+      "descripcion": "soluciones en contextos reales frente al racismo, violencia, sexismo y discriminación"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "D.4.4.2",
+      "descripcion": "asertividad y autocuidado"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Cultura motriz",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.1.4.1",
+      "descripcion": "herencia cultural motriz extremeña"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Cultura motriz",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.1.4.2",
+      "descripcion": "análisis crítico-reflexivo de juegos, deportes y danzas como señas identitarias"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.1",
+      "descripcion": "lenguajes corporales sin palabra"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.2",
+      "descripcion": "técnicas específicas: clown, pantomima, rol, teatro, performance"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.3",
+      "descripcion": "cuerpo, espacio, tiempo e intensidad"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.4",
+      "descripcion": "creatividad expresiva"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.5",
+      "descripcion": "educación emocional"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.2.4.6",
+      "descripcion": "crítica de la comunicación no verbal en redes y medios"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.3.4.1",
+      "descripcion": "danza contemporánea, urbana y creativa"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.3.4.2",
+      "descripcion": "espectáculos artístico-expresivos"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.4.4.1",
+      "descripcion": "historia del deporte y género"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.4.4.2",
+      "descripcion": "acceso igualitario al deporte"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.4.4.3",
+      "descripcion": "referentes de diversidad"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.4.4.4",
+      "descripcion": "igualdad en profesiones deportivas"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "E.3 / E.4 / E.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "E.5.4.1",
+      "descripcion": "intereses políticos y económicos del deporte"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Espacios deportivos",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "C.6.4.1",
+      "descripcion": "barreras físicas, sensoriales y cognitivas en la vía pública"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.1.4.1",
+      "descripcion": "movilidad vial segura, saludable y accesible"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.1.4.2",
+      "descripcion": "alternativas en instalaciones"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Normas de uso",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.1.4.3",
+      "descripcion": "organización de actividades según normas de acampada, ríos y masas de agua"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.2.4.1",
+      "descripcion": "prácticas contemporáneas: calistenia, escalada, orientación, espeleología, XC, ferratas, barrancos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.2.4.2",
+      "descripcion": "diseño y organización integral en el medio natural"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.3.4.1",
+      "descripcion": "análisis y gestión del riesgo colectivo/individual"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.3.4.2",
+      "descripcion": "análisis y gestión del riesgo colectivo/individual"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.4.4.1",
+      "descripcion": "mantenimiento y autoconstrucción sostenible"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.4.4.2",
+      "descripcion": "mantenimiento y autoconstrucción sostenible"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.5.4.1",
+      "descripcion": "servicio a la comunidad en la naturaleza"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "F.2 / F.3 / F.4 / F.5",
+      "ciclo": "3º y 4º ESO",
+      "codigo": "F.5.4.2",
+      "descripcion": "movilidad intermodal activa"
+    }
+  ]
+}

@@ -1,0 +1,1593 @@
+{
+  "competenciasEspecificas": [
+    {
+      "id": "CE.EF.1",
+      "numero": 1
+    },
+    {
+      "nombre": "Estilo de vida activo y saludable",
+      "numero": 1
+    },
+    {
+      "descripcion": "Desarrollar un estilo de vida activo y saludable, practicando sistemática y regularmente actividades físicas y deportivas en la vida cotidiana, así como adoptando tanto comportamientos que potencien la salud física, emocional y social, como medidas de responsabilidad individual y colectiva en la práctica motriz, aprovechando y respetando los recursos urbanos o naturales del entorno.",
+      "id": "CE.EF.1",
+      "nombre": "Estilo de vida activo y saludable",
+      "numero": 1
+    },
+    {
+      "descripcion": "Aplicar procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos en diferentes situaciones, adaptando los elementos propios del esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, y dando respuesta a las demandas de proyectos motores y de prácticas motrices con distintas finalidades en contextos de su vida diaria.",
+      "id": "CE.EF.2",
+      "nombre": "Procesos motores y toma de decisiones",
+      "numero": 2
+    },
+    {
+      "descripcion": "Desarrollar procesos de autorregulación e interacción, con habilidades sociales y actitudes de empatía, cooperación, respeto, inclusión, trabajo en equipo y deportividad, con independencia de las diferencias étnico-culturales, sociales, de género y de habilidad de los participantes, contribuyendo a la convivencia social y al compromiso ético en los diferentes espacios en los que se participa en el marco de la práctica motriz.",
+      "id": "CE.EF.3",
+      "nombre": "Autorregulación, juego limpio e interacción social",
+      "numero": 3
+    },
+    {
+      "descripcion": "Reconocer y practicar diferentes manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz, valorando su influencia y sus aportaciones estéticas y creativas a la cultura tradicional y contemporánea, e integrándolas dentro del repertorio de actuaciones motrices que se utilizan regularmente en la vida cotidiana.",
+      "id": "CE.EF.4",
+      "nombre": "Cultura motriz, tradición y expresión artística",
+      "numero": 4
+    },
+    {
+      "descripcion": "Adoptar medidas de responsabilidad individual y colectiva hacia los diferentes contextos naturales y urbanos en los que se produzca la práctica motriz, comprendiendo la importancia de su cuidado, conservación y mejora desde un enfoque sostenible, y realizando el juego o la actividad físico-deportiva de manera eficiente y respetuosa con el entorno donde se desarrolle.",
+      "id": "CE.EF.5",
+      "nombre": "Interacción con el entorno y sostenibilidad",
+      "numero": 5
+    }
+  ],
+  "criteriosEvaluacion": [
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.1.1",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Identificar el ejercicio físico como práctica saludable, conociendo algunos de sus beneficios físicos mediante la realización de actividad lúdico-motriz con su grupo de iguales, en contextos variados e inclusivos y en entornos cercanos conocidos, para el fomento de un estilo de vida activo.",
+      "id": "1.1"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.1.2",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Explorar y vivenciar las posibilidades de la propia motricidad y de la de los demás desarrollando las capacidades y competencias motrices básicas a través de la actividad física y del juego (populares, tradicionales y escénicos) como medio de diversión, expresión y comunicación, y aplicando en distintas situaciones cotidianas medidas básicas de cuidado de la salud personal a través de la higiene corporal, el descanso, la educación postural y la alimentación e hidratación.",
+      "id": "1.2"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.1.3",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Participar en juegos de activación y vuelta a la calma, reconociendo su utilidad en la preparación del cuerpo para la actividad física, evitando lesiones, respetando las normas de seguridad como medida de prevención, y manteniendo la calma y sabiendo cómo actuar en caso de que se produzca algún accidente en contextos de práctica motriz.",
+      "id": "1.3"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.1.4",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Conocer los valores positivos que fomenta la práctica motriz compartida, reconociendo, vivenciando y disfrutando sus beneficios, participando de forma adecuada, respetando a cada participante, con independencia de sus diferencias individuales, y resolviendo conflictos de forma pacífica en contextos variados e inclusivos.",
+      "id": "1.4"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.2.1",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Reconocer la importancia de establecer metas claras a la hora de desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, valorando su consecución a partir de un análisis de los resultados obtenidos.",
+      "id": "2.1"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.2.2",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Adoptar decisiones en contextos de práctica motriz de manera ajustada a las circunstancias.",
+      "id": "2.2"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.2.3",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Descubrir, reconocer y emplear los componentes cualitativos y cuantitativos de la motricidad de manera lúdica e integrada en diferentes situaciones y contextos, mejorando progresivamente su control y dominio corporal.",
+      "id": "2.3"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.3.1",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Identificar y reconocer las emociones negativas que se producen durante el juego, intentando gestionarlas y disfrutando de la actividad física.",
+      "id": "3.1"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.3.2",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Respetar las normas consensuadas, así como las reglas de juego y actuar desde los parámetros de la deportividad y el juego limpio, aceptando las características y niveles de los participantes.",
+      "id": "3.2"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.3.3",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Participar en las prácticas motrices cotidianas, comenzando a desarrollar habilidades sociales de acogida, inclusión, ayuda y cooperación, iniciándose en la resolución de conflictos personales de forma dialógica y justa, y mostrando un compromiso activo frente a las actuaciones discriminatorias y de violencia.",
+      "id": "3.3"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.4.1",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Participar activamente en juegos y otras manifestaciones artístico-expresivas de carácter cultural propias del entorno, valorando su componente lúdico-festivo y disfrutando de su puesta en práctica.",
+      "id": "4.1"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.4.2",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Conocer y valorar los logros de distintos referentes del deporte de cualquier género, reconociendo el esfuerzo, la dedicación y los sacrificios requeridos para alcanzar dichos éxitos.",
+      "id": "4.2"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.4.3",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Adaptar los distintos usos comunicativos de la corporalidad y sus manifestaciones a diferentes ritmos y contextos expresivos.",
+      "id": "4.3"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.4.4",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Buscar de una forma dirigida recursos digitales relacionados con manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz.",
+      "id": "4.4"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.5.1",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Explorar y disfrutar del entorno natural y urbano conociendo otros usos desde la motricidad y adoptando actitudes de respeto, cuidado y conservación hacia ellos durante el desarrollo de distintas prácticas lúdico-recreativas en contextos terrestres o acuáticos.",
+      "id": "5.1"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.5.2",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Realizar en el entorno natural y artificial actividades lúdico-motrices respetando el entorno y adoptando las medidas de seguridad indicadas en los contextos terrestres o acuáticos.",
+      "id": "5.2"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.5.3",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Reconocer las señales viales básicas que le permitan los desplazamientos a pie seguros, eficientes y sostenibles con el medio ambiente por el entorno urbano próximo.",
+      "id": "5.3"
+    },
+    {
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.5.4",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Adoptar medidas básicas de uso y conservación del material utilizado en el contexto de la actividad físico-motriz.",
+      "id": "5.4"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.1.1b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Reconocer la actividad física como hábito y alternativa de ocio saludable, identificando ejercicio físico activo y sostenible y conociendo los efectos beneficiosos, físicos y mentales, que posee adoptar un estilo de vida activo.",
+      "id": "1.1b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.1.2b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Adoptar medidas de educación postural, alimentación saludable, higiene corporal y preparación de la práctica motriz, asumiendo responsabilidades y generando hábitos y rutinas en situaciones cotidianas.",
+      "id": "1.2b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.1.3b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Tomar medidas de precaución y prevención de lesiones realizando de manera rutinaria el calentamiento general y la vuelta a la calma, así como en relación a la conservación y al mantenimiento del material en el marco de distintas prácticas físico-deportivas, conociendo protocolos básicos de actuación ante accidentes que se puedan producir en este contexto.",
+      "id": "1.3b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.1.4b",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Reconocer la propia imagen corporal y la de los demás, participando de forma proactiva y social, aceptando y respetando las diferencias individuales que puedan existir, superando y rechazando las conductas discriminatorias que se puedan producir en contextos de práctica motriz.",
+      "id": "1.4b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.2.1b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Llevar a cabo proyectos motores de carácter individual, cooperativo o colaborativo empleando estrategias de monitorización y seguimiento que permitan analizar los resultados obtenidos.",
+      "id": "2.1b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.2.2b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Adoptar decisiones en situaciones lúdicas, juegos y actividades predeportivas ajustándose a las demandas derivadas de los objetivos motores, de las características del grupo y de la lógica interna de situaciones individuales, de cooperación, de oposición y de colaboración en contextos simulados de actuación.",
+      "id": "2.2b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.2.3b",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa en distintos contextos y situaciones motrices, adquiriendo un progresivo control y dominio corporal sobre ellos.",
+      "id": "2.3b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.3.1b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Mostrar una disposición positiva hacia la práctica física y hacia el esfuerzo, controlando la impulsividad y las emociones negativas que surjan en contextos de actividad motriz.",
+      "id": "3.1b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.3.2b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Respetar las normas consensuadas en clase, así como las reglas de juego y actuar desde los parámetros de la deportividad y el juego limpio, valorando la aportación de los participantes y la diversidad de pensamiento de los compañeros.",
+      "id": "3.2b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.3.3b",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Desarrollar habilidades sociales de acogida, inclusión, ayuda y cooperación al participar en prácticas motrices variadas, resolviendo conflictos individuales y colectivos de forma dialógica, utilizando un lenguaje positivo y efectivo, mostrando compromiso activo frente a los estereotipos, las actuaciones discriminatorias y de violencia.",
+      "id": "3.3b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.4.1b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Participar activamente en juegos y otras manifestaciones artístico-expresivas con arraigo en la cultura propia, tradicional o actual, así como otros procedentes de diversas culturas, contextualizando su origen, su aparición y su transmisión a lo largo del tiempo y valorando su importancia, repercusión e influencia en las sociedades pasadas y presentes.",
+      "id": "4.1b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.4.2b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Asumir una visión abierta del deporte a partir del conocimiento de distintas ligas femeninas, masculinas o mixtas, acercándose al deporte federativo e identificando, analizando y rechazando comportamientos contrarios a la convivencia independientemente del contexto en el que tengan lugar.",
+      "id": "4.2b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.4.3b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Reproducir distintas combinaciones de movimientos o coreografías individuales y grupales sencillas que incorporen prácticas comunicativas que transmitan sentimientos, emociones o ideas a través del cuerpo, empleando los distintos recursos expresivos y rítmicos de la corporalidad.",
+      "id": "4.3b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.4.4b",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Búsqueda y selección de recursos digitales y aplicaciones para el uso del ámbito motriz.",
+      "id": "4.4b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.5.1b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Conocer y disfrutar del entorno natural y urbano adoptando medidas sencillas de intervención que permitan el cuidado y la conservación de los mismos durante el desarrollo de las actividades físicas en contextos terrestres y acuáticos.",
+      "id": "5.1b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.5.2b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Desarrollar una práctica motriz segura previa valoración y análisis de cada situación en contextos naturales y urbanos de carácter terrestre o acuático, aplicando medidas de conservación ambiental.",
+      "id": "5.2b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.5.3b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Reconocer y aplicar las señales viales básicas en los desplazamientos o en la realización de actividad física a pie o en bicicleta de manera sostenible en el contexto urbano.",
+      "id": "5.3b"
+    },
+    {
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.5.4b",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Identificar y evaluar el material necesario para la realización de actividad motriz tomando conciencia de la degradación del medio que supone su creación y consumismo en el contexto de la actividad física.",
+      "id": "5.4b"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.1.1c",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Reconocer los beneficios físicos, psicológicos y sociales de la actividad física como paso previo para su integración en la práctica de ocio saludable diaria, aportando medidas de sostenibilidad en los espacios y entornos donde se realiza, tanto naturales como artificiales.",
+      "id": "1.1c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.1.2c",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Integrar los procesos de activación corporal, dosificación del esfuerzo, relajación e higiene en la práctica de actividades motrices, interiorizando las rutinas propias de una práctica motriz saludable y responsable.",
+      "id": "1.2c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.1.3c",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Adoptar medidas de seguridad antes, durante y después de la actividad física, previniendo lesiones y reconociendo los contextos de riesgo y las medidas de actuación básicas en caso de accidentes en la elección de la práctica físico-deportiva.",
+      "id": "1.3c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.1.4c",
+      "competenciaId": "CE.EF.1",
+      "descripcion": "Identificar, analizar y rechazar conductas inapropiadas vinculadas al ámbito corporal, la actividad física y el deporte, que resultan perjudiciales para la salud individual o colectiva o que afectan negativamente a la convivencia, adoptando posturas de rechazo a la discriminación y a los estereotipos de género.",
+      "id": "1.4c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.2.1c",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, definiendo metas, secuenciando acciones, introduciendo si es preciso cambios durante el proceso y generando producciones motrices de calidad, valorando el grado de ajuste al proceso seguido y al resultado obtenido.",
+      "id": "2.1c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.2.2c",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Aplicar principios básicos de decisión en situaciones lúdicas, juegos modificados y actividades deportivas a partir de la anticipación, ajustándolos a las demandas derivadas de los objetivos motores y a la lógica interna de situaciones individuales, de cooperación, de oposición y de colaboración-oposición, en contextos reales o simulados de actuación, reflexionando sobre las soluciones obtenidas.",
+      "id": "2.2c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.2.3c",
+      "competenciaId": "CE.EF.2",
+      "descripcion": "Adquirir un progresivo control y dominio corporal, empleando los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa, y haciendo frente a las demandas de resolución de problemas en situaciones motrices transferibles al espacio vivencial.",
+      "id": "2.3c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.3.1c",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Participar en actividades de carácter motor, desde la autorregulación de su actuación, con predisposición, esfuerzo, perseverancia y mentalidad de crecimiento, controlando la impulsividad, gestionando las emociones y expresándolas de forma asertiva y respetuosa.",
+      "id": "3.1c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.3.2c",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Respetar las normas consensuadas, así como las reglas del juego, y actuar desde los parámetros de la deportividad y el juego limpio, aceptando la victoria y la derrota de manera saludable ante el resto de participantes y reconociendo las actuaciones de compañeros y rivales.",
+      "id": "3.2c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.3.3c",
+      "competenciaId": "CE.EF.3",
+      "descripcion": "Convivir mostrando, en el contexto de las prácticas motrices, habilidades sociales, diálogo en la resolución de conflictos, escucha activa y respeto ante la diversidad, ya sea de género, afectivo-sexual, de origen nacional, étnica, socioeconómica o de competencia motriz, y mostrando una actitud crítica y un compromiso activo frente a los estereotipos, las actuaciones discriminatorias y la violencia.",
+      "id": "3.3c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.4.1c",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Participar activamente en juegos motores y otras manifestaciones artístico-expresivas con arraigo en la cultura propia, tradicional o actual, así como otros precedentes de diversas culturas, reconociendo y transmitiendo su valor cultural y su potencial como espacios generadores de interacciones constructivas entre personas con orígenes diferentes para favorecer su conservación.",
+      "id": "4.1c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.4.2c",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Valorar el deporte como fenómeno cultural analizando críticamente los estereotipos de género y los comportamientos sexistas que a veces suceden en diferentes contextos como medios de comunicación, las redes sociales o las tecnologías de la información y la comunicación, rechazando estos y adoptando actitudes que eviten su reproducción en el futuro.",
+      "id": "4.2c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.4.3c",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Reproducir y crear composiciones con o sin soporte musical, y comunicar diferentes sensaciones, emociones e ideas, de forma estética y creativa, desde el uso de los recursos rítmicos y expresivos de la motricidad.",
+      "id": "4.3c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.4.4c",
+      "competenciaId": "CE.EF.4",
+      "descripcion": "Búsqueda crítica y selección de recursos y aplicaciones digitales relacionados con la práctica motriz, y que esta selección de materiales digitales pueda ser usado en un contexto educativo y lúdico.",
+      "id": "4.4c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.5.1c",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Valorar los diferentes espacios naturales y artificiales en los que se realizan actividades físico-deportivas, reflexionando sobre sus posibilidades y potencialidades y actuando desde una perspectiva ecosostenible y comunitaria del entorno.",
+      "id": "5.1c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.5.2c",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Adaptar las acciones motrices a la incertidumbre propia del medio natural y urbano en contextos terrestres y acuáticos de forma eficiente y segura.",
+      "id": "5.2c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.5.3c",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Desarrollar hábitos de movilidad sostenible mediante el uso de transportes poco contaminantes conociendo las normas de seguridad vial necesarias para los desplazamientos urbanos e interurbanos.",
+      "id": "5.3c"
+    },
+    {
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.5.4c",
+      "competenciaId": "CE.EF.5",
+      "descripcion": "Evaluar previamente el material que se utilizará en la práctica físico-deportiva con una actitud no consumista y de máximo aprovechamiento posible, pudiéndose derivar para otros usos.",
+      "id": "5.4c"
+    }
+  ],
+  "saberesBasicos": [
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.1.1.1",
+      "descripcion": "efectos físicos básicos"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.1.1.2",
+      "descripcion": "alimentación saludable e hidratación"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.1.1.3",
+      "descripcion": "educación postural cotidiana"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.1.1.4",
+      "descripcion": "rutina de higiene personal y descanso"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.2.1.1",
+      "descripcion": "práctica social saludable"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.2.1.2",
+      "descripcion": "derechos en deporte escolar"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.2.1.3",
+      "descripcion": "respeto a características personales"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.3.1.1",
+      "descripcion": "bienestar personal por la motricidad"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.3.1.2",
+      "descripcion": "autoconocimiento"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.A.3.1.3",
+      "descripcion": "aceptación del propio cuerpo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.B.2.1.1",
+      "descripcion": "indumentaria e higiene"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.B.3.1.1",
+      "descripcion": "hábitos de higiene"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.B.5.1.1",
+      "descripcion": "activación, calentamiento general y vuelta a la calma guiados"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.B.5.1.2",
+      "descripcion": "respeto a normas de seguridad"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Proyectos motores",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.B.4.1.1",
+      "descripcion": "establecimiento de objetivos en proyectos sencillos"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.1.1.1",
+      "descripcion": "capacidades personales individuales"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.1.1.2",
+      "descripcion": "coordinación en cooperativas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.1.1.3",
+      "descripcion": "ubicación del adversario en persecución y móvil"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.1.1.4",
+      "descripcion": "oposición de contacto"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.1.1.5",
+      "descripcion": "mantener/recuperar móvil"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.2.1.1",
+      "descripcion": "control corporal/postural"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.2.1.2",
+      "descripcion": "lateralidad y proyección espacial"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.2.1.3",
+      "descripcion": "coordinación gruesa óculo-pédica y óculo-manual"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.2.1.4",
+      "descripcion": "equilibrio estático y dinámico"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.3.1.1",
+      "descripcion": "capacidades físicas globales lúdicas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.4.1.1",
+      "descripcion": "habilidades básicas genéricas: locomotrices, no locomotrices, manipulativas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.5.1.1",
+      "descripcion": "creatividad motriz"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.C.5.1.2",
+      "descripcion": "creatividad motriz"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.1.1.1",
+      "descripcion": "identificación y manifestación de emociones"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.1.1.2",
+      "descripcion": "autoestima positiva"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.2.1.1",
+      "descripcion": "verbalización de emociones en colectivo"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.2.1.2",
+      "descripcion": "participación prosocial"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas de juego",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.3.1.1",
+      "descripcion": "conocimiento y aceptación de las reglas y consecuencias de su incumplimiento"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.D.4.1.1",
+      "descripcion": "identificación de comportamientos agresivos/violentos verbales y físicos"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.E.1.1.1",
+      "descripcion": "juegos populares, tradicionales y danzas como manifestaciones de la propia cultura"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.E.2.1.1",
+      "descripcion": "interpretación gestual, muecas, posturas, improvisación"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.E.2.1.2",
+      "descripcion": "artes escénicas y expresión de emociones"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.E.2.1.3",
+      "descripcion": "actividades rítmico-musicales expresivas"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.E.3.1.1",
+      "descripcion": "referentes en el deporte de distintos géneros"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.1.1.1",
+      "descripcion": "educación vial para peatones"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.1.1.2",
+      "descripcion": "movilidad sostenible en la vía pública"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.2.1.1",
+      "descripcion": "juegos en espacios naturales urbanos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.3.1.1",
+      "descripcion": "posibilidades de uso del material"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.4.1.1",
+      "descripcion": "uso de contenedores de residuos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.5.1.1",
+      "descripcion": "actividad física en el medio natural y urbano"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Primer Ciclo",
+      "codigo": "EFI.PRI.F.6.1.1",
+      "descripcion": "cuidado de entorno, animales y plantas"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.1",
+      "descripcion": "beneficios físicos y psicológicos"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.2",
+      "descripcion": "mejora de la condición física"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.3",
+      "descripcion": "alimentos naturales, procesados y ultraprocesados"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.4",
+      "descripcion": "postura en acciones motrices"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.5",
+      "descripcion": "consolidación de higiene y descanso"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.1.2.6",
+      "descripcion": "cuidado corporal"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.2.2.1",
+      "descripcion": "ocio saludable"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.2.2.2",
+      "descripcion": "límites de competitividad escolar"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.2.2.3",
+      "descripcion": "aceptación de tipologías corporales"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.2.2.4",
+      "descripcion": "estereotipos de género"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.3.2.1",
+      "descripcion": "fortalezas y debilidades"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.A.3.2.2",
+      "descripcion": "respeto y aceptación del propio cuerpo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.2.2.1",
+      "descripcion": "preparación del material"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.3.2.1",
+      "descripcion": "pautas de higiene"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.5.2.1",
+      "descripcion": "calentamiento general autónomo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.5.2.2",
+      "descripcion": "seguridad y prevención"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.5.2.3",
+      "descripcion": "seguridad y prevención"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Proyectos motores",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.B.4.2.1",
+      "descripcion": "mecanismos básicos para ejecutar lo planificado"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.1.2.1",
+      "descripcion": "distribución del esfuerzo"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.1.2.2",
+      "descripcion": "ubicación espacial coordinada"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.1.2.3",
+      "descripcion": "reubicación tras acción"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.1.2.4",
+      "descripcion": "anticipación ofensiva en oposición"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.1.2.5",
+      "descripcion": "conservar/recuperar móvil y pase a desmarcados"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.2.2.1",
+      "descripcion": "control tónico-postural"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.2.2.2",
+      "descripcion": "simetría corporal"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.2.2.3",
+      "descripcion": "coordinación dinámica general y segmentaria"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.2.2.4",
+      "descripcion": "equilibrio en superficies inestables"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.3.2.1",
+      "descripcion": "capacidades físicas básicas condicionales"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.4.2.1",
+      "descripcion": "eficacia y combinación de habilidades"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.4.2.2",
+      "descripcion": "eficacia y combinación de habilidades"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.5.2.1",
+      "descripcion": "creatividad y eficacia motriz"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.C.5.2.2",
+      "descripcion": "creatividad y eficacia motriz"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.1.2.1",
+      "descripcion": "regulación de emociones propias"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.1.2.2",
+      "descripcion": "comprensión emocional de los demás"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.1.2.3",
+      "descripcion": "autoestima realista"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.2.2.1",
+      "descripcion": "verbalización colectiva"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.2.2.2",
+      "descripcion": "participación prosocial"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.2.2.3",
+      "descripcion": "escucha activa y negociación"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas de juego",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.3.2.1",
+      "descripcion": "interiorización de reglas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas de juego",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.3.2.2",
+      "descripcion": "concepto de deportividad"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.D.4.2.1",
+      "descripcion": "identificación de discriminación por competencia motriz, género, raza y ventajas de su erradicación"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.1.2.1",
+      "descripcion": "juegos tradicionales y danzas extremeñas"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.1.2.2",
+      "descripcion": "juegos y danzas como interculturalidad"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.2.2.1",
+      "descripcion": "lenguaje corporal de ideas y sentimientos"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.2.2.2",
+      "descripcion": "dramatización"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.2.2.3",
+      "descripcion": "actividades rítmico-musicales en el espacio"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.3.2.1",
+      "descripcion": "referentes deportivos extremeños"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.E.3.2.2",
+      "descripcion": "ligas masculinas, femeninas y mixtas"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.1.2.1",
+      "descripcion": "educación vial peatón y bicicleta"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.1.2.2",
+      "descripcion": "movilidad urbana sostenible"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.2.2.1",
+      "descripcion": "mantenimiento de espacios naturales urbanos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.3.2.1",
+      "descripcion": "inspección de desperfectos en material"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.4.2.1",
+      "descripcion": "sensibilización de residuos"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.5.2.1",
+      "descripcion": "actividad física en el medio natural y urbano"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Segundo Ciclo",
+      "codigo": "EFI.PRI.F.6.2.1",
+      "descripcion": "actitud crítica en el cuidado del entorno"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.1.3.1",
+      "descripcion": "beneficios bio-psico-sociales"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.1.3.2",
+      "descripcion": "factores de condición física y evolución"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.1.3.3",
+      "descripcion": "impacto de ultraprocesados y bebidas energéticas/azucaradas"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.1.3.4",
+      "descripcion": "postura específica"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud física",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.1.3.5",
+      "descripcion": "responsabilidad en el cuidado corporal"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.2.3.1",
+      "descripcion": "alternativa frente al ocio nocivo"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.2.3.2",
+      "descripcion": "efectos de malos hábitos"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.2.3.3",
+      "descripcion": "esfuerzo y alto rendimiento"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.2.3.4",
+      "descripcion": "diversidad corporal y cultural"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud social",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.2.3.5",
+      "descripcion": "estereotipos"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.3.3.1",
+      "descripcion": "debilidades/fortalezas"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.3.3.2",
+      "descripcion": "respeto corporal ajeno"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.3.3.3",
+      "descripcion": "autoconcepto y género"
+    },
+    {
+      "bloque": "A",
+      "bloqueNombre": "Salud mental",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.A.3.3.4",
+      "descripcion": "asertividad e identidad en el grupo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.2.3.1",
+      "descripcion": "crítica al consumismo deportivo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.2.3.2",
+      "descripcion": "crítica al consumismo deportivo"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.3.3.1",
+      "descripcion": "higiene autónoma"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.5.3.1",
+      "descripcion": "calentamiento general/específico"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.5.3.4",
+      "descripcion": "conducta ante accidentes"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Organización",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.5.3.5",
+      "descripcion": "primeros auxilios: PAS y RCP básica"
+    },
+    {
+      "bloque": "B",
+      "bloqueNombre": "Proyectos motores",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.B.4.3.1",
+      "descripcion": "seguimiento y valoración de procesos y resultados"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.1.3.1",
+      "descripcion": "selección según entorno y esfuerzo"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.1.3.2",
+      "descripcion": "ajuste espacio-temporal cooperativo"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.1.3.3",
+      "descripcion": "envíos del móvil con ventaja"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.1.3.4",
+      "descripcion": "habilidades en oposición de contacto"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Toma de decisiones",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.1.3.5",
+      "descripcion": "estrategias complejas de ataque y defensa colectivas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.2.3.1",
+      "descripcion": "coordinación disociada"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.2.3.2",
+      "descripcion": "equilibrio en altitud o inestabilidad alta"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.2.3.3",
+      "descripcion": "estructuración espacial y trayectorias complejas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Perceptivo-motrices",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.2.3.4",
+      "descripcion": "estructuración espacio-temporal y ritmos"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.3.3.1",
+      "descripcion": "capacidades condicionales y resultantes: agilidad"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.4.3.1",
+      "descripcion": "habilidades técnicas específicas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.4.3.2",
+      "descripcion": "habilidades técnicas específicas"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.5.3.1",
+      "descripcion": "reajustes instantáneos y soluciones eficientes"
+    },
+    {
+      "bloque": "C",
+      "bloqueNombre": "Capacidades físicas, habilidades y creatividad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.C.5.3.2",
+      "descripcion": "reajustes instantáneos y soluciones eficientes"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.1.3.1",
+      "descripcion": "reflexión sobre emociones lúdico-deportivas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.1.3.2",
+      "descripcion": "gestión de conductas reactivas"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.1.3.3",
+      "descripcion": "empatía emocional"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Gestión emocional",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.1.3.4",
+      "descripcion": "resiliencia y autonomía"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.2.3.1",
+      "descripcion": "comprensión colectiva de emociones"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.2.3.2",
+      "descripcion": "actitud prosocial"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.2.3.3",
+      "descripcion": "asertividad"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Habilidades sociales",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.2.3.4",
+      "descripcion": "resolución constructiva en equipo"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas de juego",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.3.3.1",
+      "descripcion": "crítica de consecuencias reglamentarias"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Reglas de juego",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.3.3.2",
+      "descripcion": "fair play y respeto arbitral"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.4.3.1",
+      "descripcion": "análisis crítico de la violencia, sexismo y discriminación en el deporte"
+    },
+    {
+      "bloque": "D",
+      "bloqueNombre": "Convivencia",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.D.4.3.2",
+      "descripcion": "análisis crítico de la violencia, sexismo y discriminación en el deporte"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.1.3.1",
+      "descripcion": "investigación de juegos populares y del mundo"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.1.3.2",
+      "descripcion": "el deporte como identidad extremeña"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Herencia cultural",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.1.3.3",
+      "descripcion": "olimpismo y paralimpismo"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.2.3.1",
+      "descripcion": "expresión compleja y autonomía"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.2.3.2",
+      "descripcion": "expresión compleja y autonomía"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.2.3.3",
+      "descripcion": "teatro, danza, pantomima y circo"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Usos comunicativos",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.2.3.4",
+      "descripcion": "actividades rítmico-musicales coreográficas"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.3.3.1",
+      "descripcion": "deportistas extremeños referentes"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.3.3.2",
+      "descripcion": "análisis del sexismo profesional"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.3.3.3",
+      "descripcion": "integración y normalización deportiva"
+    },
+    {
+      "bloque": "E",
+      "bloqueNombre": "Deporte y género",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.E.3.3.4",
+      "descripcion": "integración y normalización deportiva"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.1.3.1",
+      "descripcion": "seguridad vial interurbana"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Vial y movilidad",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.1.3.2",
+      "descripcion": "transporte activo no contaminante"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.2.3.1",
+      "descripcion": "previsión de riesgos en la naturaleza"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.3.3.1",
+      "descripcion": "mantenimiento preventivo de material"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.4.3.1",
+      "descripcion": "reutilización y huella ecológica deportiva"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.4.3.2",
+      "descripcion": "reutilización y huella ecológica deportiva"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.5.3.1",
+      "descripcion": "práctica motriz en naturaleza"
+    },
+    {
+      "bloque": "F",
+      "bloqueNombre": "Espacios, material, residuos y entorno",
+      "ciclo": "Tercer Ciclo",
+      "codigo": "EFI.PRI.F.6.3.1",
+      "descripcion": "servicio a la comunidad y protección ambiental"
+    }
+  ]
+}

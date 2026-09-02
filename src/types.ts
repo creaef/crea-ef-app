@@ -1,6 +1,6 @@
 export type ComunidadAutonoma = 'Andalucía' | 'Aragón' | 'Asturias' | 'Cantabria' | 'Castilla y León' | 'Castilla-La Mancha' | 'Catalunya' | 'Extremadura' | 'Región de Murcia' | 'Galicia' | 'Comunidad de Madrid' | 'Comunidad Valenciana' | 'La Rioja' | 'Navarra' | 'País Vasco';
 export type EtapaEducativa = 'Infantil' | 'Primaria' | 'ESO' | 'Bachillerato';
-export type Ciclo = 'Infantil' | 'Primer Ciclo' | 'Segundo Ciclo' | 'Tercer Ciclo' | '1º Ciclo ESO' | '2º Ciclo ESO' | 'Bachillerato' | 'Todos';
+export type Ciclo = 'Infantil' | 'Primer Ciclo' | 'Segundo Ciclo' | 'Tercer Ciclo' | '1º Ciclo ESO' | '2º Ciclo ESO' | 'Bachillerato' | 'Todos' | '1º ESO' | '2º ESO' | '3º ESO' | '4º ESO' | '1º y 2º ESO' | '3º y 4º ESO' | '1º a 3º ESO';
 export type Curso = '3 años' | '4 años' | '5 años' | '1º Primaria' | '2º Primaria' | '3º Primaria' | '4º Primaria' | '5º Primaria' | '6º Primaria' | '1º ESO' | '2º ESO' | '3º ESO' | '4º ESO' | '1º Bachillerato' | '2º Bachillerato';
 export type Trimestre = '1º Trimestre' | '2º Trimestre' | '3º Trimestre';
 
@@ -24,7 +24,7 @@ export interface CriterioEvaluacion {
 
 export interface SaberBasico {
   codigo: string;
-  bloque: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+  bloque: string;
   bloqueNombre: string;
   ciclo: Ciclo;
   cursoRef?: string;
