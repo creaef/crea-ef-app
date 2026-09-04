@@ -38,6 +38,17 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
     if (c.cursoRef && curso) {
       return c.cursoRef === curso || c.ciclo === 'Todos';
     }
+    // Regla de respaldo autonómica para Andalucía por ciclo y curso
+    if (comunidad === 'Andalucía' && curso) {
+      const esPrimerAnioCiclo = ['1º Primaria', '3º Primaria', '5º Primaria'].includes(curso);
+      const esSegundoAnioCiclo = ['2º Primaria', '4º Primaria', '6º Primaria'].includes(curso);
+      if (esPrimerAnioCiclo && (c.codigo.endsWith('.a') || c.id.endsWith('.a'))) {
+        return c.ciclo === ciclo || c.ciclo === 'Todos';
+      }
+      if (esSegundoAnioCiclo && (c.codigo.endsWith('.b') || c.id.endsWith('.b'))) {
+        return c.ciclo === ciclo || c.ciclo === 'Todos';
+      }
+    }
     return c.ciclo === ciclo || c.ciclo === 'Todos';
   });
 
@@ -45,17 +56,18 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
   useEffect(() => {
     const compSet = new Set<string>();
     criteriosSeleccionados.forEach((cod) => {
-      const crit = criteriosEtapa.find((c) => c.codigo === cod || c.id === cod);
+      const crit = criteriosDelCiclo.find((c) => c.codigo === cod || c.id === cod);
       if (crit) {
         compSet.add(crit.competenciaId);
       }
     });
     setCompetenciasSeleccionadas(Array.from(compSet));
-  }, [criteriosSeleccionados]);
+  }, [criteriosSeleccionados, criteriosDelCiclo]);
 
-  const toggleCriterio = (codigo: string) => {
-    if (criteriosSeleccionados.includes(codigo)) {
-      setCriteriosSeleccionados(criteriosSeleccionados.filter((c) => c !== codigo));
+  const toggleCriterio = (codigo: string, id?: string) => {
+    const exists = criteriosSeleccionados.includes(codigo) || (id && criteriosSeleccionados.includes(id));
+    if (exists) {
+      setCriteriosSeleccionados(criteriosSeleccionados.filter((c) => c !== codigo && c !== id));
     } else {
       setCriteriosSeleccionados([...criteriosSeleccionados, codigo]);
     }
@@ -147,11 +159,12 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
 
           <div className="space-y-3">
             {criteriosDelCiclo.map((crit) => {
-              const isSelected = criteriosSeleccionados.includes(crit.codigo);
+              const isSelected = criteriosSeleccionados.includes(crit.codigo) || criteriosSeleccionados.includes(crit.id);
+              const decretoNum = crit.id ? crit.id.replace(/-[23]c/, '') : '';
               return (
                 <div
                   key={crit.id}
-                  onClick={() => toggleCriterio(crit.codigo)}
+                  onClick={() => toggleCriterio(crit.codigo, crit.id)}
                   className={`p-3.5 rounded-xl border transition cursor-pointer ${
                     isSelected
                       ? 'bg-indigo-50/90 border-indigo-500 shadow-xs ring-1 ring-indigo-500/20'
@@ -167,6 +180,11 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
                         <span className="text-xs font-bold bg-indigo-900 text-white px-2 py-0.5 rounded">
                           {crit.codigo}
                         </span>
+                        {decretoNum && decretoNum !== crit.codigo && (
+                          <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
+                            Criterio {decretoNum}
+                          </span>
+                        )}
                         <span className="text-[11px] font-semibold text-slate-500">
                           Vinc: {crit.competenciaId}
                         </span>

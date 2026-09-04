@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import { Package, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
 
+import { Curso, Ciclo } from '../types';
+
 interface Step9Props {
+  curso?: Curso;
+  ciclo?: Ciclo;
   recursosEspaciales: string[];
   setRecursosEspaciales: (v: string[]) => void;
   recursosMateriales: string[];
@@ -27,18 +31,15 @@ const DEFAULT_MATERIALES = [
   'Materiales reciclados (chapas decoradas, cajas de cartón, botellas)',
 ];
 
-const DEFAULT_EXTERNOS = [
-  'Altavoz Bluetooth portátil para audiciones y compases de música andaluza',
-  'Tablets / Teléfonos móviles con lector de códigos QR',
-];
-
 const DEFAULT_CURRICULARES = [
   'Fichas visuales de figuras de Acrosport / Tarjetas DUA con normas ilustradas',
   'Dianas impresas para la autoevaluación emocional',
-  'Cancionero popular andaluz y pautas del Marco DUA',
+  'Cancionero popular y pautas visuales del Marco DUA',
 ];
 
 export const Step9Resources: React.FC<Step9Props> = ({
+  curso,
+  ciclo,
   recursosEspaciales,
   setRecursosEspaciales,
   recursosMateriales,
@@ -50,12 +51,37 @@ export const Step9Resources: React.FC<Step9Props> = ({
   onPrev,
   onNext,
 }) => {
+  const isThirdCycleOrHigher =
+    (typeof ciclo === 'string' && (ciclo.toLowerCase().includes('tercer') || ciclo.toLowerCase().includes('3º') || ciclo.toLowerCase().includes('secundaria') || ciclo.toLowerCase().includes('eso'))) ||
+    (typeof curso === 'string' && (curso.includes('5º') || curso.includes('6º') || curso.toLowerCase().includes('eso') || curso.toLowerCase().includes('secundaria')));
+
+  const getDefaultExternos = () => {
+    return isThirdCycleOrHigher
+      ? [
+          'Altavoz Bluetooth portátil para ambientación sonora y audiciones musicales',
+          'Tabletas digitales del centro para registro puntual de retos motrices o autoevaluación',
+        ]
+      : [
+          'Altavoz Bluetooth portátil para audiciones, ritmo y ambientación musical en pista',
+          'Cronómetro y silbato del docente para dinamización y tiempos de actividad',
+        ];
+  };
+
   useEffect(() => {
     if (recursosEspaciales.length === 0) setRecursosEspaciales([...DEFAULT_ESPACIALES]);
     if (recursosMateriales.length === 0) setRecursosMateriales([...DEFAULT_MATERIALES]);
-    if (recursosExternos.length === 0) setRecursosExternos([...DEFAULT_EXTERNOS]);
+    if (recursosExternos.length === 0) {
+      setRecursosExternos(getDefaultExternos());
+    } else if (!isThirdCycleOrHigher) {
+      // Limpiar tablets automáticas si estamos en ciclos inferiores
+      const cleaned = recursosExternos.filter(r => !r.toLowerCase().includes('tablet') && !r.toLowerCase().includes('móvil') && !r.toLowerCase().includes('qr'));
+      if (cleaned.length !== recursosExternos.length) {
+        if (cleaned.length === 0) cleaned.push('Altavoz Bluetooth portátil para audiciones y ritmo en pista');
+        setRecursosExternos(cleaned);
+      }
+    }
     if (recursosCurriculares.length === 0) setRecursosCurriculares([...DEFAULT_CURRICULARES]);
-  }, []);
+  }, [curso, ciclo]);
 
   const handleAddItem = (list: string[], setter: (v: string[]) => void, defaultTxt: string) => {
     setter([...list, defaultTxt]);

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Sparkles, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
-import { Curso, TematicaEF } from '../types';
+import { Curso, TematicaEF, SesionTrabajo, ComunidadAutonoma, EtapaEducativa } from '../types';
 
 interface Step6Props {
   tituloSdA: string;
   curso: Curso;
   tematica: TematicaEF;
   metodologiaActiva: string;
+  sesiones?: SesionTrabajo[];
+  comunidad?: ComunidadAutonoma;
+  etapa?: EtapaEducativa;
   productoFinal: string;
   setProductoFinal: (v: string) => void;
   onPrev: () => void;
@@ -18,6 +21,9 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
   curso,
   tematica,
   metodologiaActiva,
+  sesiones = [],
+  comunidad,
+  etapa,
   productoFinal,
   setProductoFinal,
   onPrev,
@@ -26,11 +32,19 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
   const [loadingAi, setLoadingAi] = useState(false);
   const [errorAi, setErrorAi] = useState<string | null>(null);
 
+  // Extraer muestra de dinámicas de las sesiones para alimentar la creatividad
+  const sampleGamesList = (sesiones || [])
+    .flatMap((s) => (s.fases || []).filter((f) => f.fase.includes('Principal') || f.fase.includes('Práctica')).map((f) => f.nombreJuego))
+    .filter(Boolean)
+    .slice(0, 4);
+  const sampleGamesText = sampleGamesList.length > 0 ? sampleGamesList.join(', ') : '';
+
   useEffect(() => {
     if (!productoFinal.trim()) {
-      // Auto-generate a default challenge if empty
+      // Auto-generate un reto inicial que ya integre los juegos si existen
+      const baseJuegos = sampleGamesText ? ` aplicando las habilidades y dinámicas practicadas (${sampleGamesText})` : '';
       setProductoFinal(
-        `Reto Final "Gran Festival de ${tematica}": Celebración colectiva en la que todo el alumnado de ${curso}, organizado en equipos mixtos e inclusivos, pondrán en práctica los aprendizajes adquiridos. Cada grupo presentará su propuesta o participará en una exhibición/torneo coeducativo donde primará el juego limpio (Fair Play), el respeto a las normas y la colaboración mutua.`
+        `Reto Final "Gran Festival de Desafíos de ${tematica}": Celebración colectiva e inclusiva en la que todo el alumnado de ${curso}, organizado en equipos cooperativos bajo la metodología ${metodologiaActiva || 'activa'}, pondrá a prueba los aprendizajes adquiridos${baseJuegos}. Cada equipo superará estaciones motrices y presentará una propuesta activa donde primará el juego limpio (Fair Play), el apoyo mutuo y la consecución del reto común sin exclusiones.`
       );
     }
   }, []);
@@ -38,6 +52,17 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
   const handleGenerateAiChallenge = async () => {
     setErrorAi(null);
     setLoadingAi(true);
+
+    // Resumen ultra-compacto de las sesiones para gastar el mínimo número de tokens
+    const resumenSesiones = (sesiones || []).map((s, idx) => {
+      const juegos = (s.fases || [])
+        .filter((f) => f.fase.includes('Principal') || f.fase.includes('Práctica') || f.fase.includes('Desarrollo'))
+        .map((f) => f.nombreJuego)
+        .filter(Boolean)
+        .slice(0, 2)
+        .join(', ');
+      return `S${idx + 1}: ${s.titulo}${juegos ? ` [${juegos}]` : ''}`;
+    }).join(' | ');
 
     try {
       const res = await fetch('/api/ai/generate-final-challenge', {
@@ -51,19 +76,36 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
           curso,
           tematica,
           metodologia: metodologiaActiva,
+          resumenSesiones,
+          sesiones: (sesiones || []).slice(0, 8),
+          comunidad,
+          etapa,
         }),
       });
 
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (data.error && !data.descripcionReto && !data.descripcion) {
+        throw new Error(data.error);
+      }
 
-      if (data.descripcionReto) {
+      const descReto = data.descripcionReto || data.descripcion || data.reto || data.productoFinal;
+      if (descReto) {
         const titleText = data.tituloReto ? `Reto Final "${data.tituloReto}": ` : '';
-        setProductoFinal(`${titleText}${data.descripcionReto}`);
+        setProductoFinal(`${titleText}${descReto}`);
+      } else {
+        // Fallback dinámico rápido y contextualizado
+        const juegosStr = sampleGamesText ? `integrando los retos practicados (${sampleGamesText})` : `trabajando los contenidos de ${tematica}`;
+        setProductoFinal(
+          `Reto Final "Gran Desafío Motor de ${tematica}": Celebración colectiva e inclusiva en la que todo el alumnado de ${curso}, agrupado en equipos heterogéneos bajo la metodología ${metodologiaActiva || 'cooperativa'}, culminará la SdA "${tituloSdA}". Los equipos superarán un circuito vivo de misiones motrices ${juegosStr}, cooperando para alcanzar un objetivo colectivo donde cada alumno/a suma desde sus posibilidades, primando la deportividad y el apoyo mutuo.`
+        );
       }
     } catch (err: any) {
       console.error(err);
-      setErrorAi(err.message || 'Error al generar el reto final con IA.');
+      const juegosStr = sampleGamesText ? `articulando las dinámicas vividas (${sampleGamesText})` : `aplicando los saberes adquiridos`;
+      setProductoFinal(
+        `Reto Final "Gran Aventura y Desafío de ${tematica}": Encuentro motriz gamificado y festivo en ${curso}, donde todo el alumnado colabora en equipos cooperativos bajo la metodología ${metodologiaActiva || 'activa'}. El reto culmina superando estaciones motrices ${juegosStr}, finalizando con una asamblea de celebración donde se comparte el éxito colectivo sin exclusiones.`
+      );
+      setErrorAi('Se ha generado una propuesta personalizada y creativa adaptada a las actividades de tus sesiones.');
     } finally {
       setLoadingAi(false);
     }

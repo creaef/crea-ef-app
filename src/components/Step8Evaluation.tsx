@@ -401,18 +401,29 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
               (r) => `
             <div style="margin-bottom: 18px; border: 1px solid #cbd5e1; padding: 14px; border-radius: 8px; page-break-inside: avoid; break-inside: avoid;">
               <div style="background: #1e1b4b; color: white; padding: 8px 12px; font-weight: bold; border-radius: 6px; font-size: 12px;">
-                Criterio ${r.criterioCodigo}: ${r.criterioTexto}
+                Criterio ${r.criterioCodigo}: ${(r.criterioTexto || '').replace(/undefined/gi, '').trim()}
               </div>
               <div style="display: flex; gap: 8px; margin-top: 10px;">
-                ${r.niveles
-                  .map(
-                    (n, nIdx) => `
-                  <div style="flex: 1; background: ${nIdx === 0 ? '#fee2e2' : nIdx === 1 ? '#fef9c3' : nIdx === 2 ? '#ffedd5' : '#dcfce7'}; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; font-size: 10.5px;">
-                    <strong style="color: #0f172a; display: block; margin-bottom: 4px; font-size: 11px;">${n.nivel}</strong>
-                    ${n.descriptor}
-                  </div>
-                `
-                  )
+                ${['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)']
+                  .map((lbl, nIdx) => {
+                    const found = r.niveles?.find((n: any) => n.nivel?.includes(lbl.split(' ')[0]) || n.nivel?.includes(String(nIdx + 1))) || r.niveles?.[nIdx];
+                    let cleanDesc = (found?.descriptor || '')
+                      .replace(/undefined/gi, '')
+                      .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
+                      .trim();
+                    if (!cleanDesc || (cleanDesc.toLowerCase().includes('iniciado') && nIdx > 0)) {
+                      if (nIdx === 0) cleanDesc = `Presenta dificultades para alcanzar los objetivos de este criterio. Requiere ayuda docente permanente.`;
+                      else if (nIdx === 1) cleanDesc = `Alcanza de forma básica y guiada los aprendizajes del criterio con apoyos puntuales.`;
+                      else if (nIdx === 2) cleanDesc = `Aplica con soltura, corrección y autonomía los aprendizajes y valores de este criterio.`;
+                      else cleanDesc = `Demuestra un dominio excelente, creativo y autónomo, cooperando y sirviendo de referente positivo.`;
+                    }
+                    return `
+                      <div style="flex: 1; background: ${nIdx === 0 ? '#fee2e2' : nIdx === 1 ? '#fef9c3' : nIdx === 2 ? '#ffedd5' : '#dcfce7'}; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; font-size: 10.5px;">
+                        <strong style="color: #0f172a; display: block; margin-bottom: 4px; font-size: 11px;">${lbl}</strong>
+                        ${cleanDesc}
+                      </div>
+                    `;
+                  })
                   .join('')}
               </div>
             </div>
@@ -765,14 +776,35 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
     let criteriaRows = '';
     if (rubrica && rubrica.length > 0) {
       criteriaRows = rubrica.map((r) => {
-        const n4 = r.niveles?.find((n: any) => n.nivel?.includes('4') || n.nivel?.includes('Consolidado') || n.nivel?.includes('Excelente'))?.descriptor || r.niveles?.[3]?.descriptor || '';
-        const n3 = r.niveles?.find((n: any) => n.nivel?.includes('3') || n.nivel?.includes('Avanzado') || n.nivel?.includes('Notable'))?.descriptor || r.niveles?.[2]?.descriptor || '';
-        const n2 = r.niveles?.find((n: any) => n.nivel?.includes('2') || n.nivel?.includes('Proceso') || n.nivel?.includes('Aprobado'))?.descriptor || r.niveles?.[1]?.descriptor || '';
-        const n1 = r.niveles?.find((n: any) => n.nivel?.includes('1') || n.nivel?.includes('Iniciación') || n.nivel?.includes('Insuficiente'))?.descriptor || r.niveles?.[0]?.descriptor || '';
+        const descTexto = (r.criterioTexto || 'aprendizaje y práctica motriz').replace(/undefined/gi, '').trim();
+
+        const getDescriptorForLevel = (targetIndex: number, keywords: string[]) => {
+          // 1. Buscar por índice directo si coincide
+          let candidate = r.niveles?.[targetIndex]?.descriptor;
+          // 2. Buscar por palabras clave del nivel
+          if (!candidate || (candidate.toLowerCase().includes('iniciado') && targetIndex > 0)) {
+            const found = r.niveles?.find((n: any) => keywords.some((k) => n.nivel?.toLowerCase().includes(k.toLowerCase())));
+            if (found?.descriptor) candidate = found.descriptor;
+          }
+          let clean = (candidate || '').replace(/undefined/gi, '').replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado').trim();
+          
+          if (!clean || (clean.toLowerCase().includes('iniciado') && targetIndex > 0)) {
+            if (targetIndex === 0) clean = `Presenta dificultades para aplicar los aprendizajes de este criterio. Precisa acompañamiento docente continuo.`;
+            else if (targetIndex === 1) clean = `Aplica con apoyo o de forma básica las habilidades de este criterio, requiriendo pautas puntuales.`;
+            else if (targetIndex === 2) clean = `Demuestra solvencia, autonomía y regularidad en los aprendizajes motrices de este criterio.`;
+            else clean = `Domina con maestría, solvencia y creatividad este criterio, colaborando activamente con el grupo.`;
+          }
+          return clean;
+        };
+
+        const n4 = getDescriptorForLevel(3, ['4', 'sobresaliente', 'excelente', 'consolidado']);
+        const n3 = getDescriptorForLevel(2, ['3', 'notable', 'conseguido', 'avanzado']);
+        const n2 = getDescriptorForLevel(1, ['2', 'proceso', 'suficiente', 'aprobado']);
+        const n1 = getDescriptorForLevel(0, ['1', 'iniciación', 'iniciado', 'insuficiente']);
 
         return `
           <tr style="background-color: #15803d; color: white;">
-            <td style="border: 1px solid #cbd5e1; padding: 3px 5px; font-weight: bold; font-size: 9px;" colspan="2">Criterio ${r.criterioCodigo}: ${r.criterioTexto}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 3px 5px; font-weight: bold; font-size: 9px;" colspan="2">Criterio ${r.criterioCodigo}: ${descTexto}</td>
             ${students.map(() => `<td style="border: 1px solid #cbd5e1; padding: 1px;"></td>`).join('')}
           </tr>
           <tr>

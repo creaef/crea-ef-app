@@ -344,35 +344,30 @@ app.post('/api/ai/generate-rubric', async (req, res) => {
       return res.status(400).json({ error: 'Se requiere una lista de criterios de evaluación.' });
     }
 
-    const cacheId = `RUBRIC_${comunidad || 'Gen'}_${criterios.map((c: any) => c.codigo || 'XX').sort().join('_').replace(/[^a-zA-Z0-9_]/g, '_')}`;
-    try {
-      const cacheRef = doc(db, 'rubricasCache', cacheId);
-      const cacheSnap = await getDoc(cacheRef);
-      if (cacheSnap.exists()) {
-        const cachedData = cacheSnap.data();
-        if (cachedData && cachedData.rubrica) {
-          console.log(`[Cache Hit] Devolviendo rúbrica desde Firestore: ${cacheId}`);
-          return res.json({ rubrica: cachedData.rubrica });
-        }
-      }
-    } catch (cacheErr) {
-      console.warn(`[Firestore Cache Read Error] Ignorando y generando con IA:`, cacheErr);
-    }
-
     const ai = getGenAIClient();
-    const prompt = `Genera los descriptores de una Rúbrica de Evaluación Formativa para los siguientes Criterios de Evaluación de Educación Física (LOMLOE ${comunidad || 'Andalucía'}):
+    const prompt = `Genera los descriptores de una Rúbrica de Evaluación Formativa y Cuadrante de Desempeño para los siguientes Criterios de Evaluación de Educación Física (LOMLOE ${comunidad || 'Andalucía'}):
 ${JSON.stringify(criterios, null, 2)}
+
+INSTRUCCIONES PEDAGÓGICAS ESTRICTAS:
+- Para CADA criterio debes generar OBLIGATORIAMENTE 4 niveles de desempeño progresivos y diferenciados:
+  1. "Iniciado (1-4)": Dificultad notable o necesidad de guía constante del docente.
+  2. "En proceso (5-6)": Aplicación básica o ejecución con apoyos y correcciones puntuales.
+  3. "Conseguido (7-8)": Dominio autónomo, correcto y seguro en las situaciones motrices habituales.
+  4. "Excelente (9-10)": Dominio sobresaliente, fluido, creativo y con iniciativa de colaboración con el grupo.
+- TOTALMENTE PROHIBIDO usar nombres propios ficticios de alumnos (como "Luis", "Ana", etc.). Describe acciones pedagógicas impersonales ("Presenta dificultad para...", "Aplica de forma autónoma...", etc.).
+- PROHIBIDO repetir el mismo texto en diferentes niveles.
+- El texto del criterio debe corresponder exactamente con el criterio curricular indicado.
 
 Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 [
   {
-    "criterioCodigo": "código del criterio (ej: EFI.2.1.2.b)",
-    "criterioTexto": "texto del criterio",
+    "criterioCodigo": "código del criterio (ej: EFI.1.1.a)",
+    "criterioTexto": "texto íntegro del criterio",
     "niveles": [
-      { "nivel": "Iniciado (1-4)", "descriptor": "descripción del desempeño para nivel iniciado" },
-      { "nivel": "En proceso (5-6)", "descriptor": "descripción del desempeño para nivel en proceso" },
-      { "nivel": "Conseguido (7-8)", "descriptor": "descripción del desempeño para nivel conseguido" },
-      { "nivel": "Excelente (9-10)", "descriptor": "descripción del desempeño para nivel excelente" }
+      { "nivel": "Iniciado (1-4)", "descriptor": "descripción concreta del desempeño para nivel iniciado" },
+      { "nivel": "En proceso (5-6)", "descriptor": "descripción concreta del desempeño para nivel en proceso" },
+      { "nivel": "Conseguido (7-8)", "descriptor": "descripción concreta del desempeño para nivel conseguido" },
+      { "nivel": "Excelente (9-10)", "descriptor": "descripción concreta del desempeño para nivel excelente" }
     ]
   }
 ]`;
@@ -410,28 +405,47 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 
       const parsed = safeParseAIJson(response.text, []);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        try {
-          const cacheRef = doc(db, 'rubricasCache', cacheId);
-          await setDoc(cacheRef, { rubrica: parsed, createdAt: new Date() }, { merge: true });
-        } catch (cacheErr) {
-          console.warn(`[Firestore Cache Write Error]:`, cacheErr);
-        }
-        return res.json({ rubrica: parsed });
+        // Validar que no contenga valores corruptos ni repeticiones
+        const validRubric = parsed.map((item: any) => {
+          const rawLevels = Array.isArray(item.niveles) ? item.niveles : [];
+          const labels = ['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)'];
+          const cleanLevels = labels.map((lbl, idx) => {
+            const found = rawLevels.find((n: any) => n.nivel?.includes(lbl.split(' ')[0]) || n.nivel?.includes(String(idx + 1))) || rawLevels[idx];
+            const cleanDesc = (found?.descriptor || '')
+              .replace(/undefined/gi, '')
+              .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
+              .trim();
+            return {
+              nivel: lbl,
+              descriptor: cleanDesc || `Demuestra desempeño acorde al nivel ${lbl} en los aprendizajes del criterio.`
+            };
+          });
+          return {
+            criterioCodigo: item.criterioCodigo || 'Criterio EF',
+            criterioTexto: (item.criterioTexto || '').replace(/undefined/gi, '').trim(),
+            niveles: cleanLevels
+          };
+        });
+        return res.json({ rubrica: validRubric });
       }
     } catch (aiErr) {
       console.warn('[generate-rubric] Gemini AI error, using fallback rubric:', aiErr);
     }
 
-    const fallbackRubric = criterios.map((c: any) => ({
-      criterioCodigo: c.codigo || 'Criterio EF',
-      criterioTexto: c.descripcion || 'Criterio de evaluación de Educación Física',
-      niveles: [
-        { nivel: 'Iniciado (1-4)', descriptor: `Muestra dificultades constantes para aplicar los contenidos de ${c.codigo || 'este criterio'}. Requiere ayuda docente permanente.` },
-        { nivel: 'En proceso (5-6)', descriptor: `Aplica los conceptos de ${c.codigo || 'este criterio'} de forma básica con pequeñas imprecisiones o guía puntual.` },
-        { nivel: 'Conseguido (7-8)', descriptor: `Demuestra dominio autónomo, soltura y eficacia en los aprendizajes de ${c.codigo || 'este criterio'}.` },
-        { nivel: 'Excelente (9-10)', descriptor: `Demuestra un desempeño brillante, creativo y sobresaliente en ${c.codigo || 'este criterio'}, guiando y apoyando al grupo.` },
-      ],
-    }));
+    const fallbackRubric = criterios.map((c: any) => {
+      const codigo = c.codigo || c.criterioCodigo || 'Criterio EF';
+      const desc = (c.descripcion || c.criterioTexto || 'desarrollo de las capacidades y saberes motrices').replace(/undefined/gi, '').trim();
+      return {
+        criterioCodigo: codigo,
+        criterioTexto: desc,
+        niveles: [
+          { nivel: 'Iniciado (1-4)', descriptor: `Muestra dificultades para identificar y aplicar los aprendizajes motrices de ${codigo}. Precisa ayuda y guía permanente del docente.` },
+          { nivel: 'En proceso (5-6)', descriptor: `Participa con interés y aplica de forma básica las normas y habilidades de ${codigo}, necesitando indicaciones puntuales.` },
+          { nivel: 'Conseguido (7-8)', descriptor: `Demuestra solvencia, autonomía y eficacia en el cumplimiento de ${codigo}, integrando las normas y hábitos saludables de forma habitual.` },
+          { nivel: 'Excelente (9-10)', descriptor: `Demuestra un dominio sobresaliente y creativo en ${codigo}, anticipando respuestas motrices eficaces y colaborando activamente con el grupo.` },
+        ],
+      };
+    });
 
     res.json({ rubrica: fallbackRubric });
   } catch (error: any) {
@@ -553,35 +567,76 @@ Devuelve un JSON array de objetos con el siguiente esquema:
 // API 3: Generar o Enriquecer Reto / Producto Final
 app.post('/api/ai/generate-final-challenge', async (req, res) => {
   try {
-    const { titulo, curso, tematica, metodologia, etapa, comunidad } = req.body;
+    const { titulo, curso, tematica, metodologia, etapa, comunidad, resumenSesiones, sesiones } = req.body;
     const ai = getGenAIClient();
 
-    const prompt = `Propón un Producto Final o Reto Motor motivador, significativo e inclusivo para culminar una Situación de Aprendizaje de Educación Física en ${comunidad || 'Andalucía'}.
-Título: "${titulo}"
-Curso: ${curso}
-Temática: ${tematica}
-Metodología: ${metodologia}
+    // Extraer resumen breve de juegos de las sesiones para alimentar la creatividad con mínimo coste de tokens
+    const sesionesContexto = resumenSesiones || (Array.isArray(sesiones) && sesiones.length > 0
+      ? sesiones.slice(0, 6).map((s: any, idx: number) => {
+          const mainGames = (s.fases || [])
+            .filter((f: any) => f.fase?.includes('Principal') || f.fase?.includes('Práctica'))
+            .map((f: any) => f.nombreJuego)
+            .filter(Boolean)
+            .slice(0, 2)
+            .join(', ');
+          return `S${idx + 1}: ${s.titulo}${mainGames ? ` [${mainGames}]` : ''}`;
+        }).join(' | ')
+      : '');
 
-Proporciona un título para el Reto y una descripción detallada (80-150 palabras) explicando en qué consiste, cómo participa todo el alumnado y cuál es la meta colectiva.
-Devuelve en formato JSON: { "tituloReto": "...", "descripcionReto": "..." }`;
+    const prompt = `Diseña un Producto Final o Desafío Motor muy creativo, lúdico e integrador para culminar una SdA de Educación Física (${comunidad || 'Andalucía'}).
+Título: "${titulo || 'SdA Educación Física'}"
+Curso: ${curso || 'Educación Primaria'}
+Temática: ${tematica || 'Habilidades Motrices'}
+Metodología Activa: ${metodologia || 'Metodología Activa y Lúdica'}
+${sesionesContexto ? `Contenidos y dinámicas trabajadas en las sesiones previas: "${sesionesContexto}"` : ''}
 
-    const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-1.5-flash-8b',
-      contents: prompt,
-      config: {
-        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            tituloReto: { type: Type.STRING },
-            descripcionReto: { type: Type.STRING }
-          }
+Requisitos clave:
+1. El reto final debe ser creativo y original (ej. un festival de misiones motrices, torneo cooperativo temático, escape room motor o feria de estaciones motrices).
+2. Debe recoger e integrar directamente las habilidades y dinámicas practicadas en las sesiones.
+3. Participación 100% activa e inclusiva (DUA), cooperación y juego limpio.
+4. Breve y directo: entre 70 y 110 palabras.
+
+Devuelve formato JSON estricto: { "tituloReto": "...", "descripcionReto": "..." }`;
+
+    let data: any = {};
+    try {
+      const response = await callGeminiWithRetry(req, ai, {
+        model: 'gemini-1.5-flash',
+        contents: prompt,
+        config: {
+          systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
+          temperature: 0.7,
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              tituloReto: { type: Type.STRING },
+              descripcionReto: { type: Type.STRING }
+            }
+          },
         },
-      },
-    });
+      });
 
-    const data = safeParseAIJson(response.text, {});
+      data = safeParseAIJson(response.text, {});
+    } catch (aiErr) {
+      console.warn('[generate-final-challenge] Gemini AI error or slow, using personalized creative challenge:', aiErr);
+    }
+
+    const descCandidate = data?.descripcionReto || data?.descripcion || data?.reto || data?.productoFinal;
+    if (!descCandidate || typeof descCandidate !== 'string' || descCandidate.trim().length < 20) {
+      // Fallback dinámico ultra-creativo y rápido basado directamente en las sesiones reales
+      const sampleNames = Array.isArray(sesiones) && sesiones.length > 0
+        ? sesiones.slice(0, 3).map((s: any) => (s.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '')).filter(Boolean).join(', ')
+        : tematica;
+
+      const fallbackNombreReto = `Gran Desafío y Festival Motor de ${tematica || 'Educación Física'}`;
+      const fallbackDescReto = `Celebración colectiva, festiva e inclusiva donde el alumnado de ${curso || 'Primaria'}, organizado en equipos cooperativos heterogéneos bajo la metodología ${metodologia || 'activa'}, culmina la SdA "${titulo || 'de Educación Física'}". Cada equipo pondrá en juego las destrezas y misiones motrices trabajadas en las sesiones (${sampleNames}), superando estaciones de retos compartidos donde todos los roles son necesarios y priman la autosuperación, la deportividad y el éxito grupal.`;
+      data = {
+        tituloReto: data?.tituloReto || fallbackNombreReto,
+        descripcionReto: fallbackDescReto
+      };
+    }
+
     res.json(data);
   } catch (error: any) {
     console.error('Error generating challenge:', error);
@@ -669,9 +724,12 @@ HILO NARRATIVO Y GAMIFICACIÓN:
 Integra un hilo narrativo continuo y gamificado que conecte todas las sesiones de principio a fin si la metodología es Gamificación (ej. misiones, niveles, insignias, mapa del tesoro, historia envolvente). Si es otra metodología, contextualiza los retos y juegos en la temática del título y en el Reto/Producto Final.
 
 ${
-  (ciclo.toLowerCase().includes('tercer') || curso.includes('5º') || curso.includes('6º'))
-    ? `INTEGRACIÓN DE COMPETENCIA DIGITAL Y HERRAMIENTAS REALES:\nIncorpora el uso de herramientas tecnológicas reales en las sesiones (ej. tabletas digitales para autograbación del movimiento, códigos QR con retos/pistas, apps de análisis técnico, formularios digitales de coevaluación como Kahoot).\n`
-    : `USO DE MATERIAL DIGITAL LIMITADO:\nAl tratarse de alumnado de ciclos inferiores, NO utilices tabletas, móviles, grabaciones ni dispositivos electrónicos en las sesiones. Todo el material debe ser tradicional de Educación Física (pelotas, aros, picas, petos, etc.).\n`
+  ((typeof ciclo === 'string' && (ciclo.toLowerCase().includes('tercer') || ciclo.toLowerCase().includes('3º') || ciclo.toLowerCase().includes('secundaria') || ciclo.toLowerCase().includes('eso'))) ||
+   (typeof curso === 'string' && (curso.includes('5º') || curso.includes('6º') || curso.toLowerCase().includes('eso') || curso.toLowerCase().includes('secundaria'))))
+    ? `INTEGRACIÓN DE COMPETENCIA DIGITAL EN 3º CICLO / SECUNDARIA (USO PEDAGÓGICO PUNTUAL):
+Puedes incorporar de forma puntual y motivadora el uso de herramientas digitales reales (ej. tabletas para autograbación del movimiento o formularios digitales), siempre supeditado al protagonismo motor.`
+    : `PROHIBICIÓN ESTRICTA DE DISPOSITIVOS DIGITALES (INFANTIL Y 1º-4º DE PRIMARIA):
+ESTÁ TERMINANTEMENTE PROHIBIDO incluir tabletas, teléfonos móviles, lectores de códigos QR, vídeos o pantallas en las actividades o materiales de estas sesiones. El alumnado de Infantil, 1º Ciclo (1º y 2º) y 2º Ciclo (3º y 4º de Primaria) debe realizar práctica motriz 100% viva, analógica y tangible utilizando exclusivamente materiales convencionales de Educación Física (balones, petos, aros, picas, cuerdas, colchonetas, etc.). NUNCA propongas tabletas ni móviles para este curso (${curso}).`
 }
 ESTRUCURA Y FASES DE CADA SESIÓN (60 MINUTOS TOTALES):
 Cada sesión DEBE contener exactamente 6 objetos en la lista "fases" (1 Calentamiento + 4 Juegos en la Parte Principal + 1 Vuelta a la Calma):

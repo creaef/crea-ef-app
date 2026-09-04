@@ -25,8 +25,8 @@ const INITIAL_SDA_STATE: SituacionAprendizaje = {
   comunidad: 'Andalucía',
   etapa: 'Primaria',
   titulo: '',
-  curso: '3º Primaria',
-  ciclo: 'Segundo Ciclo',
+  curso: '1º Primaria',
+  ciclo: 'Primer Ciclo',
   trimestre: '1º Trimestre',
   numSesiones: 6,
   tematica: '',
@@ -288,7 +288,20 @@ export default function App() {
             setCurso={(v) => {
               const newCiclo = getCicloFromCurso(v);
               const newEtapa = getEtapaFromCurso(v);
-              updateSda({ curso: v, ciclo: newCiclo, etapa: newEtapa });
+              const cicloChanged = newCiclo !== sda.ciclo;
+              const cursoChanged = v !== sda.curso;
+              if (cicloChanged || cursoChanged) {
+                updateSda({
+                  curso: v,
+                  ciclo: newCiclo,
+                  etapa: newEtapa,
+                  competenciasSeleccionadas: [],
+                  criteriosSeleccionados: [],
+                  saberesSeleccionados: []
+                });
+              } else {
+                updateSda({ curso: v, ciclo: newCiclo, etapa: newEtapa });
+              }
             }}
             trimestre={sda.trimestre}
             setTrimestre={(v) => updateSda({ trimestre: v })}
@@ -325,6 +338,8 @@ export default function App() {
             etapa={sda.etapa}
             curso={sda.curso}
             ciclo={sda.ciclo}
+            competenciasSeleccionadas={sda.competenciasSeleccionadas}
+            criteriosSeleccionados={sda.criteriosSeleccionados}
             saberesSeleccionados={sda.saberesSeleccionados}
             setSaberesSeleccionados={(v) => updateSda({ saberesSeleccionados: v })}
             odsSeleccionados={sda.odsSeleccionados}
@@ -378,6 +393,9 @@ export default function App() {
             curso={sda.curso}
             tematica={sda.tematica}
             metodologiaActiva={sda.metodologiaActiva}
+            sesiones={sda.sesiones}
+            comunidad={sda.comunidad}
+            etapa={sda.etapa}
             productoFinal={sda.productoFinal}
             setProductoFinal={(v) => updateSda({ productoFinal: v })}
             onPrev={handlePrev}
@@ -428,6 +446,8 @@ export default function App() {
 
         {currentStep === 9 && (
           <Step9Resources
+            curso={sda.curso}
+            ciclo={sda.ciclo}
             recursosEspaciales={sda.recursosEspaciales}
             setRecursosEspaciales={(v) => updateSda({ recursosEspaciales: v })}
             recursosMateriales={sda.recursosMateriales}
