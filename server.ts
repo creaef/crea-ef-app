@@ -935,7 +935,7 @@ Devuelve un JSON estricto con:
 }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
@@ -998,7 +998,7 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
 }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
@@ -1131,7 +1131,7 @@ Devuelve una respuesta JSON estricta con esta estructura:
 }`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
@@ -1180,7 +1180,7 @@ Devuelve una respuesta JSON estricta con el siguiente formato:
 
     try {
       const response = await callGeminiWithRetry(req, ai, {
-        model: 'gemini-2.5-pro',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: {
           systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
@@ -1793,7 +1793,7 @@ Escribe entre 80 y 150 palabras explicando:
 - Cómo se registrarán de forma ágil las necesidades y niveles de partida del alumnado.`;
 
     const response = await callGeminiWithRetry(req, ai, {
-      model: 'gemini-2.5-pro',
+      model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
         systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),

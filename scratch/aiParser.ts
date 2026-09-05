@@ -70,7 +70,7 @@ ${text}
 
   console.log(`Parsing ${txtFile}...`);
   const response = await ai.models.generateContent({
-    model: 'gemini-3.1-pro-preview',
+    model: 'gemini-1.5-flash',
     contents: prompt,
     config: {
       responseMimeType: "application/json",
