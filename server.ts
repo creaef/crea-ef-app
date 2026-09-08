@@ -1907,6 +1907,11 @@ app.get('/api/user/sdas', async (req, res) => {
 
 // Función de detección de navegador para renderizado de PDF en alta fidelidad
 function getBrowserExecutablePath(): string | null {
+  // En Render o entornos cloud con 512MB RAM, no ejecutar navegadores headless pesados
+  // que disparen OOM killer o abortos nativos SIGABRT (134). La exportación se procesa en el cliente.
+  if (process.env.RENDER || process.env.NODE_ENV === 'production') {
+    return null;
+  }
   if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) {
     return process.env.CHROME_BIN;
   }
@@ -1938,7 +1943,7 @@ app.post('/api/export/pdf', async (req, res) => {
 
     const browserPath = getBrowserExecutablePath();
     if (!browserPath) {
-      return res.status(503).json({ error: 'No se encontró un motor de navegador compatible en el entorno local.' });
+      return res.status(503).json({ error: 'Motor de servidor no disponible para PDF. Se utilizará el motor cliente.' });
     }
 
     const cleanTitle = (title || 'Situacion_de_Aprendizaje_EF')
@@ -2002,6 +2007,11 @@ app.post('/api/export/pdf', async (req, res) => {
         [
           '--headless=new',
           '--disable-gpu',
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--single-process',
+          '--no-zygote',
           '--no-pdf-header-footer',
           `--user-data-dir=${tempUserDataDir}`,
           `--print-to-pdf=${tempPdfPath}`,

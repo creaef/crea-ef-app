@@ -187,9 +187,16 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken, folderId, search }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        if (res.status === 401 || data.error?.includes('caducado') || data.error?.includes('iniciar sesión')) {
+        if (res.status === 502 || res.status === 503) {
+          throw new Error('El servidor está reconectando temporalmente. Por favor, reintenta en unos segundos.');
+        }
+        let errMsg = 'Error al obtener archivos de Google Drive.';
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        if (res.status === 401 || errMsg.includes('caducado') || errMsg.includes('iniciar sesión')) {
           try {
             localStorage.removeItem('sda_drive_access_token');
           } catch (e) {}
@@ -197,8 +204,9 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
           setErrorMsg('Tu sesión de Google Drive ha expirado. Por favor, haz clic en "Iniciar sesión con Google Drive" para conectar tu cuenta.');
           return;
         }
-        throw new Error(data.error || 'Error al obtener archivos de Google Drive.');
+        throw new Error(errMsg);
       }
+      const data = await res.json();
 
       setItems(data.items || []);
     } catch (err: any) {
@@ -262,9 +270,16 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
           fileIds: targetFileIds,
         }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        if (res.status === 401 || data.error?.includes('caducado') || data.error?.includes('iniciar sesión')) {
+        if (res.status === 502 || res.status === 503) {
+          throw new Error('El servidor está reconectando temporalmente. Por favor, reintenta en unos segundos.');
+        }
+        let errMsg = 'Error al leer los elementos seleccionados de Google Drive.';
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        if (res.status === 401 || errMsg.includes('caducado') || errMsg.includes('iniciar sesión')) {
           try {
             localStorage.removeItem('sda_drive_access_token');
           } catch (e) {}
@@ -272,8 +287,9 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
           setErrorMsg('Tu sesión de Google Drive ha expirado. Por favor, haz clic en "Iniciar sesión con Google Drive" para conectar tu cuenta.');
           return;
         }
-        throw new Error(data.error || 'Error al leer los elementos seleccionados de Google Drive.');
+        throw new Error(errMsg);
       }
+      const data = await res.json();
 
       const primaryName =
         targetFolderIds.length > 0

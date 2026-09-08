@@ -857,77 +857,33 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '_')
       .replace(/_+/g, '_');
 
-    let container: HTMLDivElement | null = null;
     try {
       cleanupHtml2CanvasArtifacts();
       const richHtml = buildRichSdaExportHtml();
 
-      // 1. Intento primario: Exportación nativa por motor del servidor (Chrome/Edge headless)
-      let downloadedViaServer = false;
-      try {
-        const response = await fetch('/api/export/pdf', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ html: richHtml, title: sda.titulo }),
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          if (blob && blob.size > 2000) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `SdA_${cleanFileName}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            downloadedViaServer = true;
-          }
-        }
-      } catch (serverErr) {
-        console.warn('Servidor no disponible para PDF directo, utilizando motor cliente:', serverErr);
-      }
-
-      if (downloadedViaServer) {
-        setDownloadingPdf(false);
-        return;
-      }
-
-      // 2. Motor cliente de alta fidelidad: contenedor en DOM con opacidad 1 y escala controlada
-      container = document.createElement('div');
-      container.id = 'temp-pdf-export-container';
-      container.style.position = 'fixed';
-      container.style.left = '0';
-      container.style.top = '0';
+      // Generación aislada en memoria sin manipular el DOM visible
+      const container = document.createElement('div');
       container.style.width = '794px';
-      container.style.zIndex = '999999';
-      container.style.backgroundColor = '#ffffff';
+      container.style.padding = '15px';
+      container.style.fontFamily = 'Arial, sans-serif';
       container.style.color = '#1e293b';
-      container.style.opacity = '1';
-      container.style.visibility = 'visible';
+      container.style.backgroundColor = '#ffffff';
+      container.style.lineHeight = '1.5';
       container.innerHTML = richHtml;
-      document.body.appendChild(container);
-
-      // Breve margen para que el navegador procese el renderizado y maquetación de tablas
-      await new Promise((r) => setTimeout(r, 200));
 
       const opt = {
         margin: [8, 8, 8, 8] as [number, number, number, number],
         filename: `SdA_${cleanFileName}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.95 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: {
-          scale: 1.5,
+          scale: 2,
           useCORS: true,
           logging: false,
-          scrollY: 0,
-          scrollX: 0,
-          windowWidth: 794,
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: {
           mode: ['css', 'legacy'],
-          avoid: ['tr', '.avoid-break', 'h1', 'h2', 'h3', 'h4', 'thead', 'th']
+          avoid: ['tr', 'table', 'h1', 'h2', 'h3', 'h4', '.session-start-block', '.avoid-break']
         }
       };
 
@@ -941,9 +897,6 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       console.error('Error generando archivo PDF:', err);
       setErrorDoc(`Incidencia al generar PDF: ${err?.message || 'Error en formateo de datos'}. Recuerda que también puedes descargar el Word (.doc) que contiene toda la programación.`);
     } finally {
-      if (container && container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
       cleanupHtml2CanvasArtifacts();
       setDownloadingPdf(false);
     }
