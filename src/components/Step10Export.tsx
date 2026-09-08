@@ -567,7 +567,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       `;
 
     return `
-      <div style="font-family: Arial, sans-serif; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5; padding: 20px; color: #1e293b; max-width: 850px; margin: 0 auto; background-color: #ffffff;">
+      <div style="font-family: Arial, sans-serif; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5; width: 100%; box-sizing: border-box; padding: 4px; margin: 0 auto; color: #1e293b; background-color: #ffffff;">
         
         <!-- MEMBRETE OFICIAL CON LOGOTIPO CREA-EF -->
         ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026', sda.etapa, sda.comunidad)}
@@ -863,8 +863,10 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
 
       // Generación aislada en memoria sin manipular el DOM visible
       const container = document.createElement('div');
-      container.style.width = '794px';
-      container.style.padding = '15px';
+      container.style.width = '700px';
+      container.style.boxSizing = 'border-box';
+      container.style.padding = '0';
+      container.style.margin = '0 auto';
       container.style.fontFamily = 'Arial, sans-serif';
       container.style.color = '#1e293b';
       container.style.backgroundColor = '#ffffff';
@@ -879,6 +881,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           scale: 2,
           useCORS: true,
           logging: false,
+          windowWidth: 720,
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: {
