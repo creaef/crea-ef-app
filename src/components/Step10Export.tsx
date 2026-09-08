@@ -107,7 +107,42 @@ interface Step10Props {
   onPrev: () => void;
 }
 
-export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) => {
+export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, onPrev }) => {
+  // Normalización exhaustiva para garantizar resiliencia total al cargar SdAs guardadas de cualquier antigüedad
+  const sda: SituacionAprendizaje = {
+    id: rawSda?.id || 'sda-' + Date.now(),
+    fechaCreacion: rawSda?.fechaCreacion || new Date().toLocaleDateString('es-ES'),
+    comunidad: rawSda?.comunidad || 'Andalucía',
+    etapa: rawSda?.etapa || 'Primaria',
+    titulo: rawSda?.titulo || 'Situación de Aprendizaje',
+    curso: rawSda?.curso || '1º Primaria',
+    ciclo: rawSda?.ciclo || 'Primer Ciclo',
+    trimestre: rawSda?.trimestre || '1º Trimestre',
+    numSesiones: rawSda?.numSesiones || 6,
+    tematica: rawSda?.tematica || 'Educación Física',
+    justificacion: rawSda?.justificacion || '',
+    competenciasSeleccionadas: Array.isArray(rawSda?.competenciasSeleccionadas) ? rawSda.competenciasSeleccionadas : [],
+    criteriosSeleccionados: Array.isArray(rawSda?.criteriosSeleccionados) ? rawSda.criteriosSeleccionados : [],
+    saberesSeleccionados: Array.isArray(rawSda?.saberesSeleccionados) ? rawSda.saberesSeleccionados : [],
+    odsSeleccionados: Array.isArray(rawSda?.odsSeleccionados) ? rawSda.odsSeleccionados : [],
+    descriptoresOperativos: Array.isArray(rawSda?.descriptoresOperativos) ? rawSda.descriptoresOperativos : [],
+    metodologiaActiva: rawSda?.metodologiaActiva || 'Metodología Activa y Cooperativa',
+    modeloEstructura: rawSda?.modeloEstructura || 'Modelo 2: Competencial',
+    sesiones: Array.isArray(rawSda?.sesiones) ? rawSda.sesiones : [],
+    productoFinal: rawSda?.productoFinal || '',
+    neaeSeleccionadas: Array.isArray(rawSda?.neaeSeleccionadas) ? rawSda.neaeSeleccionadas : [],
+    adaptacionesNEAE: Array.isArray(rawSda?.adaptacionesNEAE) ? rawSda.adaptacionesNEAE : [],
+    pautasDUAGlobales: Array.isArray(rawSda?.pautasDUAGlobales) ? rawSda.pautasDUAGlobales : [],
+    instrumentosSeleccionados: Array.isArray(rawSda?.instrumentosSeleccionados) ? rawSda.instrumentosSeleccionados : [],
+    evaluacionInicial: rawSda?.evaluacionInicial || '',
+    instrumentosEvaluacion: Array.isArray(rawSda?.instrumentosEvaluacion) ? rawSda.instrumentosEvaluacion : [],
+    rubrica: Array.isArray(rawSda?.rubrica) ? rawSda.rubrica : [],
+    recursosEspaciales: Array.isArray(rawSda?.recursosEspaciales) ? rawSda.recursosEspaciales : [],
+    recursosMateriales: Array.isArray(rawSda?.recursosMateriales) ? rawSda.recursosMateriales : [],
+    recursosCurriculares: Array.isArray(rawSda?.recursosCurriculares) ? rawSda.recursosCurriculares : [],
+    recursosExternos: Array.isArray(rawSda?.recursosExternos) ? rawSda.recursosExternos : [],
+  };
+
   const [copied, setCopied] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
@@ -237,7 +272,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     lines.push(`Metodología Activa: ${sda.metodologiaActiva}`);
     lines.push(`Modelo de Estructura: ${sda.modeloEstructura}\n`);
 
-    lines.push(`4. DESARROLLO DE SESIONES (60 MINUTOS)`);
+    lines.push(`4. DESARROLLO DE LAS SESIONES DE TRABAJO (60 MINUTOS)`);
     sda.sesiones.forEach((ses, idx) => {
       lines.push(`\n--- Sesión ${idx + 1}: ${ses.titulo} ---`);
       lines.push(`Objetivo: ${ses.objetivoSesion || 'Desarrollo motriz'}`);
@@ -248,23 +283,31 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       });
     });
 
-    lines.push(`\n5. PRODUCTO FINAL / RETO MOTOR`);
+    lines.push(`\n5. PRODUCTO FINAL Y RETO MOTOR COLECTIVO`);
     lines.push(`${sda.productoFinal}\n`);
 
-    lines.push(`6. ATENCIÓN A LA DIVERSIDAD (NEAE Y DUA)`);
+    lines.push(`6. ATENCIÓN A LA DIVERSIDAD (MARCO DUA Y ADAPTACIONES NEAE)`);
     (sda.adaptacionesNEAE || []).forEach((a) => {
-      lines.push(`* [${a.categoria}]: Materiales: ${a.materialesYEspacio} | Reglas: ${a.reglasYMetodologia}`);
+      lines.push(`* [${a.categoria}]: Materiales: ${a.materialesYEspacio} | Reglas: ${a.reglasYMetodologia} | Pautas: ${a.pautasDocente}`);
     });
     (sda.pautasDUAGlobales || []).forEach((d: any) => {
       lines.push(`* ${typeof d === 'string' ? d : d.principio}`);
     });
 
-    lines.push(`\n7. EVALUACIÓN FORMATIVA`);
+    lines.push(`\n7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (HERRAMIENTAS FORMATIVAS)`);
+    lines.push(`* Estrategia Inicial: ${sda.evaluacionInicial || 'Diagnóstica de capacidades motrices y partida competencial.'}`);
     (sda.instrumentosEvaluacion || []).forEach((inst) => {
-      lines.push(`* ${inst.tipo || inst.nombre}: ${inst.descripcion}`);
+      lines.push(`* Instrumento [${inst.tipo || inst.nombre}]: ${inst.descripcion} (Aplicación: ${inst.aplicacion})`);
     });
 
-    lines.push(`\n8. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES`);
+    lines.push(`\n8. CONEXIONES INTERDISCIPLINARES`);
+    lines.push(`* Matemáticas: Conteo de puntos, cálculo de distancias y tiempos, orientación geométrica y estadísticas.`);
+    lines.push(`* Lengua Castellana: Comprensión de reglamentos, vocabulario motriz específico y asambleas reflexivas.`);
+    lines.push(`* Conocimiento del Medio: Frecuencia cardíaca/respiratoria, higiene corporal, nutrición activa y salud.`);
+    lines.push(`* Educación Artística: Expresión corporal, ritmo, acompañamiento musical y coordinación grupal.`);
+    lines.push(`* Competencia Digital: Análisis biomecánico audiovisual y formularios interactivos de coevaluación.`);
+
+    lines.push(`\n9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES`);
     lines.push(`* Instalaciones y Espacios: ${(sda.recursosEspaciales || []).join(' • ') || 'Pistas polideportivas y gimnasio cubierto'}`);
     lines.push(`* Materiales Escolares y Deportivos: ${(sda.recursosMateriales || []).join(' • ') || 'Material convencional y adaptado de EF'}`);
     lines.push(`* Recursos Didácticos y Curriculares: ${(sda.recursosCurriculares || []).join(' • ') || 'Tarjetas DUA y dianas de evaluación'}`);
@@ -338,24 +381,25 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       `;
     }).join('');
 
-    const sessionsHtml = sda.sesiones.map((ses) => {
-      const warmup = (ses.fases || []).filter((f) => f.fase.includes('Inicio') || f.fase.includes('Calentamiento'));
-      const main = (ses.fases || []).filter((f) => f.fase.includes('Principal') || f.fase.includes('Práctica'));
-      const cool = (ses.fases || []).filter((f) => f.fase.includes('Calma') || f.fase.includes('Reflexión') || f.fase.includes('Cierre'));
-      const other = (ses.fases || []).filter((f) => 
-        !f.fase.includes('Inicio') && !f.fase.includes('Calentamiento') &&
-        !f.fase.includes('Principal') && !f.fase.includes('Práctica') &&
-        !f.fase.includes('Calma') && !f.fase.includes('Reflexión') && !f.fase.includes('Cierre')
+    const sessionsHtml = (sda.sesiones || []).map((ses, sIdx) => {
+      const fases = Array.isArray(ses?.fases) ? ses.fases : [];
+      const warmup = fases.filter((f) => String(f?.fase || '').includes('Inicio') || String(f?.fase || '').includes('Calentamiento'));
+      const main = fases.filter((f) => String(f?.fase || '').includes('Principal') || String(f?.fase || '').includes('Práctica'));
+      const cool = fases.filter((f) => String(f?.fase || '').includes('Calma') || String(f?.fase || '').includes('Reflexión') || String(f?.fase || '').includes('Cierre'));
+      const other = fases.filter((f) => 
+        !String(f?.fase || '').includes('Inicio') && !String(f?.fase || '').includes('Calentamiento') &&
+        !String(f?.fase || '').includes('Principal') && !String(f?.fase || '').includes('Práctica') &&
+        !String(f?.fase || '').includes('Calma') && !String(f?.fase || '').includes('Reflexión') && !String(f?.fase || '').includes('Cierre')
       );
 
       let warmupHtml = warmup.map((f) => `
         <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">Fase 1: Calentamiento / Inicio (${f.duracionMin} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
+            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">Fase 1: Calentamiento / Inicio (${f?.duracionMin || 10} min)</span>
+            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Actividad de Activación'}</strong>
           </div>
-          ${renderFormattedGameDescriptionHtml(f.descripcion)}
-          ${f.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
+          ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
+          ${f?.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
         </div>
       `).join('');
 
@@ -369,11 +413,11 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             ${main.map((f, mIdx) => `
               <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                  <span style="font-weight: bold; color: #e85d04; font-size: 11px;">Juego ${mIdx + 1} (${f.duracionMin} min)</span>
-                  <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
+                  <span style="font-weight: bold; color: #e85d04; font-size: 11px;">Juego ${mIdx + 1} (${f?.duracionMin || 10} min)</span>
+                  <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || `Juego ${mIdx + 1}`}</strong>
                 </div>
-                ${renderFormattedGameDescriptionHtml(f.descripcion)}
-                ${f.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #334155; background: #f8fafc; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
+                ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
+                ${f?.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #334155; background: #f8fafc; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
               </div>
             `).join('')}
           </div>
@@ -383,36 +427,50 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
       let coolHtml = cool.map((f) => `
         <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #047857; font-size: 11px;">Fase Final: Vuelta a la Calma / Reflexión (${f.duracionMin} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
+            <span style="font-weight: bold; color: #047857; font-size: 11px;">Fase Final: Vuelta a la Calma / Reflexión (${f?.duracionMin || 10} min)</span>
+            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Vuelta a la Calma'}</strong>
           </div>
-          ${renderFormattedGameDescriptionHtml(f.descripcion)}
+          ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
         </div>
       `).join('');
 
       let otherHtml = other.map((f) => `
         <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">${f.fase} (${f.duracionMin} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f.nombreJuego}</strong>
+            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">${f?.fase || 'Fase'} (${f?.duracionMin || 10} min)</span>
+            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Actividad'}</strong>
           </div>
-          ${renderFormattedGameDescriptionHtml(f.descripcion)}
+          ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
         </div>
       `).join('');
+
+      const numSes = ses?.numeroSesion || (sIdx + 1);
+      const titSes = (ses?.titulo || `Sesión ${numSes}`).replace(/^Sesión\s*\d+:\s*/i, '').toUpperCase();
+      const matTot = Array.isArray(ses?.materialesTotales) ? ses.materialesTotales.join(', ') : 'Habitual de EF';
 
       return `
         <div class="session-card" style="margin-bottom: 22px; border: 1.5px solid #0a2240; border-radius: 6px; overflow: hidden; page-break-inside: auto; break-inside: auto;">
           <!-- CABECERA Y FASE 1 INDIVISIBLES: SI NO CABEN AL FINAL DE PÁGINA SALTAN LIMPIAS A LA SIGUIENTE -->
           <div class="session-start-block" style="page-break-inside: avoid !important; break-inside: avoid !important;">
-            <div style="background-color: #0a2240; color: #ffffff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e85d04;">
-              <span style="font-size: 11.5px; font-weight: 900; text-transform: uppercase;">
-                SESIÓN ${ses.numeroSesion}: ${(ses.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '').toUpperCase()} (60 MINUTOS)
-              </span>
-              <span style="font-size: 10px; color: #fef08a; font-weight: bold;">
-                Materiales: ${(ses.materialesTotales || []).join(', ') || 'Habitual de EF'}
-              </span>
-            </div>
-            ${ses.objetivoSesion ? `
+            <!-- CABECERA DE SESIÓN EN 2 COLUMNAS CLARAS: TÍTULO Y MATERIALES SEPARADOS -->
+            <table style="width: 100%; border-collapse: collapse; background-color: #0a2240; border-bottom: 2px solid #e85d04; margin: 0; padding: 0;">
+              <tr>
+                <td style="width: 58%; vertical-align: middle; text-align: left; padding: 9px 12px; border-right: 1.5px solid #1e3a8a;">
+                  <span style="font-size: 11.5px; font-weight: 900; text-transform: uppercase; color: #ffffff; line-height: 1.35; display: block;">
+                    SESIÓN ${numSes}: ${titSes} (60 MINUTOS)
+                  </span>
+                </td>
+                <td style="width: 42%; vertical-align: middle; text-align: left; padding: 8px 12px; background-color: #0c284d;">
+                  <span style="font-size: 9px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">
+                    📦 Materiales Necesarios:
+                  </span>
+                  <span style="font-size: 10px; color: #fef08a; font-weight: 600; line-height: 1.35; display: block;">
+                    ${matTot}
+                  </span>
+                </td>
+              </tr>
+            </table>
+            ${ses?.objetivoSesion ? `
               <div style="background-color: #1e293b; color: #ffffff; padding: 6px 12px; font-size: 10px; font-style: italic; text-align: justify;">
                 <strong>Objetivo Pedagógico de Sesión:</strong> ${ses.objetivoSesion}
               </div>
@@ -520,15 +578,15 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             <tr>
               <td style="padding: 18px 20px; text-align: left;">
                 <span style="background-color: #e85d04; color: #ffffff; font-weight: 800; font-size: 10px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 8px;">
-                  SITUACIÓN DE APRENDIZAJE ${(sda.etapa === 'Infantil' ? 'PSICOMOTRICIDAD' : 'EDUCACIÓN FÍSICA')} (${sda.comunidad.toUpperCase()} — ${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})
+                  SITUACIÓN DE APRENDIZAJE ${(sda.etapa === 'Infantil' ? 'PSICOMOTRICIDAD' : 'EDUCACIÓN FÍSICA')} (${(sda.comunidad || 'Andalucía').toUpperCase()} — ${((getNormativaForEtapa(sda.etapa || 'Primaria', sda.comunidad || 'Andalucía') || 'Normativa').split(' de ')[0])})
                 </span>
                 <h1 style="margin: 6px 0 10px 0; font-size: 20px; font-weight: 900; color: #ffffff; line-height: 1.3; text-align: left;">
                   ${sda.titulo || 'Sin Título'}
                 </h1>
                 <div style="font-size: 11px; color: #cbd5e1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; margin-top: 6px;">
-                  <strong>Curso:</strong> ${sda.curso} (${sda.ciclo}) &nbsp;|&nbsp; 
-                  <strong>Trimestre:</strong> ${sda.trimestre} &nbsp;|&nbsp; 
-                  <strong style="color: #fef08a;">Nº Sesiones: ${sda.numSesiones} (60 min)</strong>
+                  <strong>Curso:</strong> ${sda.curso || ''} (${sda.ciclo || ''}) &nbsp;|&nbsp; 
+                  <strong>Trimestre:</strong> ${sda.trimestre || ''} &nbsp;|&nbsp; 
+                  <strong style="color: #fef08a;">Nº Sesiones: ${sda.numSesiones || 6} (60 min)</strong>
                 </div>
               </td>
             </tr>
@@ -536,17 +594,17 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         </table>
 
         <!-- 1. JUSTIFICACIÓN Y TEMÁTICA -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
                 <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   1. JUSTIFICACIÓN Y TEMÁTICA DE LA SdA
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
                 <td style="padding: 14px; font-size: 11px; color: #1e293b; text-align: justify; line-height: 1.6;">
                   <p style="margin: 0 0 8px 0; font-weight: bold; color: #0a2240; font-size: 11px; text-align: justify;">
                     <span style="background-color: #e85d04; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: 800; margin-right: 6px;">Temática Motriz</span> ${sda.tematica || 'No especificada'}
@@ -561,36 +619,38 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         </div>
 
         <!-- 2. ELEMENTOS CURRICULARES Y MATRIZ LOMLOE -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 22px; border: 1.5px solid #0a2240; font-size: 10.5px;">
-          <thead>
-            <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-              <th colSpan={3} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN LOMLOE (${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})
-              </th>
-            </tr>
-            <tr style="background-color: #1e293b; color: #ffffff; text-align: left; page-break-after: avoid; break-after: avoid;">
-              <th style="padding: 8px 10px; width: 33%; font-weight: bold; border: 1px solid #475569;">Competencias Específicas</th>
-              <th style="padding: 8px 10px; width: 33%; font-weight: bold; border: 1px solid #475569;">Criterios de Evaluación</th>
-              <th style="padding: 8px 10px; width: 34%; font-weight: bold; border: 1px solid #475569;">Saberes Básicos</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${matrixRows}
-          </tbody>
-        </table>
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; font-size: 10.5px; page-break-inside: auto; break-inside: auto;">
+            <thead>
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="3" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+                  2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN (${getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]})
+                </th>
+              </tr>
+              <tr style="background-color: #1e293b; color: #ffffff; text-align: left; page-break-after: avoid !important; break-after: avoid !important;">
+                <th style="padding: 8px 10px; width: 33%; font-weight: bold; border: 1px solid #475569;">Competencias Específicas</th>
+                <th style="padding: 8px 10px; width: 33%; font-weight: bold; border: 1px solid #475569;">Criterios de Evaluación</th>
+                <th style="padding: 8px 10px; width: 34%; font-weight: bold; border: 1px solid #475569;">Saberes Básicos</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${matrixRows}
+            </tbody>
+          </table>
+        </div>
 
         <!-- 3. METODOLOGÍA Y MODELOS PEDAGÓGICOS -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-                <th colSpan={2} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   3. METODOLOGÍA Y MODELOS PEDAGÓGICOS (JUSTIFICACIÓN Y ESTRUCTURA)
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
                 <td style="padding: 12px 14px; border: 1px solid #cbd5e1; width: 50%; vertical-align: top; text-align: justify;">
                   <span style="color: #e85d04; font-weight: 800; font-size: 9.5px; text-transform: uppercase; display: block; margin-bottom: 6px;">FUNDAMENTACIÓN METODOLÓGICA</span>
                   ${metodsJustifications || '<p style="margin: 0; font-size: 10px; color: #334155;">Metodología activa y vivencial orientada al juego inclusivo.</p>'}
@@ -604,26 +664,32 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           </table>
         </div>
 
-        <!-- 4. DESARROLLO DE SESIONES -->
-        <div style="margin-bottom: 22px;">
-          <h2 style="text-align: left; color: #0a2240; font-size: 14px; font-weight: 900; border-bottom: 2.5px solid #e85d04; padding-bottom: 4px; margin-bottom: 14px; text-transform: uppercase; page-break-after: avoid; break-after: avoid;">
-            4. DESARROLLO DE LAS SESIONES DE TRABAJO (60 MINUTOS)
-          </h2>
+        <!-- 4. DESARROLLO DE SESIONES (INICIA LIMPIO EN NUEVA PÁGINA) -->
+        <div class="section-container" style="margin-bottom: 22px; page-break-before: always !important; break-before: page !important;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; margin-bottom: 16px; page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
+            <thead>
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+                <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04; letter-spacing: 0.3px; page-break-inside: avoid !important; break-inside: avoid !important;">
+                  4. DESARROLLO DE LAS SESIONES DE TRABAJO (DESGLOSE ESTRUCTURADO Y FLUIDO)
+                </th>
+              </tr>
+            </thead>
+          </table>
           ${sessionsHtml}
         </div>
 
         <!-- 5. PRODUCTO FINAL Y RETO MOTOR -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
                 <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   5. PRODUCTO FINAL Y RETO MOTOR COLECTIVO
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #eef2ff;">
+              <tr style="background-color: #eef2ff; page-break-inside: avoid; break-inside: avoid;">
                 <td style="padding: 14px; font-size: 11px; color: #1e1b4b; line-height: 1.6; text-align: justify; border: 1px solid #c7d2fe;">
                   ${sda.productoFinal || 'Sin definir.'}
                 </td>
@@ -633,27 +699,27 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         </div>
 
         <!-- 6. ATENCIÓN A LA DIVERSIDAD -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-                <th colSpan={3} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="3" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   6. ATENCIÓN A LA DIVERSIDAD (MARCO DUA Y ADAPTACIONES NEAE)
                 </th>
               </tr>
             </thead>
             <tbody>
               ${neaeTableRows ? `
-                <tr style="background-color: #9f1239; color: #ffffff;">
-                  <td colSpan={3} style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
+                <tr style="background-color: #9f1239; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                  <td colspan="3" style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
                     ADAPTACIONES NEAE POR CASUÍSTICA ESPECÍFICA
                   </td>
                 </tr>
                 ${neaeTableRows}
               ` : ''}
               ${duaTableRows ? `
-                <tr style="background-color: #047857; color: #ffffff;">
-                  <td colSpan={3} style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
+                <tr style="background-color: #047857; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                  <td colspan="3" style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
                     PAUTAS UNIVERSALES DUA (DISEÑO UNIVERSAL PARA EL APRENDIZAJE)
                   </td>
                 </tr>
@@ -663,44 +729,32 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           </table>
         </div>
 
-        <!-- 7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (TABLA SEPARADA DE 1 COLUMNA) -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 18px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <!-- 7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (HERRAMIENTAS FORMATIVAS) -->
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-                <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                  7. EVALUACIÓN INICIAL Y DIAGNÓSTICA
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+                  7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (HERRAMIENTAS FORMATIVAS)
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 12px; font-size: 11px; border: 1px solid #cbd5e1; text-align: justify; width: 100%;">
-                  <p style="margin: 0; color: #334155; text-align: justify; line-height: 1.6; width: 100%;">${sda.evaluacionInicial || 'Diagnóstica inicial de capacidades motrices, actitudinales y nivel competencial de partida.'}</p>
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td colspan="2" style="padding: 12px; font-size: 11px; border: 1px solid #cbd5e1; text-align: justify; width: 100%;">
+                  <strong style="color: #0a2240; font-size: 11px; display: block; margin-bottom: 4px;">🔍 Estrategia Diagnóstica Inicial de Partida:</strong>
+                  <p style="margin: 0; color: #334155; text-align: justify; line-height: 1.6; width: 100%;">
+                    ${(sda.evaluacionInicial || 'Diagnóstica inicial de capacidades motrices, actitudinales y nivel competencial de partida.').replace(/\bCOMING\b|\bCOMING\s+SOON\b/gi, '').trim()}
+                  </p>
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 7.2 HERRAMIENTAS E INSTRUMENTOS DE EVALUACIÓN (TABLA SEPARADA DE 2 COLUMNAS) -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
-            <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-                <th colSpan={2} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                  HERRAMIENTAS E INSTRUMENTOS DE EVALUACIÓN Y FORMATIVOS
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background-color: #1e293b; color: #ffffff;">
+              <tr style="background-color: #1e293b; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
                 <th style="padding: 8px 10px; width: 28%; text-align: left; font-size: 10.5px;">Herramienta / Instrumento</th>
                 <th style="padding: 8px 10px; width: 72%; text-align: left; font-size: 10.5px;">Criterios de Evaluación, Descripción y Aplicación Práctica</th>
               </tr>
               ${instTableRows || `
-                <tr>
-                  <td colSpan={2} style="padding: 10px; font-size: 10.5px; text-align: center; color: #64748b; border: 1px solid #cbd5e1;">No se han registrado instrumentos específicos para esta SdA.</td>
+                <tr style="page-break-inside: avoid; break-inside: avoid;">
+                  <td colspan="2" style="padding: 10px; font-size: 10.5px; text-align: center; color: #64748b; border: 1px solid #cbd5e1;">No se han registrado instrumentos específicos para esta SdA.</td>
                 </tr>
               `}
             </tbody>
@@ -708,34 +762,34 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         </div>
 
         <!-- 8. CONEXIONES INTERDISCIPLINARES -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 22px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid; break-after: avoid;">
-                <th colSpan={2} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
-                  8. CONEXIONES INTERDISCIPLINARES (VINCULACIÓN OTRAS ÁREAS)
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+                  8. CONEXIONES INTERDISCIPLINARES
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">🔢 Matemáticas</td>
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">Matemáticas</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Conteo de puntos, cálculo de distancias y tiempos, orientación geométrica en el espacio de juego y registro estadístico.</td>
               </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">📚 Lengua Castellana</td>
+              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">Lengua Castellana</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Comprensión de reglamentos, vocabulario motriz específico, expresión oral en asambleas reflexivas y coevaluación dialogada.</td>
               </tr>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">🌱 Conocimiento del Medio</td>
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">Conocimiento del Medio</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Reconocimiento de frecuencia cardíaca/respiratoria, higiene corporal, educación para la salud, nutrición activa y respeto al entorno.</td>
               </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #b45309; font-size: 10.5px; vertical-align: top;">🎨 Educación Artística</td>
+              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #b45309; font-size: 10.5px; vertical-align: top;">Educación Artística</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Expresión corporal, ritmo, acompañamiento musical, coordinación colectiva y diseño de tarjetas o insignias.</td>
               </tr>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">📱 Competencia Digital</td>
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">Competencia Digital</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">${digitalCompetenceText}</td>
               </tr>
             </tbody>
@@ -743,45 +797,45 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
         </div>
 
         <!-- 9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES -->
-        <div class="section-container" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 0px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240;">
+        <div class="section-container" style="margin-bottom: 0px;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff;">
-                <th colSpan={2} style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 30%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
-                  🏟️ Instalaciones y Espacios:
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
+                  <span style="background-color: #0a2240; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">ESPACIOS</span> Instalaciones y Espacios:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 70%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
                   ${(sda.recursosEspaciales && sda.recursosEspaciales.length > 0) ? sda.recursosEspaciales.join(' • ') : 'Pista polideportiva exterior del centro, pabellón cubierto / gimnasio escolar y zonas delimitadas seguras.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 30%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
-                  ⚽ Materiales Escolares y Deportivos:
+              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
+                  <span style="background-color: #0284c7; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">MATERIAL</span> Materiales Escolares y Deportivos:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 70%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
                   ${(sda.recursosMateriales && sda.recursosMateriales.length > 0) ? sda.recursosMateriales.join(' • ') : 'Balones de gomaespuma, petos de colores, aros, picas, conos delimitadores, colchonetas y material alternativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #f8fafc;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 30%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">
-                  📋 Recursos Didácticos y Curriculares:
+              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">
+                  <span style="background-color: #047857; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">DIDÁCTICA</span> Recursos Didácticos y Curriculares:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 70%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
                   ${(sda.recursosCurriculares && sda.recursosCurriculares.length > 0) ? sda.recursosCurriculares.join(' • ') : 'Tarjetas visuales DUA de apoyo a las reglas, dianas de autoevaluación motriz y fichas de registro cooperativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 30%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">
-                  🎵 Recursos Complementarios:
+              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">
+                  <span style="background-color: #6b21a8; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">COMPLEMENTO</span> Recursos Complementarios:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 70%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
                   ${(sda.recursosExternos && sda.recursosExternos.length > 0) ? sda.recursosExternos.join(' • ') : (isThirdCycleOrHigher ? 'Tabletas para consulta puntual de retos y altavoz Bluetooth portátil.' : 'Altavoz Bluetooth portátil para ambientación musical y cronómetro analógico del docente.')}
                 </td>
               </tr>
@@ -793,41 +847,103 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
     `;
   };
 
-  // Direct PDF Download handler that triggers direct file save
-  const handlePrintPDF = async () => {
+  // Direct PDF Download handler that generates and downloads the complete PDF file directly to disk
+  const handleDownloadPDF = async () => {
     if (downloadingPdf) return;
     setDownloadingPdf(true);
     setErrorDoc(null);
 
+    const cleanFileName = (sda.titulo || 'Educacion_Fisica')
+      .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '_')
+      .replace(/_+/g, '_');
+
+    let container: HTMLDivElement | null = null;
     try {
       cleanupHtml2CanvasArtifacts();
       const richHtml = buildRichSdaExportHtml();
-      const container = document.createElement('div');
-      container.innerHTML = richHtml;
-      container.style.width = '100%';
-      container.style.maxWidth = '190mm';
-      container.style.boxSizing = 'border-box';
-      container.style.background = '#ffffff';
+
+      // 1. Intento primario: Exportación nativa por motor del servidor (Chrome/Edge headless)
+      let downloadedViaServer = false;
+      try {
+        const response = await fetch('/api/export/pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html: richHtml, title: sda.titulo }),
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          if (blob && blob.size > 2000) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SdA_${cleanFileName}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            downloadedViaServer = true;
+          }
+        }
+      } catch (serverErr) {
+        console.warn('Servidor no disponible para PDF directo, utilizando motor cliente:', serverErr);
+      }
+
+      if (downloadedViaServer) {
+        setDownloadingPdf(false);
+        return;
+      }
+
+      // 2. Motor cliente de alta fidelidad: contenedor en DOM con opacidad 1 y escala controlada
+      container = document.createElement('div');
+      container.id = 'temp-pdf-export-container';
+      container.style.position = 'fixed';
+      container.style.left = '0';
+      container.style.top = '0';
+      container.style.width = '794px';
+      container.style.zIndex = '999999';
+      container.style.backgroundColor = '#ffffff';
       container.style.color = '#1e293b';
+      container.style.opacity = '1';
+      container.style.visibility = 'visible';
+      container.innerHTML = richHtml;
+      document.body.appendChild(container);
+
+      // Breve margen para que el navegador procese el renderizado y maquetación de tablas
+      await new Promise((r) => setTimeout(r, 200));
 
       const opt = {
         margin: [8, 8, 8, 8] as [number, number, number, number],
-        filename: `Resumen_SdA_${(sda.titulo || 'Educacion_Fisica').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
+        filename: `SdA_${cleanFileName}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.95 },
+        html2canvas: {
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: 794,
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
-        pagebreak: { mode: ['css', 'legacy'], avoid: ['.session-start-block', '.section-container', '.avoid-break', 'tr'] }
+        pagebreak: {
+          mode: ['css', 'legacy'],
+          avoid: ['tr', '.avoid-break', 'h1', 'h2', 'h3', 'h4', 'thead', 'th']
+        }
       };
 
-      await html2pdf().set(opt).from(container).save();
-    } catch (err: any) {
-      console.warn('Direct PDF download error, falling back to print dialog:', err);
-      try {
-        window.print();
-      } catch (e) {
-        setErrorDoc('No se pudo descargar o abrir el cuadro del PDF.');
+      const h2p: any = (html2pdf as any)?.default || html2pdf || (window as any).html2pdf;
+      if (typeof h2p !== 'function') {
+        throw new Error('El motor de generación de PDF no está listo en este navegador.');
       }
+
+      await h2p().set(opt).from(container).save();
+    } catch (err: any) {
+      console.error('Error generando archivo PDF:', err);
+      setErrorDoc(`Incidencia al generar PDF: ${err?.message || 'Error en formateo de datos'}. Recuerda que también puedes descargar el Word (.doc) que contiene toda la programación.`);
     } finally {
+      if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
       cleanupHtml2CanvasArtifacts();
       setDownloadingPdf(false);
     }
@@ -936,11 +1052,17 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             color: #0f172a !important;
             background: #ffffff !important;
           }
-          table, tr, td, th, div {
+          table {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+          }
+          tr, .avoid-break, .session-start-block {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
           }
-          h1, h2, h3, h4, th {
+          h1, h2, h3, h4, thead, th, .section-header {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             page-break-after: avoid !important;
             break-after: avoid !important;
           }
@@ -1005,8 +1127,8 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           {/* Descargar PDF */}
           <button
             type="button"
-            id="btn-print-pdf"
-            onClick={handlePrintPDF}
+            id="btn-download-pdf"
+            onClick={handleDownloadPDF}
             disabled={downloadingPdf}
             className="inline-flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs transition shadow border border-amber-300 disabled:opacity-50"
           >
@@ -1015,7 +1137,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             ) : (
               <Download className="w-4 h-4 text-slate-950" />
             )}
-            <span>{downloadingPdf ? 'Abriendo PDF...' : 'Descargar PDF'}</span>
+            <span>{downloadingPdf ? 'Descargando PDF...' : 'Descargar PDF'}</span>
           </button>
 
           {/* Guardar SdA local */}
@@ -1170,10 +1292,10 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </div>
           </div>
 
-          {/* 1. Justificación */}
+          {/* 1. Justificación y Temática de la SdA */}
           <section className="space-y-2">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1">
-              1. Justificación y Temática
+              1. Justificación y Temática de la SdA
             </h3>
             <p className="text-xs font-bold text-indigo-950">
               <strong>Temática(s) Seleccionada(s):</strong> {sda.tematica || 'No especificada'}
@@ -1361,22 +1483,27 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </div>
           </section>
 
-          {/* 4. Desarrollo de Sesiones */}
+          {/* 4. Desarrollo de las Sesiones de Trabajo */}
           <section className="space-y-4">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1">
-              4. Desarrollo de las Sesiones de Trabajo (60 min)
+              4. Desarrollo de las Sesiones de Trabajo (Desglose estructurado y fluido)
             </h3>
 
             <div className="space-y-4">
               {sda.sesiones.map((ses) => (
                 <div key={ses.numeroSesion} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h4 className="font-bold text-indigo-950 text-sm">
-                      Sesión {ses.numeroSesion}: {ses.titulo} (60 min)
-                    </h4>
-                    <span className="text-[11px] font-semibold text-slate-500">
-                      Materiales: {ses.materialesTotales?.join(', ') || 'Habitual de EF'}
-                    </span>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-2 border-b border-slate-200 pb-2.5 items-center">
+                    <div className="md:col-span-7">
+                      <h4 className="font-bold text-indigo-950 text-sm">
+                        Sesión {ses.numeroSesion}: {ses.titulo} (60 min)
+                      </h4>
+                    </div>
+                    <div className="md:col-span-5 bg-slate-100/90 px-3 py-1.5 rounded-lg border border-slate-200 text-left">
+                      <span className="text-[10px] font-bold text-indigo-900 block uppercase tracking-wider">📦 Materiales Necesarios:</span>
+                      <span className="text-[11px] font-medium text-slate-700 block">
+                        {ses.materialesTotales?.join(', ') || 'Habitual de EF'}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="space-y-2 text-xs pt-1">
@@ -1467,10 +1594,10 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </div>
           </section>
 
-          {/* 5. Producto Final */}
+          {/* 5. Producto Final y Reto Motor Colectivo */}
           <section className="space-y-2">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1">
-              5. Producto Final / Reto
+              5. Producto Final y Reto Motor Colectivo
             </h3>
             <p className="text-xs text-slate-800 bg-indigo-50/80 p-4 rounded-xl border border-indigo-200 leading-relaxed">
               {sda.productoFinal || 'Sin definir.'}
@@ -1523,16 +1650,16 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
             </div>
           </section>
 
-          {/* 7. Evaluación */}
+          {/* 7. Evaluación Inicial y Diagnóstica (Herramientas formativas) */}
           <section className="space-y-4">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1">
-              7. Evaluación Formativa e Instrumentos
+              7. Evaluación Inicial y Diagnóstica (Herramientas formativas)
             </h3>
 
             <div className="text-xs space-y-1">
-              <h4 className="font-bold text-slate-900">Evaluación Inicial:</h4>
+              <h4 className="font-bold text-slate-900">🔍 Estrategia Diagnóstica Inicial de Partida:</h4>
               <p className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                {sda.evaluacionInicial || 'Diagnóstica inicial'}
+                {(sda.evaluacionInicial || 'Diagnóstica inicial de capacidades motrices, actitudinales y nivel competencial de partida.').replace(/\bCOMING\b|\bCOMING\s+SOON\b/gi, '').trim()}
               </p>
             </div>
 
@@ -1553,7 +1680,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           {/* 8. Conexiones Interdisciplinares */}
           <section className="space-y-3 border-t border-slate-200 pt-4">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1 flex items-center justify-between">
-              <span>8. Conexiones Interdisciplinares (Vinculación Curricular)</span>
+              <span>8. Conexiones Interdisciplinares</span>
               <span className="text-xs bg-indigo-100 text-indigo-900 px-2.5 py-0.5 rounded-full font-bold">
                 {getNormativaForEtapa(sda.etapa, sda.comunidad).split(' de ')[0]} {sda.comunidad}
               </span>
@@ -1565,23 +1692,23 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
               </p>
               <ul className="space-y-2 pt-1 text-slate-700">
                 <li className="flex items-start space-x-2">
-                  <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded shrink-0">🔢 Matemáticas</span>
+                  <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded shrink-0">Matemáticas</span>
                   <span>Conteo de puntos, cálculo de distancias/tiempos, geometría del terreno de juego y registro de estadísticas.</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded shrink-0">📚 Lengua Castellana</span>
+                  <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded shrink-0">Lengua Castellana</span>
                   <span>Comprensión de reglamentos, vocabulario motriz específico, expresión oral en asambleas y coevaluación dialogada.</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded shrink-0">🌱 Conocimiento del Medio</span>
+                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded shrink-0">Conocimiento del Medio</span>
                   <span>Frecuencia cardíaca/respiratoria, higiene postural, educación para la salud, hábitos saludables y respeto al entorno.</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded shrink-0">🎨 Educación Artística</span>
+                  <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded shrink-0">Educación Artística</span>
                   <span>Expresión corporal, ritmo y respuesta motriz con acompañamiento musical, diseño de mapas o insignias gamificadas.</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded shrink-0">📱 Competencia Digital</span>
+                  <span className="font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded shrink-0">Competencia Digital</span>
                   <span>
                     {(typeof sda.curso === 'string' && (sda.curso.includes('5º') || sda.curso.includes('6º') || sda.curso.toLowerCase().includes('eso') || sda.curso.toLowerCase().includes('secundaria')))
                       ? 'Grabación en tabletas para análisis biomecánico, códigos QR con retos/pistas y formularios digitales de coevaluación (Google Forms, Kahoot).'
@@ -1595,7 +1722,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda, onSaveSdA, onPrev }) 
           {/* 9. Recursos Didácticos, Instalaciones y Materiales */}
           <section className="space-y-3 border-t border-slate-200 pt-4">
             <h3 className="text-lg font-bold text-indigo-900 border-b border-indigo-100 pb-1 flex items-center justify-between">
-              <span>9. Recursos Didácticos, Instalaciones y Materiales de la SdA</span>
+              <span>9. Recursos Didácticos, Instalaciones y Materiales</span>
               <span className="text-xs bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold">
                 Medios y Organización
               </span>

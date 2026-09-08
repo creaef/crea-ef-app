@@ -353,22 +353,22 @@ ${odsList}
 
 *Propuesta didáctica basada en la progresión lógica de situaciones motrices, fomentando el aprendizaje significativo, la autonomía, la autorregulación emocional y el trabajo cooperativo en el patio de Educación Física.*
 
-### 4. Desarrollo de las Sesiones y Cronograma
+### 4. Desarrollo de las Sesiones de Trabajo (Desglose estructurado y fluido)
 ${sesionesMd}
 
-### 5. Producto Final / Reto
+### 5. Producto Final y Reto Motor Colectivo
 ${sda.productoFinal}
 
-### 6. Atención a la Diversidad (Marco DUA)
+### 6. Atención a la Diversidad (Marco DUA y Adaptaciones NEAE)
 #### Pautas DUA Universales
 ${sda.pautasDUAGlobales.map((p) => `* ${p}`).join('\n')}
 
 #### Módulo NEAE (Atención a Casuísticas Específicas)
 ${neaeMd}
 
-### 7. Evaluación
+### 7. Evaluación Inicial y Diagnóstica (Herramientas formativas)
 #### Evaluación Inicial
-${sda.evaluacionInicial}
+${(sda.evaluacionInicial || '').replace(/\bCOMING\b|\bCOMING\s+SOON\b/gi, '').trim()}
 
 #### Instrumentos de Evaluación Formativa Utilizados
 ${sda.instrumentosEvaluacion.map((i) => `* **${i.tipo}:** ${i.descripcion} (${i.aplicacion})`).join('\n')}
@@ -376,7 +376,14 @@ ${sda.instrumentosEvaluacion.map((i) => `* **${i.tipo}:** ${i.descripcion} (${i.
 #### Rúbrica de Evaluación Criterial
 ${rubricaMd}
 
-### 8. Recursos
+### 8. Conexiones Interdisciplinares
+* **Matemáticas:** Conteo de puntos, distancias y tiempos, orientación geométrica y estadísticas.
+* **Lengua Castellana:** Comprensión de reglamentos, vocabulario motriz específico y asambleas reflexivas.
+* **Conocimiento del Medio:** Frecuencia cardíaca/respiratoria, higiene corporal, salud activa y respeto ambiental.
+* **Educación Artística:** Expresión corporal, ritmo, coordinación colectiva y diseño de retos.
+* **Competencia Digital:** Análisis audiovisual y formularios interactivos de coevaluación.
+
+### 9. Recursos Didácticos, Instalaciones y Materiales
 #### Recursos Espaciales e Instalaciones
 ${espStr}
 

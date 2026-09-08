@@ -29,10 +29,12 @@ import {
   SesionTrabajo,
   ActividadEnSesion,
   formatGameDescription,
+  renderFormattedGameDescriptionHtml,
 } from '../types';
 import { GoogleDriveSelectorModal } from './GoogleDriveSelectorModal';
 import { ExcelGameDatabaseModal } from './ExcelGameDatabaseModal';
 import { LocalFilesModal } from './LocalFilesModal';
+import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
 
 interface Step5Props {
   numSesiones: number;
@@ -278,6 +280,7 @@ export const Step5Sessions: React.FC<Step5Props> = ({
       }
 
       container.innerHTML = `
+        ${renderOfficialDocumentHeaderHtml(`RÚBRICA DE EVALUACIÓN FORMADORA - SESIÓN ${sessionIdx + 1}`, `RUBRICA-SESION-${sessionIdx + 1}-2026`)}
         <div style="background: #1e1b4b; color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
           <h1 style="margin: 0; font-size: 18pt; font-weight: 900; color: white;">RÚBRICA DE EVALUACIÓN FORMADORA (4 NIVELES)</h1>
           <p style="margin: 4px 0 0 0; font-size: 11pt; color: #fbbf24; font-weight: bold;">
@@ -441,6 +444,86 @@ export const Step5Sessions: React.FC<Step5Props> = ({
     const copy = [...sesiones];
     copy[sesIndex].fases.splice(faseIndex, 1);
     setSesiones(copy);
+  };
+
+  const handleDownloadSessionsWord = () => {
+    if (!sesiones || sesiones.length === 0) return;
+
+    const sessionsHtml = sesiones.map((ses, sIdx) => {
+      const sesNum = ses.numeroSesion || sIdx + 1;
+      const cleanTitle = (ses.titulo || `Sesión ${sesNum}`).replace(/^Sesión\s*\d+:\s*/i, '');
+
+      const fasesHtml = (ses.fases || []).map((f) => `
+        <div style="background-color: #ffffff; border: 1px solid #cbd5e1; padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px;">
+            <tr>
+              <td style="background-color: #0a2240; color: #ffffff; padding: 5px 10px; font-size: 11pt; font-weight: bold; border-radius: 4px;">
+                ${f.fase} (${f.duracionMin} min) — ${f.nombreJuego}
+              </td>
+            </tr>
+          </table>
+          <div style="font-size: 10pt; color: #334155; line-height: 1.5; text-align: justify;">
+            ${renderFormattedGameDescriptionHtml(f.descripcion)}
+          </div>
+          ${f.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 9.5pt; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
+        </div>
+      `).join('');
+
+      return `
+        <div style="margin-bottom: 24px; page-break-inside: avoid; border: 2px solid #0a2240; border-radius: 8px; padding: 16px; background-color: #f8fafc;">
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+            <tr style="background-color: #0a2240; color: #ffffff;">
+              <th style="padding: 10px 14px; text-align: left; font-size: 13pt; font-weight: bold; border-bottom: 3px solid #e85d04;">
+                SESIÓN ${sesNum}: ${cleanTitle} (60 MINUTOS)
+              </th>
+            </tr>
+            <tr style="background-color: #e2e8f0; color: #0a2240;">
+              <td style="padding: 8px 12px; font-size: 10pt;">
+                <strong>🎯 Objetivo de la sesión:</strong> ${ses.objetivoSesion || 'Desarrollo de las habilidades motrices y la cooperación inclusiva.'}<br/>
+                <strong>⚽ Materiales necesarios:</strong> ${(ses.materialesTotales && ses.materialesTotales.length > 0) ? ses.materialesTotales.join(', ') : 'Material convencional y alternativo de Educación Física'}
+              </td>
+            </tr>
+          </table>
+          ${fasesHtml}
+        </div>
+      `;
+    }).join('');
+
+    const fullWordHtml = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset='utf-8'>
+        <title>Sesiones EF - ${(tematica || 'Educacion_Fisica').replace(/[^a-zA-Z0-9]/g, '_')}</title>
+        <style>
+          @page { size: A4 portrait; margin: 1.5cm; }
+          body { font-family: Arial, sans-serif; text-align: justify; hyphens: none; line-height: 1.5; color: #1e293b; background-color: #ffffff; }
+          h1 { color: #0a2240; font-size: 18pt; font-weight: bold; text-align: center; margin-bottom: 4pt; }
+          h2 { color: #e85d04; font-size: 12pt; font-weight: bold; text-align: center; margin-top: 0; margin-bottom: 14pt; }
+          p, div, li { font-size: 10pt; color: #334155; text-align: justify; }
+          table { width: 100%; border-collapse: collapse; }
+        </style>
+      </head>
+      <body>
+        ${renderOfficialDocumentHeaderHtml('PROGRAMACIÓN COMPLETA DE SESIONES EF', 'SESIONES-EF-2026')}
+        <h1>PROGRAMACIÓN COMPLETA DE SESIONES DE EDUCACIÓN FÍSICA</h1>
+        <h2>${curso} (${ciclo}) • Temática: ${tematica || 'General'} • ${numSesiones} Sesiones de 60 min</h2>
+        <hr style="border: 1px solid #cbd5e1; margin-bottom: 16px;" />
+        ${sessionsHtml}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff', fullWordHtml], {
+      type: 'application/msword;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Sesiones_EF_${(tematica || 'General').replace(/[^a-zA-Z0-9]/g, '_')}_${curso.replace(/[^a-zA-Z0-9]/g, '_')}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -693,29 +776,43 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Sessions Tabs Bar */}
-          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin">
-            {sesiones.map((ses, idx) => (
-              <button
-                key={idx}
-                id={`tab-sesion-${idx + 1}`}
-                onClick={() => setActiveSessionIndex(idx)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition shrink-0 flex items-center space-x-2 border ${
-                  activeSessionIndex === idx
-                    ? 'bg-indigo-900 text-white border-indigo-950 shadow-md ring-2 ring-indigo-500/20'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                <span>Sesión {idx + 1}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded ${
-                    activeSessionIndex === idx ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-100 text-slate-600'
+          {/* Sessions Tabs Bar & Download Word Action */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100">
+            <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-thin flex-1 min-w-0">
+              {sesiones.map((ses, idx) => (
+                <button
+                  key={idx}
+                  id={`tab-sesion-${idx + 1}`}
+                  onClick={() => setActiveSessionIndex(idx)}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition shrink-0 flex items-center space-x-2 border ${
+                    activeSessionIndex === idx
+                      ? 'bg-indigo-900 text-white border-indigo-950 shadow-md ring-2 ring-indigo-500/20'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  60 min
-                </span>
-              </button>
-            ))}
+                  <span>Sesión {idx + 1}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded ${
+                      activeSessionIndex === idx ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    60 min
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
+            <button
+              type="button"
+              id="btn-download-all-sessions-word"
+              onClick={handleDownloadSessionsWord}
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs transition shadow-md border border-blue-600 shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+              title="Descargar todas las sesiones en un documento Word (.doc) editable con formato completo"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-amber-300" />
+              <span>Descargar Todas las Sesiones (.doc)</span>
+            </button>
           </div>
 
           {/* Active Session Details */}

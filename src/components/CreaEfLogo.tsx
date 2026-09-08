@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CREA_EF_LOGO_BASE64 } from '../utils/logoBase64';
 
 export const CREA_EF_LOGO_URL = 'https://lh3.googleusercontent.com/d/10xARAH1teV4NN9a3E7C2wQ44eFtB02QU=s220';
 export const CREA_EF_LOGO_ALT_URL = 'https://lh3.googleusercontent.com/d/10xARAH1teV4NN9a3E7C2wQ44eFtB02QU=w800';
@@ -10,7 +11,7 @@ interface CreaEfLogoProps {
 }
 
 export const CreaEfLogo: React.FC<CreaEfLogoProps> = ({ className = 'w-10 h-10', size, alt = 'Crea-Ef Logo' }) => {
-  const [imgSrc, setImgSrc] = useState<string>(CREA_EF_LOGO_URL);
+  const [imgSrc, setImgSrc] = useState<string>(CREA_EF_LOGO_BASE64 || CREA_EF_LOGO_URL);
   const [imgError, setImgError] = useState(false);
 
   const handleError = () => {

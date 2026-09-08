@@ -77,7 +77,6 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
           tematica,
           metodologia: metodologiaActiva,
           resumenSesiones,
-          sesiones: (sesiones || []).slice(0, 8),
           comunidad,
           etapa,
         }),
@@ -93,19 +92,19 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
         const titleText = data.tituloReto ? `Reto Final "${data.tituloReto}": ` : '';
         setProductoFinal(`${titleText}${descReto}`);
       } else {
-        // Fallback dinámico rápido y contextualizado
-        const juegosStr = sampleGamesText ? `integrando los retos practicados (${sampleGamesText})` : `trabajando los contenidos de ${tematica}`;
+        // Fallback dinámico original y rápido según juegos
+        const juegosStr = sampleGamesText ? ` (${sampleGamesText})` : '';
         setProductoFinal(
-          `Reto Final "Gran Desafío Motor de ${tematica}": Celebración colectiva e inclusiva en la que todo el alumnado de ${curso}, agrupado en equipos heterogéneos bajo la metodología ${metodologiaActiva || 'cooperativa'}, culminará la SdA "${tituloSdA}". Los equipos superarán un circuito vivo de misiones motrices ${juegosStr}, cooperando para alcanzar un objetivo colectivo donde cada alumno/a suma desde sus posibilidades, primando la deportividad y el apoyo mutuo.`
+          `Gymkana de Misiones Motrices y Cooperación: "${tituloSdA || tematica}". El alumnado de ${curso} completará en equipos heterogéneos una serie de estaciones vivas donde aplicarán las habilidades desarrolladas en las sesiones${juegosStr}. Cada reto superado aportará pistas para conseguir el reto colectivo final, primando el juego limpio y la participación inclusiva de todos los roles.`
         );
       }
     } catch (err: any) {
       console.error(err);
-      const juegosStr = sampleGamesText ? `articulando las dinámicas vividas (${sampleGamesText})` : `aplicando los saberes adquiridos`;
+      const juegosStr = sampleGamesText ? ` a partir de los juegos realizados (${sampleGamesText})` : '';
       setProductoFinal(
-        `Reto Final "Gran Aventura y Desafío de ${tematica}": Encuentro motriz gamificado y festivo en ${curso}, donde todo el alumnado colabora en equipos cooperativos bajo la metodología ${metodologiaActiva || 'activa'}. El reto culmina superando estaciones motrices ${juegosStr}, finalizando con una asamblea de celebración donde se comparte el éxito colectivo sin exclusiones.`
+        `Torneo Coeducativo y Feria de Retos de ${tematica}: Jornada activa y festiva en ${curso} organizada con metodología ${metodologiaActiva || 'cooperativa'}${juegosStr}. El alumnado gestionará de forma compartida las estaciones motrices y el arbitraje dialogado, orientando la culminación hacia la autosuperación y el reconocimiento del esfuerzo en común.`
       );
-      setErrorAi('Se ha generado una propuesta personalizada y creativa adaptada a las actividades de tus sesiones.');
+      setErrorAi('Se ha generado una propuesta adaptada a la temática de tus sesiones.');
     } finally {
       setLoadingAi(false);
     }

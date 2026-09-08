@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
+import { execFile } from 'child_process';
 import dotenv from 'dotenv';
 import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
@@ -12,7 +14,7 @@ import * as XLSX from 'xlsx';
 import { formatGameDescription } from './src/types';
 import { getNormativaForEtapa } from './src/utils/documentHeader';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
 
 dotenv.config();
@@ -100,12 +102,15 @@ async function callGeminiWithRetry(
     if (paidKey) keysToTry.push(paidKey);
   }
 
-  const preferredModel = params.model || 'gemini-1.5-flash';
+  const obsoleteModels = ['gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-2.5-flash'];
+  const requestedModel = params.model && !obsoleteModels.includes(params.model)
+    ? params.model
+    : 'gemini-flash-lite-latest';
+
   const modelsToTry = [
-    preferredModel,
-    'gemini-1.5-flash',
-    'gemini-2.0-flash-lite',
-    'gemini-1.5-flash-8b',
+    requestedModel,
+    'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
     'gemini-flash-latest',
   ];
   const uniqueModels = Array.from(new Set(modelsToTry));
@@ -122,13 +127,18 @@ async function callGeminiWithRetry(
         try {
           const currentParams = { ...params, model: modelCandidate };
           const response = await client.models.generateContent(currentParams);
-          // OJO: Retornamos directo. Ya NO guardamos la llave como global ("sticky").
-          // Esto evita que el servidor se quede atascado en la llave de pago tras usarla una vez.
+          // Retornamos directo sin bloquear llaves globales
           return response;
         } catch (err: any) {
           lastError = err;
           const errStr = String(err?.message || err || '');
           const statusCode = err?.status || err?.statusCode || err?.code;
+
+          // Si el modelo da 404 o fue retirado, NUNCA reintentar
+          if (statusCode === 404 || errStr.includes('404') || errStr.includes('not found') || errStr.includes('no longer available')) {
+            console.warn(`[Gemini API Key #${kIndex + 1} - ${modelCandidate}] Modelo no disponible (404), descartando de inmediato.`);
+            break;
+          }
 
           const isQuotaOrTransient =
             statusCode === 429 ||
@@ -143,7 +153,7 @@ async function callGeminiWithRetry(
 
           if (isQuotaOrTransient && attempt < maxRetries) {
             attempt++;
-            const delayMs = attempt * 800 + Math.floor(Math.random() * 300);
+            const delayMs = attempt * 600 + Math.floor(Math.random() * 200);
             console.warn(`[Gemini API Key #${kIndex + 1} - ${modelCandidate}] Reintento ${attempt}/${maxRetries} en ${delayMs}ms...`);
             await new Promise((resolve) => setTimeout(resolve, delayMs));
           } else {
@@ -583,37 +593,34 @@ app.post('/api/ai/generate-final-challenge', async (req, res) => {
         }).join(' | ')
       : '');
 
-    const prompt = `Diseña un Producto Final o Desafío Motor muy creativo, lúdico e integrador para culminar una SdA de Educación Física (${comunidad || 'Andalucía'}).
+    // Prompt optimizado, directo y ágil para respuesta inmediata (menos de 2 segundos)
+    const prompt = `Actúa como docente de Educación Física y diseña un Desafío Motor o Producto Final muy original, tangible y motivador para culminar esta SdA:
 Título: "${titulo || 'SdA Educación Física'}"
-Curso: ${curso || 'Educación Primaria'}
-Temática: ${tematica || 'Habilidades Motrices'}
-Metodología Activa: ${metodologia || 'Metodología Activa y Lúdica'}
-${sesionesContexto ? `Contenidos y dinámicas trabajadas en las sesiones previas: "${sesionesContexto}"` : ''}
+Curso: ${curso || 'Educación Primaria'} (${etapa || 'Primaria'})
+Temática: ${tematica || 'Habilidades y Juegos Motores'}
+Metodología: ${metodologia || 'Metodología Activa y Cooperativa'}
+${sesionesContexto ? `Juegos y dinámicas clave de las sesiones: "${sesionesContexto}"` : ''}
 
-Requisitos clave:
-1. El reto final debe ser creativo y original (ej. un festival de misiones motrices, torneo cooperativo temático, escape room motor o feria de estaciones motrices).
-2. Debe recoger e integrar directamente las habilidades y dinámicas practicadas en las sesiones.
-3. Participación 100% activa e inclusiva (DUA), cooperación y juego limpio.
-4. Breve y directo: entre 70 y 110 palabras.
+CRITERIOS:
+1. Elige una modalidad de culminación atractiva y específica para la temática (ej: "Torneo de Retos Cooperativos con tarjetas Fair Play", "Gymkana de Misiones Motrices Gamificadas", "Escape Room Motor Colaborativo", "Festival / Muestra Expresiva Coeducativa", "Circuito de Estaciones Motrices Inclusivas").
+2. Evita fórmulas trilladas o genéricas. Debe sonar como una propuesta real y emocionante para el alumnado.
+3. Extensión: entre 60 y 90 palabras, directo al grano y redactado en tono docente motivador.
 
-Devuelve formato JSON estricto: { "tituloReto": "...", "descripcionReto": "..." }`;
+Devuelve estrictamente un JSON con este formato:
+{
+  "tituloReto": "Nombre breve y atractivo del Reto",
+  "descripcionReto": "Descripción de la actividad culminante integrando los aprendizajes."
+}`;
 
     let data: any = {};
     try {
       const response = await callGeminiWithRetry(req, ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
         config: {
           systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
-          temperature: 0.7,
+          temperature: 0.8,
           responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              tituloReto: { type: Type.STRING },
-              descripcionReto: { type: Type.STRING }
-            }
-          },
         },
       });
 
@@ -624,16 +631,31 @@ Devuelve formato JSON estricto: { "tituloReto": "...", "descripcionReto": "..." 
 
     const descCandidate = data?.descripcionReto || data?.descripcion || data?.reto || data?.productoFinal;
     if (!descCandidate || typeof descCandidate !== 'string' || descCandidate.trim().length < 20) {
-      // Fallback dinámico ultra-creativo y rápido basado directamente en las sesiones reales
+      // Catálogo de variantes creativas y dinámicas para evitar cualquier texto repetitivo
       const sampleNames = Array.isArray(sesiones) && sesiones.length > 0
         ? sesiones.slice(0, 3).map((s: any) => (s.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '')).filter(Boolean).join(', ')
         : tematica;
 
-      const fallbackNombreReto = `Gran Desafío y Festival Motor de ${tematica || 'Educación Física'}`;
-      const fallbackDescReto = `Celebración colectiva, festiva e inclusiva donde el alumnado de ${curso || 'Primaria'}, organizado en equipos cooperativos heterogéneos bajo la metodología ${metodologia || 'activa'}, culmina la SdA "${titulo || 'de Educación Física'}". Cada equipo pondrá en juego las destrezas y misiones motrices trabajadas en las sesiones (${sampleNames}), superando estaciones de retos compartidos donde todos los roles son necesarios y priman la autosuperación, la deportividad y el éxito grupal.`;
+      const alternativas = [
+        {
+          titulo: `Gymkana de Retos y Misiones Motrices: "${titulo || tematica}"`,
+          desc: `Jornada culminante por estaciones cooperativas en ${curso}, donde los equipos deben resolver desafíos motores progresivos aplicando las habilidades practicadas en las sesiones (${sampleNames}). Cada equipo suma puntos de Juego Limpio y apoyo mutuo para abrir la "caja del reto común", garantizando una participación 100% activa sin eliminaciones.`
+        },
+        {
+          titulo: `Torneo Coeducativo y Feria de Desafíos de ${tematica || 'Educación Física'}`,
+          desc: `Encuentro deportivo y lúdico organizado bajo la metodología ${metodologia || 'cooperativa'}. El alumnado de ${curso} demuestra los aprendizajes adquiridos (${sampleNames}) gestionando sus propias rotaciones, el arbitraje dialogado y la autorregulación grupal, finalizando con un podium compartido de deportividad y esfuerzo colectivo.`
+        },
+        {
+          titulo: `Escape Room Motor y Desafío Colaborativo Final`,
+          desc: `Gran reto de aventura psicomotriz en el gimnasio o patio exterior para ${curso}. A través de pistas, acertijos motores y estaciones de destreza vinculadas a ${tematica}, los grupos interconectan las dinámicas trabajadas (${sampleNames}) para descifrar el código final mediante la cooperación de todos sus integrantes.`
+        }
+      ];
+
+      // Selección dinámica aleatoria según timestamp
+      const selected = alternativas[Date.now() % alternativas.length];
       data = {
-        tituloReto: data?.tituloReto || fallbackNombreReto,
-        descripcionReto: fallbackDescReto
+        tituloReto: data?.tituloReto || selected.titulo,
+        descripcionReto: selected.desc
       };
     }
 
@@ -1539,30 +1561,29 @@ app.post('/api/docs/create-doc', async (req, res) => {
     segments.push({ text: `Curso: ${sda.curso} (${sda.ciclo}) | Trimestre: ${sda.trimestre} | Nº Sesiones: ${sda.numSesiones}\n`, style: 'boldLabel' });
     segments.push({ text: `Temáticas: ${sda.tematica}\n\n`, style: 'boldLabel' });
 
-    segments.push({ text: `1. JUSTIFICACIÓN DE LA PROPUESTA\n`, style: 'heading1' });
+    // 1. Justificación y Temática de la SdA
+    segments.push({ text: `1. JUSTIFICACIÓN Y TEMÁTICA DE LA SdA\n`, style: 'heading1' });
     segments.push({ text: `${sda.justificacion || 'Sin justificación.'}\n\n` });
-    const normativaText = `(NORMATIVA VIGENTE DE ${sda.comunidad ? sda.comunidad.toUpperCase() : 'ANDALUCÍA'})`;
-    segments.push({ text: `2. CONEXIÓN CURRICULAR ${normativaText}\n`, style: 'heading1' });
+
+    // 2. Elementos Curriculares y Matriz de Relación
+    const normativaText = `(${sda.comunidad ? sda.comunidad.toUpperCase() : 'LOMLOE'})`;
+    segments.push({ text: `2. ELEMENTOS CURRICULARES Y MATRIZ DE RELACIÓN ${normativaText}\n`, style: 'heading1' });
     segments.push({ text: `Competencias Específicas: `, style: 'boldLabel' });
     segments.push({ text: `${(sda.competenciasSeleccionadas || []).join(', ')}\n` });
     segments.push({ text: `Criterios de Evaluación: `, style: 'boldLabel' });
-    segments.push({ text: `${(sda.criteriosSeleccionados || []).join(', ')}\n\n` });
-
-    segments.push({ text: `3. SABERES BÁSICOS, ODS Y DESCRIPTORES OPERATIVOS\n`, style: 'heading1' });
+    segments.push({ text: `${(sda.criteriosSeleccionados || []).join(', ')}\n` });
     segments.push({ text: `Saberes Básicos: `, style: 'boldLabel' });
-    segments.push({ text: `${(sda.saberesSeleccionados || []).join(', ')}\n` });
-    segments.push({ text: `ODS: `, style: 'boldLabel' });
-    segments.push({ text: `${(sda.odsSeleccionados || []).join(', ')}\n` });
-    segments.push({ text: `Descriptores Operativos: `, style: 'boldLabel' });
-    segments.push({ text: `${(sda.descriptoresOperativos || []).join(', ')}\n\n` });
+    segments.push({ text: `${(sda.saberesSeleccionados || []).join(', ')}\n\n` });
 
-    segments.push({ text: `4. METODOLOGÍA Y MODELO DE ESTRUCTURA\n`, style: 'heading1' });
+    // 3. Metodología y Modelos Pedagógicos
+    segments.push({ text: `3. METODOLOGÍA Y MODELOS PEDAGÓGICOS\n`, style: 'heading1' });
     segments.push({ text: `Metodología Activa: `, style: 'boldLabel' });
-    segments.push({ text: `${sda.metodologiaActiva || 'Por definir'}\n` });
-    segments.push({ text: `Modelo de Estructura: `, style: 'boldLabel' });
-    segments.push({ text: `${sda.modeloEstructura}\n\n` });
+    segments.push({ text: `${sda.metodologiaActiva || 'Metodología Activa y Vivencial'}\n` });
+    segments.push({ text: `Modelo de Estructura de Sesión: `, style: 'boldLabel' });
+    segments.push({ text: `${sda.modeloEstructura || 'Estructura Cronométrica de 60 min'}\n\n` });
 
-    segments.push({ text: `5. SECUENCIA DIDÁCTICA DE SESIONES DE TRABAJO (60 MINUTOS)\n`, style: 'heading1' });
+    // 4. Desarrollo de las Sesiones de Trabajo
+    segments.push({ text: `4. DESARROLLO DE LAS SESIONES DE TRABAJO (60 MINUTOS)\n`, style: 'heading1' });
     (sda.sesiones || []).forEach((ses: any, idx: number) => {
       segments.push({ text: `--- SESIÓN ${idx + 1}: ${ses.titulo} ---\n`, style: 'heading2' });
       segments.push({ text: `Objetivo: `, style: 'boldLabel' });
@@ -1579,10 +1600,12 @@ app.post('/api/docs/create-doc', async (req, res) => {
       segments.push({ text: `\n` });
     });
 
-    segments.push({ text: `6. PRODUCTO FINAL / RETO MOTOR\n`, style: 'heading1' });
+    // 5. Producto Final y Reto Motor Colectivo
+    segments.push({ text: `5. PRODUCTO FINAL Y RETO MOTOR COLECTIVO\n`, style: 'heading1' });
     segments.push({ text: `${sda.productoFinal || 'Sin definir.'}\n\n` });
 
-    segments.push({ text: `7. ATENCIÓN A LA DIVERSIDAD (NEAE Y PAUTAS DUA)\n`, style: 'heading1' });
+    // 6. Atención a la Diversidad
+    segments.push({ text: `6. ATENCIÓN A LA DIVERSIDAD (MARCO DUA Y ADAPTACIONES NEAE)\n`, style: 'heading1' });
     if (sda.adaptacionesNEAE && sda.adaptacionesNEAE.length > 0) {
       sda.adaptacionesNEAE.forEach((a: any) => {
         segments.push({ text: `* Adaptación NEAE [${a.categoria}]:\n`, style: 'boldLabel' });
@@ -1604,14 +1627,36 @@ app.post('/api/docs/create-doc', async (req, res) => {
     }
     segments.push({ text: `\n` });
 
-    segments.push({ text: `8. EVALUACIÓN FORMATIVA E INSTRUMENTOS\n`, style: 'heading1' });
+    // 7. Evaluación Inicial y Diagnóstica (Herramientas formativas)
+    segments.push({ text: `7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (HERRAMIENTAS FORMATIVAS)\n`, style: 'heading1' });
+    segments.push({ text: `Estrategia Diagnóstica Inicial: `, style: 'boldLabel' });
+    segments.push({ text: `${(sda.evaluacionInicial || 'Diagnóstica inicial de capacidades motrices y nivel competencial de partida.').replace(/\bCOMING\b|\bCOMING\s+SOON\b/gi, '').trim()}\n` });
     if (sda.instrumentosEvaluacion && sda.instrumentosEvaluacion.length > 0) {
       sda.instrumentosEvaluacion.forEach((inst: any) => {
-        segments.push({ text: `* Instrumento: ${inst.tipo || inst.nombre}\n`, style: 'boldLabel' });
-        segments.push({ text: `  Descripción: ${inst.descripcion}\n` });
-        segments.push({ text: `  Aplicación: ${inst.aplicacion}\n` });
+        segments.push({ text: `* Instrumento [${inst.tipo || inst.nombre}]: `, style: 'boldLabel' });
+        segments.push({ text: `${inst.descripcion} (Aplicación: ${inst.aplicacion})\n` });
       });
     }
+    segments.push({ text: `\n` });
+
+    // 8. Conexiones Interdisciplinares
+    segments.push({ text: `8. CONEXIONES INTERDISCIPLINARES\n`, style: 'heading1' });
+    segments.push({ text: `* Matemáticas: Conteo de puntos, distancias y tiempos, orientación geométrica y estadísticas.\n` });
+    segments.push({ text: `* Lengua Castellana: Comprensión de reglamentos, vocabulario motriz específico y asambleas reflexivas.\n` });
+    segments.push({ text: `* Conocimiento del Medio: Frecuencia cardíaca/respiratoria, higiene corporal, salud activa y respeto ambiental.\n` });
+    segments.push({ text: `* Educación Artística: Expresión corporal, ritmo, coordinación colectiva y diseño de retos.\n` });
+    segments.push({ text: `* Competencia Digital: Análisis audiovisual y formularios interactivos de coevaluación.\n\n` });
+
+    // 9. Recursos Didácticos, Instalaciones y Materiales
+    segments.push({ text: `9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES\n`, style: 'heading1' });
+    segments.push({ text: `* Instalaciones y Espacios: `, style: 'boldLabel' });
+    segments.push({ text: `${(sda.recursosEspaciales && sda.recursosEspaciales.length > 0) ? sda.recursosEspaciales.join(' • ') : 'Pistas polideportivas y gimnasio cubierto'}\n` });
+    segments.push({ text: `* Materiales Escolares y Deportivos: `, style: 'boldLabel' });
+    segments.push({ text: `${(sda.recursosMateriales && sda.recursosMateriales.length > 0) ? sda.recursosMateriales.join(' • ') : 'Material convencional y alternativo de EF'}\n` });
+    segments.push({ text: `* Recursos Didácticos y Curriculares: `, style: 'boldLabel' });
+    segments.push({ text: `${(sda.recursosCurriculares && sda.recursosCurriculares.length > 0) ? sda.recursosCurriculares.join(' • ') : 'Tarjetas DUA y dianas de evaluación'}\n` });
+    segments.push({ text: `* Recursos Complementarios: `, style: 'boldLabel' });
+    segments.push({ text: `${(sda.recursosExternos && sda.recursosExternos.length > 0) ? sda.recursosExternos.join(' • ') : 'Altavoz Bluetooth y cronómetro'}\n\n` });
 
     // Build single text string and formatting ranges
     let fullContent = '';
@@ -1808,7 +1853,195 @@ Escribe entre 80 y 150 palabras explicando:
   }
 });
 
-// SdA Persistence moved to Frontend (Firestore)
+// SdA Persistence Cloud Endpoints (Server-side Firestore fallback & safety)
+app.post('/api/user/save-sda', async (req, res) => {
+  try {
+    const { email, sda } = req.body;
+    if (!email || !sda || !sda.id) {
+      return res.status(400).json({ error: 'Faltan parámetros obligatorios (email, sda, sda.id).' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+    // Sanitize any undefined values from the object for Firestore compatibility
+    const cleanSda = JSON.parse(JSON.stringify(sda));
+    const sdaDocRef = doc(db, 'users', cleanEmail, 'user_sdas', String(cleanSda.id));
+    await setDoc(sdaDocRef, cleanSda, { merge: true });
+    return res.json({ success: true, id: cleanSda.id });
+  } catch (error: any) {
+    console.error('Error saving SdA on server Firestore:', error);
+    return res.status(500).json({ error: error.message || 'Error al guardar SdA en el servidor.' });
+  }
+});
+
+app.post('/api/user/delete-sda', async (req, res) => {
+  try {
+    const { email, id } = req.body;
+    if (!email || !id) {
+      return res.status(400).json({ error: 'Faltan parámetros obligatorios (email, id).' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+    const sdaDocRef = doc(db, 'users', cleanEmail, 'user_sdas', String(id));
+    await deleteDoc(sdaDocRef);
+    return res.json({ success: true, id });
+  } catch (error: any) {
+    console.error('Error deleting SdA on server Firestore:', error);
+    return res.status(500).json({ error: error.message || 'Error al eliminar SdA en el servidor.' });
+  }
+});
+
+app.get('/api/user/sdas', async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.status(400).json({ error: 'Falta el parámetro email.' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+    const sdasRef = collection(db, 'users', cleanEmail, 'user_sdas');
+    const snap = await getDocs(sdasRef);
+    const sdas = snap.docs.map(d => d.data());
+    return res.json({ sdas });
+  } catch (error: any) {
+    console.error('Error fetching SdAs from server Firestore:', error);
+    return res.status(500).json({ error: error.message || 'Error al obtener SdAs del servidor.' });
+  }
+});
+
+// Función de detección de navegador para renderizado de PDF en alta fidelidad
+function getBrowserExecutablePath(): string | null {
+  if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) {
+    return process.env.CHROME_BIN;
+  }
+  const candidates = [
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/google-chrome-stable',
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+// Endpoint directo de exportación de PDF de alta fidelidad sin diálogos de impresión
+app.post('/api/export/pdf', async (req, res) => {
+  try {
+    const { html, title } = req.body;
+    if (!html) {
+      return res.status(400).json({ error: 'Falta el contenido HTML a exportar.' });
+    }
+
+    const browserPath = getBrowserExecutablePath();
+    if (!browserPath) {
+      return res.status(503).json({ error: 'No se encontró un motor de navegador compatible en el entorno local.' });
+    }
+
+    const cleanTitle = (title || 'Situacion_de_Aprendizaje_EF')
+      .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '_')
+      .replace(/_+/g, '_');
+
+    const uniqueId = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const tempHtmlPath = path.join(os.tmpdir(), `sda_${uniqueId}.html`);
+    const tempPdfPath = path.join(os.tmpdir(), `sda_${uniqueId}.pdf`);
+    const tempUserDataDir = path.join(os.tmpdir(), `sda_chrome_ud_${uniqueId}`);
+
+    const fullHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>${title || 'Situación de Aprendizaje'}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    *, *:before, *:after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+      background-color: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      page-break-inside: auto;
+    }
+    tr, .avoid-break, .session-start-block {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    thead, th, h1, h2, h3, h4, .section-header {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+  </style>
+</head>
+<body>
+  ${html}
+</body>
+</html>`;
+
+    fs.writeFileSync(tempHtmlPath, fullHtml, 'utf-8');
+
+    await new Promise<void>((resolve, reject) => {
+      execFile(
+        browserPath,
+        [
+          '--headless=new',
+          '--disable-gpu',
+          '--no-pdf-header-footer',
+          `--user-data-dir=${tempUserDataDir}`,
+          `--print-to-pdf=${tempPdfPath}`,
+          tempHtmlPath,
+        ],
+        { timeout: 30000 },
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+
+    if (!fs.existsSync(tempPdfPath)) {
+      throw new Error('El archivo PDF no fue generado por el motor de renderizado.');
+    }
+
+    const pdfBuffer = fs.readFileSync(tempPdfPath);
+
+    // Limpieza de ficheros temporales
+    try {
+      if (fs.existsSync(tempHtmlPath)) fs.unlinkSync(tempHtmlPath);
+      if (fs.existsSync(tempPdfPath)) fs.unlinkSync(tempPdfPath);
+      if (fs.existsSync(tempUserDataDir)) fs.rmSync(tempUserDataDir, { recursive: true, force: true });
+    } catch (e) {
+      console.warn('Error limpiando archivos temporales de PDF:', e);
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="SdA_${cleanTitle}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+    return res.send(pdfBuffer);
+  } catch (error: any) {
+    console.error('Error generando PDF en el servidor:', error);
+    return res.status(500).json({ error: error.message || 'Error interno generando el PDF.' });
+  }
+});
 
 // Boot server and Vite middleware
 async function startServer() {

@@ -80,9 +80,11 @@ export function getNormativaForEtapa(etapa: EtapaEducativa, comunidad: Comunidad
   return normativas[etapa] || normativas['Primaria'];
 }
 
-export const OFFICIAL_LOGO_SRC = CREA_EF_LOGO_BASE64 || 'https://lh3.googleusercontent.com/d/10xARAH1teV4NN9a3E7C2wQ44eFtB02QU=s220';
+export const OFFICIAL_LOGO_SRC = CREA_EF_LOGO_BASE64;
 
-export const OFFICIAL_LOGO_IMG_HTML = `<img src="${OFFICIAL_LOGO_SRC}" alt="Logo" style="height: 40px; width: auto; max-width: 44px; object-fit: contain; border-radius: 6px; display: block;" />`;
+export const OFFICIAL_LOGO_IMG_HTML = `
+  <img src="${OFFICIAL_LOGO_SRC}" alt="Logo Crea-Ef" style="height: 44px; width: auto; max-width: 48px; object-fit: contain; border-radius: 6px; display: block;" />
+`;
 
 /**
  * Genera el encabezado oficial de página con el logotipo de Crea-Ef,

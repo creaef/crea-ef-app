@@ -54,7 +54,14 @@ const INITIAL_SDA_STATE: SituacionAprendizaje = {
 };
 
 export default function App() {
-  const [userSession, setUserSession] = useState<UserSession | null>(null);
+  const [userSession, setUserSession] = useState<UserSession | null>(() => {
+    try {
+      const stored = localStorage.getItem('sda_active_user_session');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [maxStepReached, setMaxStepReached] = useState<number>(1);
@@ -73,10 +80,12 @@ export default function App() {
   // Load saved SdAs on mount & whenever userSession email changes
   useEffect(() => {
     const email = userSession?.email?.trim().toLowerCase();
-    if (email) {
-      localStorage.setItem('current_user_email', email);
-      
-      const loadFromFirestore = async () => {
+    
+    const loadSdAs = async () => {
+      if (email) {
+        localStorage.setItem('current_user_email', email);
+        
+        // 1. Intentar cargar desde Firestore (cliente)
         try {
           const sdasRef = collection(db, 'users', email, 'user_sdas');
           const snap = await getDocs(sdasRef);
@@ -86,26 +95,61 @@ export default function App() {
             setSavedSdas(sdasList);
             try {
               localStorage.setItem(`sda_ef_andalucia_list_${email}`, JSON.stringify(sdasList));
+              localStorage.setItem('sda_ef_andalucia_list_local', JSON.stringify(sdasList));
             } catch (e) {}
-          } else {
-            setSavedSdas([]);
+            return;
           }
         } catch (error) {
-          console.warn('Could not load SdAs from Firestore:', error);
-          try {
-            const stored = localStorage.getItem(`sda_ef_andalucia_list_${email}`);
-            setSavedSdas(stored ? JSON.parse(stored) : []);
-          } catch (e) {
-            setSavedSdas([]);
+          console.warn('Could not load SdAs from client Firestore, trying server fallback:', error);
+        }
+
+        // 2. Intentar cargar mediante endpoint seguro del servidor
+        try {
+          const resp = await fetch(`/api/user/sdas?email=${encodeURIComponent(email)}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            if (Array.isArray(data.sdas) && data.sdas.length > 0) {
+              setSavedSdas(data.sdas);
+              try {
+                localStorage.setItem(`sda_ef_andalucia_list_${email}`, JSON.stringify(data.sdas));
+                localStorage.setItem('sda_ef_andalucia_list_local', JSON.stringify(data.sdas));
+              } catch (e) {}
+              return;
+            }
+          }
+        } catch (backendErr) {
+          console.warn('Backend fetch sdas failed:', backendErr);
+        }
+
+        // 3. Fallback en localStorage por email
+        try {
+          const stored = localStorage.getItem(`sda_ef_andalucia_list_${email}`);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setSavedSdas(parsed);
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 4. Fallback en localStorage local general
+      try {
+        const storedLocal = localStorage.getItem('sda_ef_andalucia_list_local');
+        if (storedLocal) {
+          const parsedLocal = JSON.parse(storedLocal);
+          if (Array.isArray(parsedLocal) && parsedLocal.length > 0) {
+            setSavedSdas(parsedLocal);
+            return;
           }
         }
-      };
-      
-      loadFromFirestore();
-    } else {
-      localStorage.removeItem('current_user_email');
+      } catch (e) {}
+
       setSavedSdas([]);
-    }
+    };
+    
+    loadSdAs();
   }, [userSession?.email]);
 
   const handleStartSession = (session: UserSession) => {
@@ -192,27 +236,65 @@ export default function App() {
     const isTrialUser = userSession?.type === 'trial' || (userSession as any)?.isTrial;
     const maxAllowedSdas = isTrialUser ? 3 : 8;
 
-    const filtered = savedSdas.filter((s) => s.id !== sda.id);
+    // Asegurar ID único si la SdA no tiene uno definido
+    const sdaId = sda.id && sda.id.trim() !== '' ? sda.id : `sda_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const sdaToSave: SituacionAprendizaje = { ...sda, id: sdaId };
+    if (sda.id !== sdaId) {
+      setSda(sdaToSave);
+    }
+
+    const filtered = savedSdas.filter((s) => s.id !== sdaId);
     if (filtered.length >= maxAllowedSdas) {
       alert(`⚠️ Has alcanzado el límite máximo de ${maxAllowedSdas} Situaciones de Aprendizaje guardadas en tu perfil. Elimina alguna desde "Mis SdAs Guardadas" para guardar una nueva.`);
       return;
     }
-    const updated = [sda, ...filtered].slice(0, maxAllowedSdas);
+    const updated = [sdaToSave, ...filtered].slice(0, maxAllowedSdas);
     setSavedSdas(updated);
+
+    // 1. Guardar SIEMPRE en localStorage local para máxima rapidez y disponibilidad offline/online
+    try {
+      localStorage.setItem('sda_ef_andalucia_list_local', JSON.stringify(updated));
+    } catch (e) {
+      console.error('Error saving to local storage:', e);
+    }
+
     const email = userSession?.email?.trim().toLowerCase();
     if (email) {
       try {
         localStorage.setItem(`sda_ef_andalucia_list_${email}`, JSON.stringify(updated));
       } catch (e) {
-        console.error('Error saving to localStorage:', e);
+        console.error('Error saving to localStorage by email:', e);
       }
       
+      // 2. Sanitizar profundamente para eliminar cualquier campo 'undefined' que Firestore rechaza
+      const cleanSda = JSON.parse(JSON.stringify(sdaToSave));
+
+      // 3. Guardar en la nube (Firestore del cliente)
+      let savedCloud = false;
       try {
-        const sdaDocRef = doc(db, 'users', email, 'user_sdas', sda.id);
-        await setDoc(sdaDocRef, sda, { merge: true });
-      } catch (e) {
-        console.warn('Could not persist SdA to server:', e);
-        alert('Error al guardar en la nube, pero se ha guardado localmente.');
+        const sdaDocRef = doc(db, 'users', email, 'user_sdas', sdaId);
+        await setDoc(sdaDocRef, cleanSda, { merge: true });
+        savedCloud = true;
+      } catch (clientErr) {
+        console.warn('Client Firestore save failed, attempting server API fallback:', clientErr);
+      }
+
+      // 4. Si el cliente de Firestore falló (por permisos, offline o red), sincronizar mediante el backend
+      if (!savedCloud) {
+        try {
+          const resp = await fetch('/api/user/save-sda', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, sda: cleanSda }),
+          });
+          if (resp.ok) {
+            savedCloud = true;
+          } else {
+            console.warn('Server API save returned non-ok status:', resp.status);
+          }
+        } catch (serverErr) {
+          console.warn('Server API save failed:', serverErr);
+        }
       }
     }
   };
@@ -220,6 +302,10 @@ export default function App() {
   const handleDeleteSdA = async (idToDelete: string) => {
     const updated = savedSdas.filter((s) => s.id !== idToDelete);
     setSavedSdas(updated);
+    try {
+      localStorage.setItem('sda_ef_andalucia_list_local', JSON.stringify(updated));
+    } catch (e) {}
+
     const email = userSession?.email?.trim().toLowerCase();
     if (email) {
       try {
@@ -228,17 +314,51 @@ export default function App() {
         console.error('Error deleting from localStorage:', e);
       }
       
+      let deletedCloud = false;
       try {
         const sdaDocRef = doc(db, 'users', email, 'user_sdas', idToDelete);
         await deleteDoc(sdaDocRef);
+        deletedCloud = true;
       } catch (e) {
-        console.warn('Could not delete SdA from server:', e);
+        console.warn('Could not delete SdA from client Firestore:', e);
+      }
+
+      if (!deletedCloud) {
+        try {
+          await fetch('/api/user/delete-sda', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, id: idToDelete }),
+          });
+        } catch (serverErr) {
+          console.warn('Could not delete SdA from backend either:', serverErr);
+        }
       }
     }
   };
 
   const handleLoadSdA = (loaded: SituacionAprendizaje) => {
-    setSda(loaded);
+    const safeLoaded: SituacionAprendizaje = {
+      ...INITIAL_SDA_STATE,
+      ...loaded,
+      competenciasSeleccionadas: Array.isArray(loaded.competenciasSeleccionadas) ? loaded.competenciasSeleccionadas : [],
+      criteriosSeleccionados: Array.isArray(loaded.criteriosSeleccionados) ? loaded.criteriosSeleccionados : [],
+      saberesSeleccionados: Array.isArray(loaded.saberesSeleccionados) ? loaded.saberesSeleccionados : [],
+      odsSeleccionados: Array.isArray(loaded.odsSeleccionados) ? loaded.odsSeleccionados : [],
+      descriptoresOperativos: Array.isArray(loaded.descriptoresOperativos) ? loaded.descriptoresOperativos : [],
+      sesiones: Array.isArray(loaded.sesiones) ? loaded.sesiones : [],
+      neaeSeleccionadas: Array.isArray(loaded.neaeSeleccionadas) ? loaded.neaeSeleccionadas : [],
+      adaptacionesNEAE: Array.isArray(loaded.adaptacionesNEAE) ? loaded.adaptacionesNEAE : [],
+      pautasDUAGlobales: Array.isArray(loaded.pautasDUAGlobales) ? loaded.pautasDUAGlobales : [],
+      instrumentosSeleccionados: Array.isArray(loaded.instrumentosSeleccionados) ? loaded.instrumentosSeleccionados : [],
+      instrumentosEvaluacion: Array.isArray(loaded.instrumentosEvaluacion) ? loaded.instrumentosEvaluacion : [],
+      rubrica: Array.isArray(loaded.rubrica) ? loaded.rubrica : [],
+      recursosEspaciales: Array.isArray(loaded.recursosEspaciales) ? loaded.recursosEspaciales : [],
+      recursosMateriales: Array.isArray(loaded.recursosMateriales) ? loaded.recursosMateriales : [],
+      recursosCurriculares: Array.isArray(loaded.recursosCurriculares) ? loaded.recursosCurriculares : [],
+      recursosExternos: Array.isArray(loaded.recursosExternos) ? loaded.recursosExternos : [],
+    };
+    setSda(safeLoaded);
     setCurrentStep(10);
     setMaxStepReached(10);
   };
