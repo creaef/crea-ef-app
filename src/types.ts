@@ -62,6 +62,25 @@ export interface ActividadEnSesion {
   materiales: string[];
   adaptacionDUA?: string;
   esquemaGrafico?: string; // Descripción o configuración del esquema visual de organización espacial
+  esquemaTactico?: EsquemaTactico; // Coordenadas y elementos tácticos en pista (Propuesta B)
+}
+
+export interface TacticalPitchElement {
+  tipo: 'alumno' | 'jugador_azul' | 'jugador_rojo' | 'portero' | 'cono' | 'balon' | 'pica' | 'diana' | 'aro' | 'colchoneta' | 'banco' | 'flecha';
+  x: number; // Coordenada horizontal (0-100%)
+  y: number; // Coordenada vertical (0-100%)
+  label?: string; // Etiqueta (ej: "1", "2", "3" para conos)
+  color?: string; // Color de la camiseta del alumno (rojo, azul, verde, naranja, morado)
+  // Campos específicos para flechas de trayectoria
+  x2?: number; // Punto final horizontal si es flecha
+  y2?: number; // Punto final vertical si es flecha
+  curva?: 'arriba' | 'abajo' | 'recta'; // Tipo de curvatura de la trayectoria
+}
+
+export interface EsquemaTactico {
+  tipoPista: 'pabellon' | 'circuito' | 'paredon' | 'porteria' | 'rondo';
+  descripcionCorta?: string;
+  elementos: TacticalPitchElement[];
 }
 
 export interface SesionTrabajo {
@@ -108,8 +127,8 @@ export interface InstrumentoEvaluacion {
 
 /**
  * Formatea la descripción del desarrollo de un juego asegurando
- * que cada uno de los 4 apartados numerados (1. ORGANIZACIÓN, 2. ROLES, 3. DESARROLLO, 4. VARIACIONES)
- * esté obligatoriamente presente sin duplicidades y estructurado con saltos de línea claros.
+ * que cada uno de los 5 apartados concisos (Terreno de juego, Roles, Desarrollo del juego, Normas, Variaciones)
+ * esté presente sin redundancias, eliminando cualquier residuo como 'y normas' del inicio del desarrollo.
  */
 export function formatGameDescription(text: string): string {
   if (!text || !text.trim()) return '';
@@ -120,45 +139,72 @@ export function formatGameDescription(text: string): string {
   str = str.replace(/\*\*/g, '');
 
   const HEADERS = {
-    h1: '1. ORGANIZACIÓN ESPACIAL Y TERRENO:',
-    h2: '2. ROLES DE ALUMNADO Y ASIGNACIONES:',
-    h3: '3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:',
-    h4: '4. VARIACIONES, DUA Y SEGURIDAD:',
+    h1: 'Terreno de juego:',
+    h2: 'Roles:',
+    h3: 'Desarrollo del juego:',
+    h4: 'Normas:',
+    h5: 'Variaciones:',
   };
 
-  const has1 = /1\.\s*ORGANIZACI[OÓ]N/i.test(str);
-  const has2 = /2\.\s*ROLES/i.test(str);
-  const has3 = /3\.\s*DESARROLLO/i.test(str);
-  const has4 = /4\.\s*VARIACIONES/i.test(str);
-
-  // If text already contains all 4 numbered headers cleanly, return as is
-  if (has1 && has2 && has3 && has4) {
-    return str;
-  }
-
-  // Parse lines into sections 1, 2, 3, 4
+  // Parse lines into sections 1, 2, 3, 4, 5
   const lines = str.split('\n');
   let currentSec = 0;
-  const secContents: { [key: number]: string[] } = { 0: [], 1: [], 2: [], 3: [], 4: [] };
+  const secContents: { [key: number]: string[] } = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [] };
 
   for (let l of lines) {
     let trimmed = l.trim();
     if (!trimmed) continue;
 
-    if (/^\(?[1]\)?\.?\s*(?:ORGANIZACIÓN|ORGANIZACION)/i.test(trimmed) || /^(?:ORGANIZACIÓN|ORGANIZACION)\s*(?:ESPACIAL|espacial)?.*:/i.test(trimmed)) {
+    // Filter out redundant bloated lines from old format: DUA rotations, docente position, excessive security
+    if (/^[-*]?\s*(?:Rotaciones\s*y\s*DUA|Posici[oó]n\s*estrat[eé]gica|Adaptaciones\s*DUA|Medidas\s*de\s*seguridad):/i.test(trimmed)) {
+      continue;
+    }
+
+    if (/^(?:1\.)?\s*(?:Terreno(?:\s*de\s*juego)?|ORGANIZACI[OÓ]N\s*ESPACIAL)/i.test(trimmed)) {
       currentSec = 1;
-    } else if (/^\(?[2]\)?\.?\s*(?:ROLES)/i.test(trimmed) || /^(?:ROLES)\s*(?:DE\s*ALUMNADO)?.*:/i.test(trimmed)) {
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        const val = trimmed.substring(colonIdx + 1).trim();
+        if (val) secContents[1].push(val);
+      }
+    } else if (/^(?:2\.)?\s*(?:Roles(?:\s*del\s*alumnado|\s*activos)?|ROLES)/i.test(trimmed)) {
       currentSec = 2;
-    } else if (/^\(?[3]\)?\.?\s*(?:DESARROLLO)/i.test(trimmed) || /^(?:DESARROLLO)\s*(?:PASO\s*A\s*PASO)?.*:/i.test(trimmed)) {
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        const val = trimmed.substring(colonIdx + 1).trim();
+        if (val) secContents[2].push(val);
+      }
+    } else if (/^(?:3\.)?\s*(?:Desarrollo(?:\s*del\s*juego(?:\s*y\s*normas)?)?|DESARROLLO\s*PASO|Secuencia(?:\s*de\s*juego(?:\s*y\s*normas)?)?)/i.test(trimmed)) {
       currentSec = 3;
-    } else if (/^\(?[4]\)?\.?\s*(?:VARIACIONES)/i.test(trimmed) || /^(?:VARIACIONES)\s*(?:,\s*DUA|\/DUA)?.*:/i.test(trimmed)) {
-      if (/^[-*]\s*(?:Variaciones|VARIACIONES)/i.test(trimmed) && currentSec === 4) {
-        secContents[currentSec].push(trimmed);
-      } else {
-        currentSec = 4;
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        let val = trimmed.substring(colonIdx + 1).trim();
+        // Eliminar cualquier residuo de "y normas" al inicio del texto
+        val = val.replace(/^[-*]?\s*(?:y\s*normas|normas):?\s*/i, '').trim();
+        if (val) secContents[3].push(val);
+      }
+    } else if (/^(?:4\.)?\s*(?:Normas(?:\s*y\s*reglas|\s*claras)?|Reglas)/i.test(trimmed)) {
+      currentSec = 4;
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        const val = trimmed.substring(colonIdx + 1).trim();
+        if (val) secContents[4].push(val);
+      }
+    } else if (/^(?:5\.)?\s*(?:Variaciones|Variantes|VARIACIONES)/i.test(trimmed)) {
+      currentSec = 5;
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        const val = trimmed.substring(colonIdx + 1).trim();
+        if (val) secContents[5].push(val);
       }
     } else {
-      secContents[currentSec].push(trimmed);
+      // Limpiar cualquier línea suelta que empiece por "y normas" en el desarrollo
+      if (currentSec === 3) {
+        trimmed = trimmed.replace(/^[-*]?\s*y\s*normas:?\s*/i, '').trim();
+        if (trimmed) secContents[3].push(trimmed);
+      } else {
+        secContents[currentSec].push(trimmed);
+      }
     }
   }
 
@@ -166,25 +212,35 @@ export function formatGameDescription(text: string): string {
   let p2 = secContents[2].join('\n').trim();
   let p3 = secContents[3].join('\n').trim();
   let p4 = secContents[4].join('\n').trim();
+  let p5 = secContents[5].join('\n').trim();
 
+  // If unsectioned content exists
   if (secContents[0].length > 0) {
     const unsectioned = secContents[0].join('\n').trim();
     p3 = p3 ? `${unsectioned}\n${p3}` : unsectioned;
   }
 
+  // Clean sub-bullets that repeat the header name or residual 'y normas'
+  p1 = p1.replace(/^[-*]?\s*(?:Terreno\s*y\s*delimitaci[oó]n|Terreno):?\s*/gim, '').trim();
+  p2 = p2.replace(/^[-*]?\s*(?:Roles\s*activos|Roles):?\s*/gim, '').trim();
+  p3 = p3.replace(/^[-*]?\s*(?:Secuencia\s*de\s*juego\s*(?:y\s*normas)?|Secuencia|Desarrollo\s*del\s*juego\s*(?:y\s*normas)?|Desarrollo):?\s*/gim, '').trim();
+  p3 = p3.replace(/^[-*]?\s*(?:y\s*normas|normas):?\s*/gim, '').trim();
+  p3 = p3.split('\n').map((line) => line.replace(/^[-*]?\s*y\s*normas:?\s*/i, '').trim()).filter(Boolean).join('\n');
+
   const parts: string[] = [];
 
-  if (p1 || has1) {
-    parts.push(`${HEADERS.h1}\n${p1 || '- Distribución del espacio ajustada a la actividad.'}`);
-  }
-  if (p2 || has2) {
-    parts.push(`${HEADERS.h2}\n${p2 || '- Asignación activa de funciones y rotaciones.'}`);
-  }
-
+  parts.push(`${HEADERS.h1}\n${p1 || 'Pista polideportiva delimitada (aprox. 20x15m).'}`);
+  parts.push(`${HEADERS.h2}\n${p2 || 'Equipos equitativos con roles activos (atacantes y defensores).'}`);
   parts.push(`${HEADERS.h3}\n${p3 || str}`);
-
-  if (p4 || has4) {
-    parts.push(`${HEADERS.h4}\n${p4 || '- Adaptaciones de dificultad y medidas DUA.'}`);
+  if (p4) {
+    parts.push(`${HEADERS.h4}\n${p4}`);
+  } else {
+    parts.push(`${HEADERS.h4}\n- Respetar el espacio y las zonas de seguridad.\n- Pases limpios sin contacto excesivo.`);
+  }
+  if (p5) {
+    parts.push(`${HEADERS.h5}\n${p5}`);
+  } else {
+    parts.push(`${HEADERS.h5}\n- Reducir o ampliar el espacio de juego según fluidez motriz.`);
   }
 
   return parts.join('\n\n');
@@ -204,28 +260,37 @@ export function renderFormattedGameDescriptionHtml(text: string): string {
   for (let line of lines) {
     const trimmed = line.trim();
     if (!trimmed) {
-      html += '<div style="height: 4px;"></div>';
+      html += '<div style="height: 3px;"></div>';
       continue;
     }
 
-    // Encabezados principales (1. ORGANIZACIÓN, 2. ROLES, 3. DESARROLLO, 4. VARIACIONES)
-    if (/^(1\.|2\.|3\.|4\.)\s*(ORGANIZACIÓN|ORGANIZACION|ROLES|DESARROLLO|VARIACIONES|Organización|Organizacion|Roles|Desarrollo|Variaciones)/i.test(trimmed)) {
-      html += `<div style="font-weight: 800; color: #1e1b4b; font-size: 11px; margin-top: 8px; margin-bottom: 3px; border-bottom: 1px solid #c7d2fe; padding-bottom: 2px; text-align: left; hyphens: none;">${trimmed}</div>`;
+    // Encabezados de los 5 apartados concisos
+    if (/^(?:[1-5]\.)?\s*(Terreno de juego|Roles|Desarrollo del juego|Normas|Variaciones|Variantes)/i.test(trimmed) && trimmed.endsWith(':')) {
+      let icon = '📌';
+      let color = '#1e1b4b';
+      let bg = '#e0e7ff';
+      if (/terreno/i.test(trimmed)) { icon = '🏟️'; color = '#0369a1'; bg = '#e0f2fe'; }
+      else if (/roles/i.test(trimmed)) { icon = '👥'; color = '#4338ca'; bg = '#ede9fe'; }
+      else if (/desarrollo/i.test(trimmed)) { icon = '🏃'; color = '#1e1b4b'; bg = '#f1f5f9'; }
+      else if (/normas/i.test(trimmed)) { icon = '📋'; color = '#b45309'; bg = '#fef3c7'; }
+      else if (/variaci|variant/i.test(trimmed)) { icon = '🔀'; color = '#047857'; bg = '#d1fae5'; }
+
+      html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: ${color}; background: ${bg}; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">${icon} ${trimmed}</div>`;
     } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      // Elemento de lista / viñeta con etiqueta destacada antes de los dos puntos
+      // Viñeta con etiqueta destacada si tiene dos puntos
       const content = trimmed.substring(2);
       const colonIdx = content.indexOf(':');
 
-      if (colonIdx > 0 && colonIdx < 50) {
+      if (colonIdx > 0 && colonIdx < 40) {
         const label = content.substring(0, colonIdx + 1);
         const value = content.substring(colonIdx + 1);
-        html += `<div style="padding-left: 10px; margin-bottom: 2px; font-size: 10.5px; color: #334155; line-height: 1.5; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; font-weight: normal;">• <strong style="color: #0f172a; font-weight: bold;">${label}</strong>${value}</div>`;
+        html += `<div class="game-bullet-item" style="padding-left: 8px; margin-bottom: 2px; font-size: 10px; color: #334155; line-height: 1.45; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; page-break-inside: avoid !important; break-inside: avoid !important;">• <strong style="color: #0f172a; font-weight: bold;">${label}</strong>${value}</div>`;
       } else {
-        html += `<div style="padding-left: 10px; margin-bottom: 2px; font-size: 10.5px; color: #334155; line-height: 1.5; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; font-weight: normal;">• ${content}</div>`;
+        html += `<div class="game-bullet-item" style="padding-left: 8px; margin-bottom: 2px; font-size: 10px; color: #334155; line-height: 1.45; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; page-break-inside: avoid !important; break-inside: avoid !important;">• ${content}</div>`;
       }
     } else {
       // Párrafo normal
-      html += `<p style="margin: 0 0 3px 0; font-size: 10.5px; color: #334155; line-height: 1.5; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; font-weight: normal;">${trimmed}</p>`;
+      html += `<p class="game-paragraph-item" style="margin: 0 0 3px 0; font-size: 10px; color: #334155; line-height: 1.45; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; page-break-inside: avoid !important; break-inside: avoid !important;">${trimmed}</p>`;
     }
   }
 

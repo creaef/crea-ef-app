@@ -25,6 +25,7 @@ import { SituacionAprendizaje, formatGameDescription, renderFormattedGameDescrip
 import { CreaEfLogo, CREA_EF_LOGO_URL } from './CreaEfLogo';
 import { renderOfficialDocumentHeaderHtml, getNormativaForEtapa } from '../utils/documentHeader';
 import { METODOLOGIAS_ACTIVAS_EF, MODELOS_ESTRUCTURA_SESION } from '../data/methodologiesAndModels';
+import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
 
 /**
  * Renderiza la descripción de un juego en componentes React
@@ -37,20 +38,28 @@ function renderFormattedGameDescriptionReact(text: string) {
   const lines = formattedText.split('\n');
 
   return (
-    <div className="space-y-1 my-1 text-left">
+    <div className="space-y-1.5 my-1 text-left">
       {lines.map((line, idx) => {
         const trimmed = line.trim();
-        if (!trimmed) return <div key={idx} className="h-1" />;
+        if (!trimmed) return <div key={idx} className="h-0.5" />;
 
-        // Header check: 1. ORGANIZACIÓN, 2. ROLES, 3. DESARROLLO, 4. VARIACIONES
-        if (/^(1\.|2\.|3\.|4\.)\s*(ORGANIZACIÓN|ORGANIZACION|ROLES|DESARROLLO|VARIACIONES|Organización|Organizacion|Roles|Desarrollo|Variaciones)/i.test(trimmed)) {
+        // Header check: 5 apartados concisos o anteriores
+        if (/^(?:[1-5]\.)?\s*(Terreno de juego|Roles|Desarrollo del juego|Normas|Variaciones|Variantes|ORGANIZACIÓN|ROLES|DESARROLLO|VARIACIONES)/i.test(trimmed) && trimmed.endsWith(':')) {
+          let icon = '📌';
+          let colorClass = 'text-indigo-950 bg-indigo-50 border-indigo-200';
+          if (/terreno/i.test(trimmed)) { icon = '🏟️'; colorClass = 'text-sky-900 bg-sky-50 border-sky-200'; }
+          else if (/roles/i.test(trimmed)) { icon = '👥'; colorClass = 'text-purple-900 bg-purple-50 border-purple-200'; }
+          else if (/desarrollo/i.test(trimmed)) { icon = '🏃'; colorClass = 'text-indigo-950 bg-slate-100 border-slate-200'; }
+          else if (/normas/i.test(trimmed)) { icon = '📋'; colorClass = 'text-amber-900 bg-amber-50 border-amber-200'; }
+          else if (/variaci|variant/i.test(trimmed)) { icon = '🔀'; colorClass = 'text-emerald-900 bg-emerald-50 border-emerald-200'; }
+
           return (
             <div
               key={idx}
-              className="font-extrabold text-indigo-950 text-xs mt-3 mb-1 pb-0.5 border-b border-indigo-200/80 flex items-center gap-1.5 text-left [hyphens:none]"
+              className={`inline-flex items-center gap-1 font-extrabold text-[10.5px] px-2 py-0.5 rounded border mt-2 mb-0.5 select-none ${colorClass}`}
             >
-              <span className="text-indigo-700 font-bold select-none">📌</span>
-              <span className="font-extrabold">{trimmed}</span>
+              <span>{icon}</span>
+              <span>{trimmed}</span>
             </div>
           );
         }
@@ -60,11 +69,11 @@ function renderFormattedGameDescriptionReact(text: string) {
           const content = trimmed.substring(2);
           const colonIdx = content.indexOf(':');
 
-          if (colonIdx > 0 && colonIdx < 50) {
+          if (colonIdx > 0 && colonIdx < 40) {
             const label = content.substring(0, colonIdx + 1);
             const value = content.substring(colonIdx + 1);
             return (
-              <div key={idx} className="pl-3 text-slate-700 text-xs leading-relaxed text-justify flex items-start gap-1.5 my-0.5 font-normal [hyphens:none] [overflow-wrap:anywhere] [word-break:normal]">
+              <div key={idx} className="pl-2 text-slate-700 text-xs leading-relaxed text-justify flex items-start gap-1.5 my-0.5 font-normal">
                 <span className="text-indigo-600 font-bold text-[10px] select-none mt-0.5">•</span>
                 <span className="font-normal text-slate-700">
                   <strong className="font-bold text-slate-900">{label}</strong>
@@ -75,7 +84,7 @@ function renderFormattedGameDescriptionReact(text: string) {
           }
 
           return (
-            <div key={idx} className="pl-3 text-slate-700 text-xs leading-relaxed text-justify flex items-start gap-1.5 my-0.5 font-normal [hyphens:none] [overflow-wrap:anywhere] [word-break:normal]">
+            <div key={idx} className="pl-2 text-slate-700 text-xs leading-relaxed text-justify flex items-start gap-1.5 my-0.5 font-normal">
               <span className="text-indigo-600 font-bold text-[10px] select-none mt-0.5">•</span>
               <span className="font-normal text-slate-700">{content}</span>
             </div>
@@ -84,7 +93,7 @@ function renderFormattedGameDescriptionReact(text: string) {
 
         // Regular paragraph line
         return (
-          <p key={idx} className="text-slate-700 text-xs leading-relaxed text-justify my-0.5 font-normal [hyphens:none] [overflow-wrap:anywhere] [word-break:normal]">
+          <p key={idx} className="text-slate-700 text-xs leading-relaxed text-justify my-0.5 font-normal">
             {trimmed}
           </p>
         );
@@ -366,15 +375,15 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         `</ul>`;
 
       return `
-        <tr style="page-break-inside: avoid; break-inside: avoid;">
-          <td style="padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; background-color: #f8fafc; width: 33%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
-            <strong style="color: #0a2240; font-size: 11px; display: block; margin-bottom: 4px;">${comp.id}: ${comp.nombre}</strong>
-            <p style="margin: 0; font-size: 10px; color: #334155; line-height: 1.4; text-align: justify;">${comp.descripcion}</p>
+        <tr style="page-break-inside: auto; break-inside: auto;">
+          <td style="padding: 6px 8px; border: 1px solid #cbd5e1; vertical-align: top; background-color: #f8fafc; width: 33%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
+            <strong style="color: #0a2240; font-size: 10.5px; display: block; margin-bottom: 3px;">${comp.id}: ${comp.nombre}</strong>
+            <p style="margin: 0; font-size: 9.5px; color: #334155; line-height: 1.35; text-align: justify;">${comp.descripcion}</p>
           </td>
-          <td style="padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; width: 33%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
+          <td style="padding: 6px 8px; border: 1px solid #cbd5e1; vertical-align: top; width: 33%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
             ${critHtml}
           </td>
-          <td style="padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; background-color: #f8fafc; width: 34%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
+          <td style="padding: 6px 8px; border: 1px solid #cbd5e1; vertical-align: top; background-color: #f8fafc; width: 34%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
             ${sabHtml}
           </td>
         </tr>
@@ -393,31 +402,41 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       );
 
       let warmupHtml = warmup.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">Fase 1: Calentamiento / Inicio (${f?.duracionMin || 10} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Actividad de Activación'}</strong>
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+          <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #f59e0b; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+            <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
+              ${f?.nombreJuego || 'Actividad de Activación'}
+            </span>
+            <span style="background: #e0f2fe; color: #0369a1; font-weight: 800; font-size: 9.5px; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; white-space: nowrap;">
+              Fase 1 • ${f?.duracionMin || 10} min
+            </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-          ${f?.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
+          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+          ${f?.esquemaGrafico ? `<p class="game-paragraph-item" style="margin-top: 3px; font-size: 9px; color: #334155; background: #f8fafc; padding: 3px 6px; border-radius: 4px; font-style: italic; page-break-inside: avoid !important; break-inside: avoid !important;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
         </div>
       `).join('');
 
       let mainHtml = '';
       if (main.length > 0) {
         mainHtml = `
-          <div style="margin-bottom: 8px;">
-            <div style="font-weight: 800; color: #0a2240; font-size: 11px; border-bottom: 2px solid #e85d04; padding-bottom: 4px; margin-top: 6px; margin-bottom: 8px; text-transform: uppercase; page-break-after: avoid; break-after: avoid;">
-              PARTE PRINCIPAL / PRÁCTICA (40 MIN) — ${main.length} ACTIVIDADES / JUEGOS CON ENFOQUE INCLUSIVO
+          <div style="margin-bottom: 6px;">
+            <div style="font-weight: 800; color: #0a2240; font-size: 10.5px; border-bottom: 2px solid #e85d04; padding-bottom: 3px; margin-top: 4px; margin-bottom: 6px; text-transform: uppercase; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+              PARTE PRINCIPAL / PRÁCTICA (40 MIN) — ${main.length} ACTIVIDADES / JUEGOS
             </div>
             ${main.map((f, mIdx) => `
-              <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                  <span style="font-weight: bold; color: #e85d04; font-size: 11px;">Juego ${mIdx + 1} (${f?.duracionMin || 10} min)</span>
-                  <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || `Juego ${mIdx + 1}`}</strong>
+              <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+                <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #f59e0b; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+                  <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
+                    ${f?.nombreJuego || `Juego ${mIdx + 1}`}
+                  </span>
+                  <span style="background: #fef3c7; color: #92400e; font-weight: 800; font-size: 9.5px; padding: 1px 6px; border-radius: 4px; border: 1px solid #fde68a; white-space: nowrap;">
+                    Juego ${mIdx + 1} • ${f?.duracionMin || 10} min
+                  </span>
                 </div>
                 ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-                ${f?.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 10px; color: #334155; background: #f8fafc; padding: 6px 10px; border-radius: 4px; font-style: italic; text-align: justify;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
+                ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+                ${f?.esquemaGrafico ? `<p class="game-paragraph-item" style="margin-top: 3px; font-size: 9px; color: #334155; background: #f8fafc; padding: 3px 6px; border-radius: 4px; font-style: italic; page-break-inside: avoid !important; break-inside: avoid !important;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
               </div>
             `).join('')}
           </div>
@@ -425,22 +444,32 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       }
 
       let coolHtml = cool.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #047857; font-size: 11px;">Fase Final: Vuelta a la Calma / Reflexión (${f?.duracionMin || 10} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Vuelta a la Calma'}</strong>
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+          <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #10b981; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+            <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
+              ${f?.nombreJuego || 'Vuelta a la Calma'}
+            </span>
+            <span style="background: #d1fae5; color: #065f46; font-weight: 800; font-size: 9.5px; padding: 1px 6px; border-radius: 4px; border: 1px solid #a7f3d0; white-space: nowrap;">
+              Fase Final • ${f?.duracionMin || 10} min
+            </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
+          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
         </div>
       `).join('');
 
       let otherHtml = other.map((f) => `
-        <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 8px; page-break-inside: avoid; break-inside: avoid;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: bold; color: #0284c7; font-size: 11px;">${f?.fase || 'Fase'} (${f?.duracionMin || 10} min)</span>
-            <strong style="color: #0a2240; font-size: 11px;">${f?.nombreJuego || 'Actividad'}</strong>
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+          <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #6366f1; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
+            <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
+              ${f?.nombreJuego || 'Actividad'}
+            </span>
+            <span style="background: #e0e7ff; color: #3730a3; font-weight: 800; font-size: 9.5px; padding: 1px 6px; border-radius: 4px; border: 1px solid #c7d2fe; white-space: nowrap;">
+              ${f?.fase || 'Fase'} • ${f?.duracionMin || 10} min
+            </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
+          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
         </div>
       `).join('');
 
@@ -449,37 +478,35 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       const matTot = Array.isArray(ses?.materialesTotales) ? ses.materialesTotales.join(', ') : 'Habitual de EF';
 
       return `
-        <div class="session-card" style="margin-bottom: 22px; border: 1.5px solid #0a2240; border-radius: 6px; overflow: hidden; page-break-inside: auto; break-inside: auto;">
-          <!-- CABECERA Y FASE 1 INDIVISIBLES: SI NO CABEN AL FINAL DE PÁGINA SALTAN LIMPIAS A LA SIGUIENTE -->
-          <div class="session-start-block" style="page-break-inside: avoid !important; break-inside: avoid !important;">
-            <!-- CABECERA DE SESIÓN EN 2 COLUMNAS CLARAS: TÍTULO Y MATERIALES SEPARADOS -->
-            <table style="width: 100%; border-collapse: collapse; background-color: #0a2240; border-bottom: 2px solid #e85d04; margin: 0; padding: 0;">
-              <tr>
-                <td style="width: 58%; vertical-align: middle; text-align: left; padding: 9px 12px; border-right: 1.5px solid #1e3a8a;">
-                  <span style="font-size: 11.5px; font-weight: 900; text-transform: uppercase; color: #ffffff; line-height: 1.35; display: block;">
+        <div class="session-card" style="margin-bottom: 14px; border: 1.5px solid #0a2240; border-radius: 6px; page-break-inside: auto; break-inside: auto;">
+          <div class="session-header-wrapper avoid-break" style="page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
+            <table class="session-header-table avoid-break" style="width: 100%; border-collapse: collapse; background-color: #0a2240; border-bottom: 2px solid #e85d04; margin: 0; padding: 0; page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr class="avoid-break" style="page-break-inside: avoid !important; break-inside: avoid !important;">
+                <td style="width: 58%; vertical-align: middle; text-align: left; padding: 7px 10px; border-right: 1.5px solid #1e3a8a;">
+                  <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ffffff; line-height: 1.3; display: block;">
                     SESIÓN ${numSes}: ${titSes} (60 MINUTOS)
                   </span>
                 </td>
-                <td style="width: 42%; vertical-align: middle; text-align: left; padding: 8px 12px; background-color: #0c284d;">
-                  <span style="font-size: 9px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">
+                <td style="width: 42%; vertical-align: middle; text-align: left; padding: 6px 10px; background-color: #0c284d;">
+                  <span style="font-size: 8.5px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 1px;">
                     📦 Materiales Necesarios:
                   </span>
-                  <span style="font-size: 10px; color: #fef08a; font-weight: 600; line-height: 1.35; display: block;">
+                  <span style="font-size: 9.5px; color: #fef08a; font-weight: 600; line-height: 1.3; display: block;">
                     ${matTot}
                   </span>
                 </td>
               </tr>
             </table>
             ${ses?.objetivoSesion ? `
-              <div style="background-color: #1e293b; color: #ffffff; padding: 6px 12px; font-size: 10px; font-style: italic; text-align: justify;">
+              <div class="avoid-break" style="background-color: #1e293b; color: #ffffff; padding: 4px 10px; font-size: 9.5px; font-style: italic; text-align: justify; page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
                 <strong>Objetivo Pedagógico de Sesión:</strong> ${ses.objetivoSesion}
               </div>
             ` : ''}
-            <div style="padding: 10px 10px 4px 10px; background-color: #ffffff;">
-              ${warmupHtml}
-            </div>
           </div>
-          <div style="padding: 0 10px 10px 10px; background-color: #ffffff;">
+          <div style="padding: 6px 8px 2px 8px; background-color: #ffffff;">
+            ${warmupHtml}
+          </div>
+          <div style="padding: 0 8px 6px 8px; background-color: #ffffff;">
             ${mainHtml}
             ${coolHtml}
             ${otherHtml}
@@ -489,36 +516,36 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
     }).join('');
 
     const neaeTableRows = (sda.adaptacionesNEAE || []).map((a) => `
-      <tr style="page-break-inside: avoid; break-inside: avoid;">
-        <td style="padding: 8px 10px; border: 1px solid #cbd5e1; background-color: #fff1f2; font-weight: bold; color: #9f1239; font-size: 10.5px; width: 25%; vertical-align: top;">
+      <tr style="page-break-inside: auto; break-inside: auto;">
+        <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #fff1f2; font-weight: bold; color: #9f1239; font-size: 10px; width: 25%; vertical-align: top;">
           ${a.categoria}
         </td>
-        <td colSpan="2" style="padding: 8px 10px; border: 1px solid #cbd5e1; font-size: 10px; color: #334155; text-align: justify; vertical-align: top;">
-          <p style="margin: 0 0 3px 0;"><strong>Espacio y Materiales:</strong> ${a.materialesYEspacio}</p>
-          <p style="margin: 0 0 3px 0;"><strong>Reglas y Metodología:</strong> ${a.reglasYMetodologia}</p>
+        <td colSpan="2" style="padding: 6px 8px; border: 1px solid #cbd5e1; font-size: 9.5px; color: #334155; text-align: justify; vertical-align: top;">
+          <p style="margin: 0 0 2px 0;"><strong>Espacio y Materiales:</strong> ${a.materialesYEspacio}</p>
+          <p style="margin: 0 0 2px 0;"><strong>Reglas y Metodología:</strong> ${a.reglasYMetodologia}</p>
           <p style="margin: 0;"><strong>Pautas Docente:</strong> ${a.pautasDocente}</p>
         </td>
       </tr>
     `).join('');
 
     const duaTableRows = (sda.pautasDUAGlobales || []).map((p: any, i: number) => `
-      <tr style="page-break-inside: avoid; break-inside: avoid;">
-        <td style="padding: 8px 10px; border: 1px solid #cbd5e1; background-color: #f0fdf4; font-weight: bold; color: #14532d; font-size: 10.5px; width: 25%; vertical-align: top;">
+      <tr style="page-break-inside: auto; break-inside: auto;">
+        <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #f0fdf4; font-weight: bold; color: #14532d; font-size: 10px; width: 25%; vertical-align: top;">
           ${typeof p === 'string' ? `Pauta DUA ${i + 1}` : p.principio}
         </td>
-        <td colSpan="2" style="padding: 8px 10px; border: 1px solid #cbd5e1; font-size: 10px; color: #166534; text-align: justify; vertical-align: top;">
+        <td colSpan="2" style="padding: 6px 8px; border: 1px solid #cbd5e1; font-size: 9.5px; color: #166534; text-align: justify; vertical-align: top;">
           ${typeof p !== 'string' && Array.isArray(p.pautas) ? `<ul style="margin: 0; padding-left: 14px;">${p.pautas.map((pt: string) => `<li style="margin-bottom: 2px;">${pt}</li>`).join('')}</ul>` : (typeof p === 'string' ? p : '')}
         </td>
       </tr>
     `).join('');
 
     const instTableRows = (sda.instrumentosEvaluacion || []).map((i) => `
-      <tr style="page-break-inside: avoid; break-inside: avoid;">
-        <td style="padding: 8px 10px; border: 1px solid #cbd5e1; background-color: #f8fafc; font-weight: bold; color: #0a2240; font-size: 10.5px; width: 28%; vertical-align: top;">
+      <tr style="page-break-inside: auto; break-inside: auto;">
+        <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #f8fafc; font-weight: bold; color: #0a2240; font-size: 10px; width: 28%; vertical-align: top;">
           ${i.tipo || i.nombre}
         </td>
-        <td style="padding: 8px 10px; border: 1px solid #cbd5e1; font-size: 10px; color: #334155; text-align: justify; vertical-align: top; width: 72%;">
-          <p style="margin: 0 0 3px 0; font-weight: 500; color: #1e293b;">${i.descripcion}</p>
+        <td style="padding: 6px 8px; border: 1px solid #cbd5e1; font-size: 9.5px; color: #334155; text-align: justify; vertical-align: top; width: 72%;">
+          <p style="margin: 0 0 2px 0; font-weight: 500; color: #1e293b;">${i.descripcion}</p>
           <p style="margin: 0; color: #e85d04; font-weight: bold;"><strong>Aplicación Práctica:</strong> ${i.aplicacion}</p>
         </td>
       </tr>
@@ -568,6 +595,36 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
 
     return `
       <div style="font-family: Arial, sans-serif; text-align: justify; hyphens: none; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5; width: 100%; box-sizing: border-box; padding: 4px; margin: 0 auto; color: #1e293b; background-color: #ffffff;">
+        <style>
+          * { box-sizing: border-box; }
+          table {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+          }
+          tr, td {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+          }
+          .session-card {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+          }
+          .game-activity-card {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+            margin-bottom: 6px !important;
+          }
+          .session-header-wrapper, .session-header-table, .game-card-header, h1, h2, h3, h4, thead, th, .avoid-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+          }
+          .tactical-pitch-box, svg {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+        </style>
         
         <!-- MEMBRETE OFICIAL CON LOGOTIPO CREA-EF -->
         ${renderOfficialDocumentHeaderHtml('RESUMEN Y PROGRAMACIÓN SdA EF', sda.id || 'SDA-EF-2026', sda.etapa, sda.comunidad)}
@@ -807,35 +864,35 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
-                  <span style="background-color: #0a2240; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">ESPACIOS</span> Instalaciones y Espacios:
+              <tr style="background-color: #f8fafc; page-break-inside: auto; break-inside: auto;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10px; vertical-align: top;">
+                  <span style="background-color: #0a2240; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">ESPACIOS</span> Instalaciones y Espacios:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 68%; font-size: 10px; color: #334155; text-align: justify;">
                   ${(sda.recursosEspaciales && sda.recursosEspaciales.length > 0) ? sda.recursosEspaciales.join(' • ') : 'Pista polideportiva exterior del centro, pabellón cubierto / gimnasio escolar y zonas delimitadas seguras.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">
-                  <span style="background-color: #0284c7; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">MATERIAL</span> Materiales Escolares y Deportivos:
+              <tr style="background-color: #ffffff; page-break-inside: auto; break-inside: auto;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10px; vertical-align: top;">
+                  <span style="background-color: #0284c7; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">MATERIAL</span> Materiales Escolares y Deportivos:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 68%; font-size: 10px; color: #334155; text-align: justify;">
                   ${(sda.recursosMateriales && sda.recursosMateriales.length > 0) ? sda.recursosMateriales.join(' • ') : 'Balones de gomaespuma, petos de colores, aros, picas, conos delimitadores, colchonetas y material alternativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">
-                  <span style="background-color: #047857; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">DIDÁCTICA</span> Recursos Didácticos y Curriculares:
+              <tr style="background-color: #f8fafc; page-break-inside: auto; break-inside: auto;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #047857; font-size: 10px; vertical-align: top;">
+                  <span style="background-color: #047857; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">DIDÁCTICA</span> Recursos Didácticos y Curriculares:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 68%; font-size: 10px; color: #334155; text-align: justify;">
                   ${(sda.recursosCurriculares && sda.recursosCurriculares.length > 0) ? sda.recursosCurriculares.join(' • ') : 'Tarjetas visuales DUA de apoyo a las reglas, dianas de autoevaluación motriz y fichas de registro cooperativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">
-                  <span style="background-color: #6b21a8; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 9px; margin-right: 6px; font-weight: bold;">COMPLEMENTO</span> Recursos Complementarios:
+              <tr style="background-color: #ffffff; page-break-inside: auto; break-inside: auto;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #6b21a8; font-size: 10px; vertical-align: top;">
+                  <span style="background-color: #6b21a8; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">COMPLEMENTO</span> Recursos Complementarios:
                 </td>
-                <td style="padding: 10px 12px; border: 1px solid #cbd5e1; width: 68%; font-size: 10.5px; color: #334155; text-align: justify;">
+                <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 68%; font-size: 10px; color: #334155; text-align: justify;">
                   ${(sda.recursosExternos && sda.recursosExternos.length > 0) ? sda.recursosExternos.join(' • ') : (isThirdCycleOrHigher ? 'Tabletas para consulta puntual de retos y altavoz Bluetooth portátil.' : 'Altavoz Bluetooth portátil para ambientación musical y cronómetro analógico del docente.')}
                 </td>
               </tr>
@@ -861,7 +918,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       cleanupHtml2CanvasArtifacts();
       const richHtml = buildRichSdaExportHtml();
 
-      // Generación aislada en memoria sin manipular el DOM visible
+      // Contenedor en flujo normal (ancho exacto 700px sin márgenes que empujen ni desborden)
       const container = document.createElement('div');
       container.style.width = '700px';
       container.style.boxSizing = 'border-box';
@@ -870,7 +927,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       container.style.fontFamily = 'Arial, sans-serif';
       container.style.color = '#1e293b';
       container.style.backgroundColor = '#ffffff';
-      container.style.lineHeight = '1.5';
+      container.style.lineHeight = '1.45';
       container.innerHTML = richHtml;
 
       const opt = {
@@ -886,7 +943,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: {
           mode: ['css', 'legacy'],
-          avoid: ['tr', 'table', 'h1', 'h2', 'h3', 'h4', '.session-start-block', '.avoid-break']
+          avoid: ['h1', 'h2', 'h3', 'h4', '.avoid-break', '.session-header-wrapper', '.game-card-header']
         }
       };
 
@@ -1477,16 +1534,19 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                         <>
                           {/* Calentamiento */}
                           {warmup.map((f, fIdx) => (
-                            <div key={`w-${fIdx}`} className="bg-white p-3 rounded-lg border border-slate-200 space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-indigo-900 text-[11px]">
-                                  Fase 1: Calentamiento / Inicio ({f.duracionMin} min)
+                            <div key={`w-${fIdx}`} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+                              <div className="flex items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg">
+                                <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                  {f.nombreJuego || 'Calentamiento Inicial'}
                                 </span>
-                                <span className="font-extrabold text-slate-900 text-xs">{f.nombreJuego}</span>
+                                <span className="text-[10px] font-extrabold bg-sky-100 text-sky-900 px-2 py-0.5 rounded border border-sky-200 shrink-0">
+                                  Fase 1 • {f.duracionMin} min
+                                </span>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
+                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
                               {f.esquemaGrafico && (
-                                <p className="text-[11px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200 mt-1 italic">
+                                <p className="text-[11px] text-amber-900 bg-amber-50 p-1.5 rounded-lg border border-amber-200 mt-1 italic">
                                   🎨 <strong>Organización Espacial:</strong> {f.esquemaGrafico}
                                 </p>
                               )}
@@ -1495,22 +1555,25 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
 
                           {/* Parte Principal Agrupada */}
                           {main.length > 0 && (
-                            <div className="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-200 space-y-2">
-                              <div className="font-extrabold text-indigo-950 text-xs border-b border-indigo-200 pb-1 flex items-center justify-between">
-                                <span>PARTE PRINCIPAL / PRÁCTICA (40 min)</span>
-                                <span className="text-[11px] font-bold text-indigo-700">{main.length} Actividades</span>
+                            <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-200 space-y-3">
+                              <div className="font-black text-indigo-950 text-xs border-b border-indigo-200 pb-1.5 flex items-center justify-between">
+                                <span className="uppercase tracking-wider">PARTE PRINCIPAL / PRÁCTICA (40 min)</span>
+                                <span className="text-[11px] font-bold text-indigo-700 bg-white px-2.5 py-0.5 rounded-full border border-indigo-200">{main.length} Actividades</span>
                               </div>
                               {main.map((f, mIdx) => (
-                                <div key={`m-${mIdx}`} className="bg-white p-2.5 rounded-lg border border-indigo-100 space-y-1">
-                                  <div className="flex items-center justify-between">
-                                    <span className="font-bold text-indigo-900 text-[11px]">
-                                      Juego {mIdx + 1} ({f.duracionMin} min)
+                                <div key={`m-${mIdx}`} className="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
+                                  <div className="flex items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg">
+                                    <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                      {f.nombreJuego || `Juego ${mIdx + 1}`}
                                     </span>
-                                    <span className="font-extrabold text-slate-900 text-xs">{f.nombreJuego}</span>
+                                    <span className="text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-200 shrink-0">
+                                      Juego ${mIdx + 1} • {f.duracionMin} min
+                                    </span>
                                   </div>
                                   {renderFormattedGameDescriptionReact(f.descripcion)}
+                                  <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
                                   {f.esquemaGrafico && (
-                                    <p className="text-[11px] text-slate-600 bg-slate-50 p-1 rounded mt-0.5 italic">
+                                    <p className="text-[11px] text-slate-700 bg-slate-50 p-1.5 rounded-lg border border-slate-200 mt-1 italic">
                                       🎨 <strong>Organización Espacial:</strong> {f.esquemaGrafico}
                                     </p>
                                   )}
@@ -1521,24 +1584,28 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
 
                           {/* Vuelta a la calma */}
                           {cool.map((f, fIdx) => (
-                            <div key={`c-${fIdx}`} className="bg-white p-3 rounded-lg border border-slate-200 space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-indigo-900 text-[11px]">
-                                  Fase Final: Vuelta a la Calma ({f.duracionMin} min)
+                            <div key={`c-${fIdx}`} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+                              <div className="flex items-center justify-between bg-slate-50 border-l-4 border-emerald-500 px-3 py-2 rounded-r-lg">
+                                <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                  {f.nombreJuego || 'Vuelta a la Calma'}
                                 </span>
-                                <span className="font-extrabold text-slate-900 text-xs">{f.nombreJuego}</span>
+                                <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
+                                  Fase Final • {f.duracionMin} min
+                                </span>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
+                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
                             </div>
                           ))}
 
                           {other.map((f, oIdx) => (
-                            <div key={`o-${oIdx}`} className="bg-white p-3 rounded-lg border border-slate-200 space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-indigo-900 text-[11px]">{f.fase} ({f.duracionMin} min)</span>
-                                <span className="font-extrabold text-slate-900 text-xs">{f.nombreJuego}</span>
+                            <div key={`o-${oIdx}`} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+                              <div className="flex items-center justify-between bg-slate-50 border-l-4 border-indigo-500 px-3 py-2 rounded-r-lg">
+                                <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">{f.nombreJuego}</span>
+                                <span className="text-[10px] font-extrabold bg-indigo-100 text-indigo-900 px-2 py-0.5 rounded border border-indigo-200 shrink-0">{f.fase} • {f.duracionMin} min</span>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
+                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
                             </div>
                           ))}
                         </>
@@ -1797,6 +1864,28 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       )}
 
       {/* Navigation Footer */}
+      <div className="flex items-center justify-between pt-4 border-t border-slate-200 no-print">
+        <button
+          type="button"
+          id="btn-step10-prev"
+          onClick={onPrev}
+          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-sm transition shadow-2xs"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Anterior: Recursos y Espacios</span>
+        </button>
+
+        <button
+          type="button"
+          id="btn-step10-download-pdf-footer"
+          onClick={handleDownloadPDF}
+          disabled={downloadingPdf}
+          className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm shadow-md transition disabled:opacity-50"
+        >
+          <Download className="w-4 h-4 text-slate-950" />
+          <span>{downloadingPdf ? 'Generando PDF...' : 'Descargar PDF Completo'}</span>
+        </button>
+      </div>
     </div>
   );
 };

@@ -694,15 +694,16 @@ ${driveDocumentationText.slice(0, 45000)}
 REGLAS OBLIGATORIAS DE LECTURA, BÚSQUEDA Y CUMPLIMENTACIÓN:
 1. BÚSQUEDA Y SELECCIÓN INTELIGENTE: Examina minuciosamente todo el texto adjunto arriba. Si el docente ha adjuntado un Banco de Juegos o documentos con fichas de juegos, busca aquellos juegos que mejor se adapten a la temática ("${tematica}"), a la edad y al ciclo (${curso} - ${ciclo}).
 2. JUEGOS SELECCIONADOS MANUALMENTE O DESDE BANCO: Si hay juegos explícitamente nombrados o importados desde el Banco de Juegos en el texto, INCORPÓRALOS OBLIGATORIAMENTE con su nombre exacto y utiliza el texto explicativo de su descripción real que aparece tras el nombre del juego en el documento.
-3. DESGLOSE COMPLETO EN 4 SECCIONES OBLIGATORIAS: Para cada juego extraído del documento/banco, desglosa y redacta su explicación completa en las 4 secciones:
-   - 1. ORGANIZACIÓN ESPACIAL Y TERRENO: Terreno, delimitación y colocación de alumnos/materiales.
-   - 2. ROLES DE ALUMNADO Y ASIGNACIONES: Funciones activas, equipos y rotaciones DUA.
-   - 3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS: Explicación minuciosa de cómo se juega realmente (señal de inicio, pases/botes, puntuación, faltas y reto del juego).
-   - 4. VARIACIONES, DUA Y SEGURIDAD: Modificaciones para simplificar/complicar y apoyos inclusivos.
+3. DESGLOSE CONCISO EN 5 APARTADOS OBLIGATORIOS: Para cada juego extraído del documento/banco, sintetiza su explicación en 5 apartados breves, directos y operativos (entre 70 y 110 palabras por juego, eliminando textos tediosos o redundantes):
+   - Terreno de juego: Dónde se juega con medida aproximada (ej. Media pista polideportiva, 20x15m delimitada con conos).
+   - Roles: Roles activos del alumnado (ej. 4 cazadores con peto y fugitivos). Obviar la posición del docente y las rotaciones DUA.
+   - Desarrollo del juego: Explicación concisa y directa de cómo se juega (dinámica motriz principal).
+   - Normas: Normas claras y directas en viñetas (faltas, puntuación y objetivo motor).
+   - Variaciones: 1 o 2 variantes rápidas para aumentar/disminuir dificultad o dinamizar.
 4. SI EL TEXTO DEL DOCUMENTO ES SINTÉTICO O BREVE: Completa y redacta pedagógicamente la mecánica de juego de forma transparente para que quede 100% explicada para el docente en clase.
 5. REGISTRO DE FUENTES: En la lista "fuentesUtilizadas", incluye los nombres exactos de los archivos Word, PDF, carpetas de Drive o Excel de donde extrajiste la información (indicados en '--- ARCHIVO / FUENTE: ... ---' o '--- ARCHIVO LOCAL ADJUNTO: ... ---').`;
     } else {
-      documentationInstruction = `Genera actividades y juegos originales, highly pedagógicos e innovadores para Educación Física, acordes a la temática "${tematica}" y nivel ${curso} (${ciclo}). Cada juego debe incluir su desarrollo explicativo completo con los 4 apartados obligatorios.`;
+      documentationInstruction = `Genera actividades y juegos originales, altamente pedagógicos e innovadores para Educación Física, acordes a la temática "${tematica}" y nivel ${curso} (${ciclo}). Cada juego debe incluir su desarrollo conciso y directo estructurado con los 5 apartados obligatorios (Terreno de juego, Roles, Desarrollo del juego, Normas, Variaciones).`;
     }
 
     const prompt = `Diseña una secuencia didáctica completa de EXACTAMENTE ${numSesiones} SESIONES de Educación Física (60 minutos cada una).
@@ -722,25 +723,38 @@ Debes generar un array "sesiones" con EXACTAMENTE ${numSesiones} OBJETOS DE SESI
 3. ADECUACIÓN ESTRICTA A LA EDAD Y NIVEL COGNITIVO/MOTRIZ: Es OBLIGATORIO que TODOS los juegos seleccionados o inventados sean estrictamente adecuados para la edad, curso y nivel madurativo del alumnado (${curso} - ${ciclo}). Si un juego del banco de recursos es demasiado complejo, infantil o peligroso para su edad, ADÁPTALO obligatoriamente simplificando/complicando sus reglas, o DESCÁRTALO y crea uno nuevo adecuado. Nunca incluyas actividades complejas de secundaria para infantil/primer ciclo, ni juegos infantiles para cursos altos.
 4. EXPLICACIONES REALES Y ESPECÍFICAS (PROHIBIDO TEXTO PLANTILLA GENÉRICO): Queda estrictamente prohibido usar frases genéricas o copiadas de plantilla como "El juego inicia con la señal sonora del docente...". CADA JUEGO DEBE EXPLICAR DETALLADAMENTE CÓMO SE JUEGA REALMENTE (reglas concretas, forma de puntuar, normas tácticas y objetivo motor).
 
-FORMATO DE LOS 4 APARTADOS OBLIGATORIOS POR JUEGO (mínimo 180-250 palabras por juego):
+FORMATO CONCISO Y SINTETIZADO POR JUEGO (entre 70 y 110 palabras por juego, directo y operativo a pie de pista):
+Queda terminantemente prohibido meter parrafadas teóricas, rotaciones DUA individuales y medidas de seguridad repetitivas dentro de los juegos. El docente necesita una ficha ágil:
 
-1. ORGANIZACIÓN ESPACIAL Y TERRENO:
-- Terreno y delimitación: Distribución exacta en pista/gimnasio (ej. 4 cuadrantes delimitados con conos, zonas de seguridad).
-- Ubicación del alumnado y docente: Puntos de inicio, zonas de espera y posición estratégica del profesorado.
+Terreno de juego:
+Señala dónde se debe jugar con una medida aproximada (ej. Media pista polideportiva, 20x15m delimitada con conos).
 
-2. ROLES DE ALUMNADO Y ASIGNACIONES:
-- Roles activos: Atacantes, defensores, comodines, jueces/árbitros o anotadores.
-- Rotaciones y DUA: Sistema de rotación periódica y asignación de parejas de apoyo (tutoría entre iguales).
+Roles:
+Señala los roles del alumnado (ej. 4 atacantes con peto amarillo y defensores libres). Obvia la posición del profesorado y las rotaciones DUA individuales.
 
-3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:
-- Secuencia de juego y normas: Explicación minuciosa y real de CÓMO SE JUEGA a dicho juego específico desde la señal inicial, dinámica de desplazamientos, pases, reglas específicas de puntuación y objetivo motor.
-- Normas y puntuación: Sistema de puntuación, faltas, qué está permitido y qué no.
-- Progresión y reto: Evolución de la dificultad del reto motor.
+Desarrollo del juego:
+Explicación concisa y directa del juego y su dinámica motriz (máximo 3-4 líneas).
 
-4. VARIACIONES, DUA Y SEGURIDAD:
-- Variaciones de dificultad: Al menos 2 progresiones (facilitar/complicar).
-- Adaptaciones DUA / NEAE: Medidas específicas de material, espacio o reglas para alumnado con TDAH, TEA, motórico o visual.
-- Medidas de seguridad: Distancias con paredes, espalderas y uso adecuado del material.
+Normas:
+Normas claras y directas en viñetas (faltas, puntuación y objetivo).
+
+Variaciones:
+1 o 2 variantes rápidas que se pueden realizar en el juego.
+
+PROPUESTA B - COORDENADAS TÁCTICAS LIGERAS (IA TÁCTICA):
+Para cada juego genera OBLIGATORIAMENTE un campo "esquemaTactico" ligero con la distribución en pista:
+"esquemaTactico": {
+  "tipoPista": "pabellon" | "circuito" | "paredon" | "porteria" | "rondo",
+  "descripcionCorta": "Breve frase de la disposición táctica (ej. Dos equipos con zona de pase central)",
+  "elementos": [
+    { "tipo": "jugador_azul", "x": 25, "y": 40, "label": "A1" },
+    { "tipo": "jugador_azul", "x": 25, "y": 60, "label": "A2" },
+    { "tipo": "balon", "x": 45, "y": 50, "label": "Pase" },
+    { "tipo": "jugador_rojo", "x": 75, "y": 50, "label": "Defensa" },
+    { "tipo": "cono", "x": 10, "y": 15, "label": "Límite" }
+  ]
+}
+Tipos de elementos válidos: "jugador_azul", "jugador_rojo", "portero", "cono", "balon", "pica", "diana". Las coordenadas x e y son números porcentuales entre 5 y 95.
 
 HILO NARRATIVO Y GAMIFICACIÓN:
 Integra un hilo narrativo continuo y gamificado que conecte todas las sesiones de principio a fin si la metodología es Gamificación (ej. misiones, niveles, insignias, mapa del tesoro, historia envolvente). Si es otra metodología, contextualiza los retos y juegos en la temática del título y en el Reto/Producto Final.
@@ -779,15 +793,37 @@ Devuelve una respuesta JSON estricta con este formato:
           "fase": "Calentamiento / Inicio",
           "duracionMin": 10,
           "nombreJuego": "Activación Inicial",
-          "descripcion": "1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Circuito delimitado por conos.\n- Ubicación: Semicírculo de atención.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles: Parejas con rotación activa.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia: Dinámica de movilidad articular e integración temática...\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Modificación de ritmos y apoyos visuales DUA.",
-          "materiales": ["Conos"]
+          "descripcion": "Terreno de juego:\nEspacio delimitado de 15x15m con conos.\n\nRoles:\nParejas colaborativas libres en pista.\n\nDesarrollo del juego:\nDesplazamientos continuos realizando cambios de ritmo y movilidad articular imitando figuras motrices.\n\nNormas:\n- Respetar el espacio personal de los compañeros.\n- Reaccionar rápidamente al cambio de consigna.\n\nVariaciones:\n- Cambiar de pareja a la señal sonora.",
+          "materiales": ["Conos"],
+          "esquemaTactico": {
+            "tipoPista": "pabellon",
+            "descripcionCorta": "Desplazamientos y parejas",
+            "elementos": [
+              { "tipo": "alumno", "x": 15, "y": 60, "color": "#0284c7" },
+              { "tipo": "flecha", "x": 20, "y": 55, "x2": 80, "y2": 50, "curva": "arriba", "color": "#0f766e" },
+              { "tipo": "cono", "x": 40, "y": 65, "label": "1" },
+              { "tipo": "cono", "x": 60, "y": 65, "label": "2" },
+              { "tipo": "alumno", "x": 85, "y": 60, "color": "#b91c1c" }
+            ]
+          }
         },
         {
           "fase": "Parte Principal / Práctica",
           "duracionMin": 10,
-          "nombreJuego": "Juego 1: Actividad Principal",
-          "descripcion": "1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno y delimitación: Pista dividida en cuadrantes de 10x10m.\n- Ubicación: 4 grupos de 6 alumnos.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: Atacantes y defensores con petos de colores.\n- Rotaciones: Cambio de rol cada 3 minutos.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: El equipo atacante debe desplazar el móvil...\n- Normas y puntuación: Cada pase completado suma 1 punto...\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Ampliación de la zona de gol o restricción de botes.\n- Adaptaciones DUA: Balón sonoro/contrastado y pareja de tutoría.\n- Seguridad: Mantener 2m de distancia con espalderas.",
-          "materiales": ["Pelotas", "Petos"]
+          "nombreJuego": "Juego 1: El Rescate Cooperativo",
+          "descripcion": "Terreno de juego:\nMedia pista polideportiva (20x15m) con zona segura delimitada con conos.\n\nRoles:\n3 perseguidores con peto rojo y el resto de la clase como rescatadores.\n\nDesarrollo del juego:\nLos perseguidores intentan tocar a los compañeros con un balón de espuma. Los tocados quedan congelados con piernas abiertas hasta que otro pasa por debajo para rescatar.\n\nNormas:\n- El toque debe ser suave de cintura para abajo.\n- La zona segura sólo permite permanecer 5 segundos.\n\nVariaciones:\n- Añadir un perseguidor más o rescatar chocando ambas palmas.",
+          "materiales": ["Pelotas", "Petos"],
+          "esquemaTactico": {
+            "tipoPista": "pabellon",
+            "descripcionCorta": "Perseguidores y rescatadores",
+            "elementos": [
+              { "tipo": "alumno", "x": 12, "y": 68, "color": "#0284c7" },
+              { "tipo": "flecha", "x": 15, "y": 55, "x2": 82, "y2": 52, "curva": "arriba", "color": "#0284c7" },
+              { "tipo": "alumno", "x": 50, "y": 50, "color": "#b91c1c" },
+              { "tipo": "cono", "x": 50, "y": 70, "label": "1" },
+              { "tipo": "alumno", "x": 84, "y": 65, "color": "#16a34a" }
+            ]
+          }
         }
       ]
     }
@@ -822,43 +858,108 @@ Devuelve una respuesta JSON estricta con este formato:
               fase: 'Calentamiento / Inicio',
               duracionMin: 10,
               nombreJuego: `Activación Motriz ${i}: Movilidad y Coordinación`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Pista polideportiva completa delimitada por conos de colores en las esquinas.\n- Ubicación: Alumnado en trote suave y libre disperso por la zona central.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles: 3 capitanes de ritmo que proponen ejercicios de movilidad con rotación cada 2 minutos.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Tras la consigna inicial del profesorado, el grupo realiza desplazamientos variados (carrera lateral, saltos, cambios de dirección) respondiendo a estímulos sonoros o visuales para activar la musculatura clave de ${tematica}.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Ajustar la velocidad del desplazamiento y utilizar apoyos visuales DUA.\n- Seguridad: Mantener distancia prudencial entre compañeros para evitar colisiones.`,
+              descripcion: `Terreno de juego:\nPista polideportiva completa delimitada con conos en esquinas.\n\nRoles:\nAlumnado en carrera suave y parejas de movilidad activa.\n\nDesarrollo del juego:\nDesplazamientos continuos variados con cambios de ritmo y movilidad articular reaccionando a consignas de ${tematica}.\n\nNormas:\n- Mantener distancia prudencial para evitar choques.\n- Seguir las consignas de movilidad sin detenerse.\n\nVariaciones:\n- Cambiar de dirección o de compañero de trote a la señal.`,
               materiales: ['Conos'],
+              esquemaTactico: {
+                tipoPista: 'pabellon',
+                descripcionCorta: 'Movilidad articular en medio campo',
+                elementos: [
+                  { tipo: 'jugador_azul', x: 25, y: 35, label: 'A1' },
+                  { tipo: 'jugador_azul', x: 30, y: 40, label: 'A2' },
+                  { tipo: 'jugador_rojo', x: 70, y: 60, label: 'B1' },
+                  { tipo: 'jugador_rojo', x: 75, y: 65, label: 'B2' },
+                  { tipo: 'cono', x: 10, y: 15, label: 'Cono' },
+                  { tipo: 'cono', x: 90, y: 85, label: 'Cono' }
+                ]
+              }
             },
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.1: Habilidades Específicas de ${tematica}`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Pista dividida en 4 zonas rectangulares de 12x8m.\n- Ubicación: Subgrupos heterogéneos de 5-6 alumnos distribuidos por zona.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: 3 atacantes que buscan espacio libre y 2 defensores en zona con petos distintivos.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Los atacantes inician con la posesión del móvil y deben realizar pases consecutivos buscando alcanzar la zona opuesta. Los defensores intentan interceptar el pase respetando la distancia de 1 metro sin contacto físico. Se suma 1 punto por cada secuencia limpia de 4 pases alcanzada.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Permitir botar o ampliar las dimensiones de la zona defensiva.\n- Adaptaciones DUA: Móvil de mayor tamaño/agarre y parejas de tutoría entre iguales.`,
+              nombreJuego: `Reto Motor ${i}.1: Habilidades de ${tematica}`,
+              descripcion: `Terreno de juego:\nMedia pista dividida en 2 subcampos rectangulares (15x12m).\n\nRoles:\n3 atacantes en posesión y 2 defensores en zona con petos distintivos.\n\nDesarrollo del juego:\nLos atacantes circulan el móvil buscando pases precisos y desmarques hacia la zona de meta sin ser interceptados.\n\nNormas:\n- Distancia de seguridad de 1 metro sin contacto físico.\n- Sumar 1 punto tras completar 4 pases limpios.\n\nVariaciones:\n- Limitar el tiempo de posesión individual a 3 segundos.`,
               materiales: ['Pelotas', 'Petos'],
+              esquemaTactico: {
+                tipoPista: 'pabellon',
+                descripcionCorta: 'Ataque 3x2 con zonas delimitadas',
+                elementos: [
+                  { tipo: 'jugador_azul', x: 20, y: 30, label: 'A1' },
+                  { tipo: 'jugador_azul', x: 20, y: 70, label: 'A2' },
+                  { tipo: 'jugador_azul', x: 35, y: 50, label: 'A3' },
+                  { tipo: 'balon', x: 28, y: 40, label: 'Móvil' },
+                  { tipo: 'jugador_rojo', x: 65, y: 35, label: 'Defensa' },
+                  { tipo: 'jugador_rojo', x: 65, y: 65, label: 'Defensa' }
+                ]
+              }
             },
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.2: Circuito Táctico y Cooperación`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: 4 estaciones situadas en el perímetro de la pista con señales visibles.\n- Ubicación: Grupos rotativos de 5 alumnos por estación.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: Ejecutor de la tarea motriz, recogedor de material y anotador con lista de cotejo digital/física.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Cada grupo debe completar el desafío técnico de la estación (superar obstáculos, realizar tiros a diana o circuitos de precisión) sumando los aciertos individuales al marcador de grupo. Rotación en sentido horario tras 2.5 minutos de práctica activa.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Modificar la distancia al objetivo o el número de repeticiones.\n- Seguridad: Superficie limpia y distancia de seguridad con paredes laterales.`,
+              nombreJuego: `Reto Motor ${i}.2: Circuito Táctico Cooperativo`,
+              descripcion: `Terreno de juego:\n3 estaciones motrices delimitadas en el perímetro de la pista.\n\nRoles:\nGrupos rotativos de 5 alumnos por estación motriz.\n\nDesarrollo del juego:\nCada grupo supera el desafío técnico de su estación motriz sumando aciertos colectivos antes de rotar en sentido horario.\n\nNormas:\n- Completar el recorrido de forma controlada.\n- Respetar el orden de salida en cada posta.\n\nVariaciones:\n- Modificar la distancia al objetivo o añadir un obstáculo.`,
               materiales: ['Petos', 'Picas', 'Conos'],
+              esquemaTactico: {
+                tipoPista: 'circuito',
+                descripcionCorta: 'Circuito perimetral de 3 postas',
+                elementos: [
+                  { tipo: 'pica', x: 20, y: 50, label: '1️⃣ Posta' },
+                  { tipo: 'balon', x: 36, y: 50, label: '➔' },
+                  { tipo: 'pica', x: 50, y: 50, label: '2️⃣ Posta' },
+                  { tipo: 'balon', x: 65, y: 50, label: '➔' },
+                  { tipo: 'pica', x: 80, y: 50, label: '3️⃣ Posta' }
+                ]
+              }
             },
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.3: Juego Global y Resolución de Problemas`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Campo central de 20x15m con dos zonas de anotación bien definidas.\n- Ubicación: Dos equipos mixtos de 6 jugadores.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: Jugadores de campo con asignación de roles rotativos (comodines, atacantes y defensores).\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Situación real de juego adaptado donde se aplica la técnica trabajada. El equipo atacante avanza mediante pases estratégicos sin botes excesivos para lograr introducir o tocar la zona de meta. Si la defensa recupera el balón, la transición ofensiva es inmediata desde el punto de intercepción.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Puntuación doble cuando participan todos los miembros del equipo en la jugada.`,
+              nombreJuego: `Reto Motor ${i}.3: Juego Global y Resolución`,
+              descripcion: `Terreno de juego:\nCampo central de 20x15m con dos zonas de anotación definidas.\n\nRoles:\nDos equipos mixtos equilibrados de 6 jugadores.\n\nDesarrollo del juego:\nJuego real modificado aplicando los patrones motrices practicados para avanzar mediante pases y anotar en la meta rival.\n\nNormas:\n- No se permite el contacto brusco.\n- Puntuación doble cuando todos tocan el móvil en la jugada.\n\nVariaciones:\n- Incorporar un jugador comodín neutral de apoyo ofensivo.`,
               materiales: ['Pelotas', 'Petos'],
+              esquemaTactico: {
+                tipoPista: 'pabellon',
+                descripcionCorta: 'Juego de aplicación con metas opuestas',
+                elementos: [
+                  { tipo: 'jugador_azul', x: 22, y: 35, label: 'Azul' },
+                  { tipo: 'jugador_azul', x: 22, y: 65, label: 'Azul' },
+                  { tipo: 'balon', x: 42, y: 50, label: 'Pase' },
+                  { tipo: 'jugador_rojo', x: 76, y: 35, label: 'Rojo' },
+                  { tipo: 'jugador_rojo', x: 76, y: 65, label: 'Rojo' }
+                ]
+              }
             },
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.4: Desafío de Aplicación Final`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Pista completa dividida en 3 calles longitudinales.\n- Ubicación: Parejas de trabajo por calle.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: Ejecutores y coevaluadores que observan la fluidez motriz.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Puesta en práctica de la secuencia global de la sesión acumulando el mayor número de repeticiones de calidad. Se registra el desempeño mediante rúbrica rápida o escala visual de coevaluación.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Variaciones: Elección libre del nivel de reto (básico, intermedio o avanzado).`,
+              nombreJuego: `Reto Motor ${i}.4: Desafío Final`,
+              descripcion: `Terreno de juego:\nPista completa dividida en 3 calles longitudinales.\n\nRoles:\nParejas colaborativas de ejecutores y observadores.\n\nDesarrollo del juego:\nPuesta en práctica global de la dinámica de la sesión encadenando secuencias motrices fluidas.\n\nNormas:\n- Cooperar con el compañero para mantener el ritmo de acción.\n- Respetar los límites de la propia calle de juego.\n\nVariaciones:\n- Elegir entre dos niveles de dificultad en cada intento.`,
               materiales: ['Conos', 'Petos'],
+              esquemaTactico: {
+                tipoPista: 'paredon',
+                descripcionCorta: 'Calles longitudinales en parejas',
+                elementos: [
+                  { tipo: 'jugador_azul', x: 25, y: 50, label: 'A' },
+                  { tipo: 'balon', x: 45, y: 50, label: 'Móvil' },
+                  { tipo: 'jugador_rojo', x: 75, y: 50, label: 'B' }
+                ]
+              }
             },
             {
               fase: 'Vuelta a la Calma / Reflexión',
               duracionMin: 10,
-              nombreJuego: `Reflexión y Asamblea de Sesión ${i}`,
-              descripcion: `1. ORGANIZACIÓN ESPACIAL Y TERRENO:\n- Terreno: Zona de asamblea sobre esterillas o en semicírculo en el centro del pabellón.\n- Ubicación: Todo el grupo reunido en posición sentada y relajada.\n\n2. ROLES DE ALUMNADO Y ASIGNACIONES:\n- Roles activos: Portavoces de grupo y alumnado en diálogo reflexivo guiado.\n\n3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:\n- Secuencia de juego: Estiramientos pasivos guiados combinados con respiración consciente y debate sobre lo aprendido en la sesión ${i}.\n\n4. VARIACIONES, DUA Y SEGURIDAD:\n- Adaptaciones DUA: Uso de escala visual de emojis para expresar sensaciones.`,
+              nombreJuego: `Reflexión y Puesta en Común ${i}`,
+              descripcion: `Terreno de juego:\nCírculo central del gimnasio sobre esterillas.\n\nRoles:\nTodo el grupo sentado en posición cómoda de asamblea.\n\nDesarrollo del juego:\nEstiramientos pasivos guiados combinados con respiración consciente y asamblea reflexiva sobre los aprendizajes motrices.\n\nNormas:\n- Respetar el turno de palabra en la asamblea.\n- Mantener un tono de voz relajado y pausado.\n\nVariaciones:\n- Expresar con gestos o diana visual el grado de satisfacción.`,
               materiales: ['Esterillas'],
+              esquemaTactico: {
+                tipoPista: 'rondo',
+                descripcionCorta: 'Asamblea circular relajada',
+                elementos: [
+                  { tipo: 'jugador_azul', x: 25, y: 50, label: 'Alumnos' },
+                  { tipo: 'jugador_azul', x: 50, y: 25, label: 'Alumnos' },
+                  { tipo: 'jugador_azul', x: 75, y: 50, label: 'Alumnos' },
+                  { tipo: 'jugador_azul', x: 50, y: 75, label: 'Alumnos' }
+                ]
+              }
             },
           ],
         });
@@ -886,7 +987,7 @@ Devuelve una respuesta JSON estricta con este formato:
             if (descStr.includes('El juego inicia con la señal sonora del docente')) {
               descStr = descStr.replace(
                 /- Secuencia de juego y normas: El juego inicia con la señal sonora del docente\. Los participantes se desplazan controladamente por la zona delimitada buscando alcanzar la meta o completar el reto motor\. Se aplican normas de cooperación y oposición limpia: respetando el turno de acción, pasando el móvil a compañeros desmarcados para anotar o evitar la interceptación rival, y rotando posiciones tras cada ciclo de puntuación\./g,
-                `- Secuencia de juego y normas: Inicio mediante consigna docente. Se desarrolla la dinámica específica de ${gameName} enfocada en la temática ${tematica}, cumpliendo la secuencia motriz y las reglas de puntuación.`
+                `Desarrollo del juego: Inicio mediante consigna docente. Se desarrolla la dinámica específica de ${gameName} enfocada en la temática ${tematica}, cumpliendo la secuencia motriz.`
               );
             }
             f.descripcion = formatGameDescription(descStr);
@@ -929,26 +1030,23 @@ Explicación o notas existentes: "${descripcion || ''}"
 
 INSTRUCCIÓN CRÍTICA:
 1. Si la explicación existente es breve, escasa, vacía o no tiene datos suficientes para explicar el juego, DEBES SUSTITUIR O REGENERAR EL JUEGO POR COMPLETO proponiendo un juego específico, tradicional o innovador de Educación Física perfecto para la temática "${tematica || 'General'}" y nivel "${curso || 'Primaria'}".
-2. Redacta una explicación extensa (180-250 palabras) con todos los detalles pedagógicos y prácticos.
-3. Debes incluir OBLIGATORIAMENTE los 4 apartados numerados estructurados con viñetas (-):
+2. Redacta una explicación concisa y directa (70-110 palabras), operativa para el docente a pie de pista.
+3. Debes estructurar la explicación en los 5 apartados obligatorios (sin textos extensos ni rotaciones DUA redundantes):
 
-1. ORGANIZACIÓN ESPACIAL Y TERRENO:
-- Terreno y delimitación: ...
-- Ubicación del alumnado y docente: ...
+Terreno de juego:
+Señala dónde se juega con una medida aproximada (ej. Media pista polideportiva, 20x15m delimitada con conos).
 
-2. ROLES DE ALUMNADO Y ASIGNACIONES:
-- Roles activos: ...
-- Rotaciones y DUA: ...
+Roles:
+Señala los roles del alumnado (ej. 4 atacantes con peto amarillo y defensores libres). Obvia la posición del profesorado y las rotaciones DUA individuales.
 
-3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS:
-- Secuencia de juego: ...
-- Normas y puntuación: ...
-- Progresión y reto motor: ...
+Desarrollo del juego:
+Explicación concisa y directa de cómo se juega (máximo 3-4 líneas).
 
-4. VARIACIONES, DUA Y SEGURIDAD:
-- Variaciones de dificultad: ...
-- Adaptaciones DUA / NEAE: ...
-- Medidas de seguridad: ...
+Normas:
+Normas claras y directas en viñetas (faltas, puntuación y objetivo motor).
+
+Variaciones:
+1 o 2 variantes prácticas para adaptar el juego.
 
 Devuelve un JSON estricto con:
 {
@@ -989,7 +1087,7 @@ app.post('/api/ai/enrich-full-session', async (req, res) => {
 
     const ai = getGenAIClient();
     const prompt = `Actúa como Catedrático de Educación Física. Analiza y autocompleta/enriquece TODAS las actividades de la siguiente sesión.
-Si alguna actividad está vacía, incompleta, sin explicación o con datos escasos, REGENÉRALA O COMPLÉTALA con un juego de Educación Física muy detallado para ${curso || 'Primaria'} y temática "${tematica || 'General'}".
+Si alguna actividad está vacía, incompleta, sin explicación o con datos escasos, REGENÉRALA O COMPLÉTALA con un juego de Educación Física conciso y dinámico para ${curso || 'Primaria'} y temática "${tematica || 'General'}".
 
 Sesión actual:
 Título: "${sesion.titulo || ''}"
@@ -997,11 +1095,12 @@ Fases/Actividades actuales:
 ${JSON.stringify(sesion.fases, null, 2)}
 
 REGLA INDISPENSABLE:
-Cada una de las fases/actividades devueltas debe tener su "nombreJuego", "duracionMin", "materiales" y su "descripcion" REDACTADA EXTENSAMENTE con los 4 apartados obligatorios:
-1. ORGANIZACIÓN ESPACIAL Y TERRENO
-2. ROLES DE ALUMNADO Y ASIGNACIONES
-3. DESARROLLO PASO A PASO Y REGLAS COMPLETAS
-4. VARIACIONES, DUA Y SEGURIDAD
+Cada una de las fases/actividades devueltas debe tener su "nombreJuego", "duracionMin", "materiales" y su "descripcion" REDACTADA DE FORMA CONCISA (70-110 palabras) con los 5 apartados obligatorios:
+Terreno de juego: ...
+Roles: ...
+Desarrollo del juego: ...
+Normas: ...
+Variaciones: ...
 
 Devuelve un JSON estricto con la estructura de la sesión actualizada:
 {

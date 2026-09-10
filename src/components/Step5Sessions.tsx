@@ -35,6 +35,7 @@ import { GoogleDriveSelectorModal } from './GoogleDriveSelectorModal';
 import { ExcelGameDatabaseModal } from './ExcelGameDatabaseModal';
 import { LocalFilesModal } from './LocalFilesModal';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
+import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
 
 interface Step5Props {
   numSesiones: number;
@@ -455,25 +456,27 @@ export const Step5Sessions: React.FC<Step5Props> = ({
 
       const fasesHtml = (ses.fases || []).map((f) => `
         <div style="background-color: #ffffff; border: 1px solid #cbd5e1; padding: 12px; margin-bottom: 10px; border-radius: 6px;">
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 6px;">
-            <tr>
-              <td style="background-color: #0a2240; color: #ffffff; padding: 5px 10px; font-size: 11pt; font-weight: bold; border-radius: 4px;">
-                ${f.fase} (${f.duracionMin} min) — ${f.nombreJuego}
-              </td>
-            </tr>
-          </table>
+          <div style="background-color: #f8fafc; border-left: 5px solid #f59e0b; padding: 6px 10px; margin-bottom: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13.5pt; font-weight: 900; color: #1e1b4b; text-transform: uppercase;">
+              ${f.nombreJuego || 'Actividad'}
+            </span>
+            <span style="background-color: #fef3c7; color: #92400e; font-size: 9.5pt; font-weight: bold; padding: 2px 8px; border-radius: 4px;">
+              ${f.fase} (${f.duracionMin} min)
+            </span>
+          </div>
           <div style="font-size: 10pt; color: #334155; line-height: 1.5; text-align: justify;">
             ${renderFormattedGameDescriptionHtml(f.descripcion)}
           </div>
+          ${getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion)}
           ${f.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 9.5pt; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
         </div>
       `).join('');
 
       return `
-        <div style="margin-bottom: 24px; page-break-inside: avoid; border: 2px solid #0a2240; border-radius: 8px; padding: 16px; background-color: #f8fafc;">
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+        <div style="margin-bottom: 16px; page-break-inside: auto; border: 1.5px solid #0a2240; border-radius: 6px; padding: 12px; background-color: #f8fafc;">
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
             <tr style="background-color: #0a2240; color: #ffffff;">
-              <th style="padding: 10px 14px; text-align: left; font-size: 13pt; font-weight: bold; border-bottom: 3px solid #e85d04;">
+              <th style="padding: 8px 12px; text-align: left; font-size: 12pt; font-weight: bold; border-bottom: 3px solid #e85d04;">
                 SESIÓN ${sesNum}: ${cleanTitle} (60 MINUTOS)
               </th>
             </tr>
@@ -967,7 +970,7 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                         rows={4}
                         value={manualDev}
                         onChange={(e) => setManualDev(e.target.value)}
-                        placeholder="1. ORGANIZACIÓN ESPACIAL Y TERRENO: Distribución de alumnos y conos...&#10;2. ROLES DE ALUMNADO: Atacantes, defensores...&#10;3. DESARROLLO PASO A PASO Y REGLAS: Normas del juego...&#10;4. VARIACIONES, DUA Y SEGURIDAD: Adaptaciones..."
+                        placeholder="Terreno de juego: Media pista 20x15m con conos...&#10;Roles: 4 atacantes con peto amarillo y defensores...&#10;Desarrollo del juego: Explicación concisa de la dinámica motriz...&#10;Normas: Reglas directas y faltas...&#10;Variaciones: Variantes para aumentar/disminuir dificultad..."
                         className="w-full p-3 rounded-xl border border-indigo-200 bg-white text-slate-800 leading-relaxed font-medium"
                       />
                     </div>
@@ -1054,40 +1057,57 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                             </button>
                           </div>
 
-                          <div className="space-y-2">
-                            <label className="block text-xs font-bold text-slate-700">
-                              Título de la Actividad / Juego:
-                            </label>
-                            <input
-                              type="text"
-                              value={fase.nombreJuego}
-                              onChange={(e) =>
-                                handleUpdateFase(activeSessionIndex, fIdx, 'nombreJuego', e.target.value)
-                              }
-                              className="w-full font-bold text-slate-900 text-sm px-3.5 py-2 border border-slate-300 rounded-xl focus:border-indigo-600 bg-slate-50/50 shadow-2xs"
-                              placeholder="Nombre del Juego o Actividad..."
-                            />
-
-                            <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1">
-                              <label className="block text-xs font-bold text-slate-700">
-                                Explicación:
+                          {/* Título Destacado del Juego (Opción 1: Título Grande con Barra Lateral Ámbar) */}
+                          <div className="space-y-3">
+                            <div className="border-l-4 border-amber-500 bg-slate-50/80 p-2.5 rounded-r-xl border-y border-r border-slate-200">
+                              <label className="block text-[11px] font-black uppercase tracking-wider text-amber-900 mb-1">
+                                🏷️ Nombre del Juego / Actividad:
                               </label>
-                            </div>
-                            <textarea
-                              rows={5}
-                              value={fase.descripcion}
-                              onChange={(e) =>
-                                handleUpdateFase(activeSessionIndex, fIdx, 'descripcion', e.target.value)
-                              }
-                              onBlur={(e) => {
-                                const formatted = formatGameDescription(e.target.value);
-                                if (formatted !== e.target.value) {
-                                  handleUpdateFase(activeSessionIndex, fIdx, 'descripcion', formatted);
+                              <input
+                                type="text"
+                                value={fase.nombreJuego}
+                                onChange={(e) =>
+                                  handleUpdateFase(activeSessionIndex, fIdx, 'nombreJuego', e.target.value)
                                 }
-                              }}
-                              className="w-full text-xs leading-relaxed font-medium text-slate-800 p-3.5 border border-slate-300 rounded-xl focus:border-indigo-600 bg-slate-50/50 shadow-2xs resize-y"
-                              placeholder="1. ORGANIZACIÓN ESPACIAL Y TERRENO: Distribución de alumnos y conos...&#10;2. ROLES DE ALUMNADO: Atacantes, defensores...&#10;3. DESARROLLO PASO A PASO Y REGLAS: Normas del juego...&#10;4. VARIACIONES, DUA Y SEGURIDAD: Adaptaciones DUA..."
-                            />
+                                className="w-full font-black text-indigo-950 text-base sm:text-lg px-3 py-1.5 bg-white border border-slate-300 rounded-lg focus:border-indigo-600 focus:ring-1 focus:ring-amber-400 outline-none shadow-2xs uppercase tracking-wide"
+                                placeholder="Nombre del Juego..."
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                                <label className="block text-xs font-bold text-slate-700">
+                                  Ficha del Juego (5 Apartados Concisos):
+                                </label>
+                                <span className="text-[10px] text-slate-500 font-medium italic">
+                                  Terreno • Roles • Desarrollo • Normas • Variaciones
+                                </span>
+                              </div>
+                              <textarea
+                                rows={5}
+                                value={fase.descripcion}
+                                onChange={(e) =>
+                                  handleUpdateFase(activeSessionIndex, fIdx, 'descripcion', e.target.value)
+                                }
+                                onBlur={(e) => {
+                                  const formatted = formatGameDescription(e.target.value);
+                                  if (formatted !== e.target.value) {
+                                    handleUpdateFase(activeSessionIndex, fIdx, 'descripcion', formatted);
+                                  }
+                                }}
+                                className="w-full text-xs leading-relaxed font-medium text-slate-800 p-3.5 border border-slate-300 rounded-xl focus:border-indigo-600 bg-slate-50/50 shadow-2xs resize-y"
+                                placeholder="Terreno de juego: Media pista polideportiva 20x15m con conos...&#10;Roles: 4 atacantes con peto amarillo y defensores...&#10;Desarrollo del juego: Explicación concisa y directa de la dinámica motriz...&#10;Normas: Reglas claras y directas en viñetas...&#10;Variaciones: 1 o 2 variantes prácticas..."
+                              />
+                            </div>
+
+                            {/* Esquema Táctico Vectorial del Juego (Propuesta A) */}
+                            <div className="pt-1">
+                              <div className="text-[11px] font-black text-slate-700 flex items-center space-x-1.5 mb-1.5">
+                                <span className="text-amber-500">📍</span>
+                                <span>Disposición Táctica en Pista (Generada automát. sin coste de tokens):</span>
+                              </div>
+                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(fase.descripcion, fase.nombreJuego), fase.nombreJuego, undefined, fase.descripcion) }} />
+                            </div>
                           </div>
                         </div>
                       );
