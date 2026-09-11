@@ -417,7 +417,7 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 
       const parsed = safeParseAIJson(response.text, []);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Validar que no contenga valores corruptos ni repeticiones genéricas
+        // Validar que no contenga valores corruptos, cruce de niveles ni repeticiones
         const validRubric = parsed.map((item: any) => {
           const rawLevels = Array.isArray(item.niveles) ? item.niveles : [];
           const labels = ['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)'];
@@ -432,8 +432,43 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
             3: `Manifiesta un dominio sobresaliente, fluido y creativo en: "${shortCrit}", anticipando respuestas motrices y colaborando constructivamente con el grupo.`
           };
 
-          const cleanLevels = labels.map((lbl, idx) => {
-            const found = rawLevels.find((n: any) => n.nivel?.includes(lbl.split(' ')[0]) || n.nivel?.includes(String(idx + 1))) || rawLevels[idx];
+          const levelMatchers = [
+            (s: string) => (s.includes('iniciad') || s.includes('iniciac') || s.includes('1-4') || /\bnivel\s*1\b/.test(s)) && !s.includes('excelent') && !s.includes('sobresal'),
+            (s: string) => (s.includes('proceso') || s.includes('5-6') || /\bnivel\s*2\b/.test(s) || s.includes('suficiente')),
+            (s: string) => (s.includes('consegui') || s.includes('notable') || s.includes('avanzad') || s.includes('7-8') || /\bnivel\s*3\b/.test(s)),
+            (s: string) => (s.includes('excelent') || s.includes('sobresal') || s.includes('9-10') || /\bnivel\s*4\b/.test(s)) && !s.includes('iniciad') && !s.includes('1-4'),
+          ];
+
+          const usedIndices = new Set<number>();
+          const cleanLevels: Array<{ nivel: string; descriptor: string }> = [];
+          const seenDescriptors = new Set<string>();
+
+          for (let idx = 0; idx < 4; idx++) {
+            const lbl = labels[idx];
+            let chosenIndex = -1;
+
+            // 1. Probar si el elemento en la misma posición (idx) encaja con el matcher
+            if (rawLevels[idx] && levelMatchers[idx](String(rawLevels[idx]?.nivel || '').toLowerCase()) && !usedIndices.has(idx)) {
+              chosenIndex = idx;
+            } else {
+              // 2. Si no, buscar en los demás elementos no usados
+              chosenIndex = rawLevels.findIndex((n: any, rIdx: number) =>
+                !usedIndices.has(rIdx) && levelMatchers[idx](String(n?.nivel || '').toLowerCase())
+              );
+              // 3. Si aún no se encuentra, usar el índice idx si está libre y no viola reglas críticas
+              if (chosenIndex === -1 && rawLevels[idx] && !usedIndices.has(idx)) {
+                const lvlStr = String(rawLevels[idx]?.nivel || '').toLowerCase();
+                if (!(idx === 3 && (lvlStr.includes('iniciad') || lvlStr.includes('1-4')))) {
+                  chosenIndex = idx;
+                }
+              }
+            }
+
+            if (chosenIndex !== -1) {
+              usedIndices.add(chosenIndex);
+            }
+
+            const found = chosenIndex !== -1 ? rawLevels[chosenIndex] : null;
             const rawDesc = (
               found?.descriptor ||
               found?.descripcion ||
@@ -443,7 +478,7 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
               found?.detalle ||
               (typeof found === 'string' ? found : '')
             );
-            const cleanDesc = String(rawDesc || '')
+            let cleanDesc = String(rawDesc || '')
               .replace(/undefined/gi, '')
               .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
               .trim();
@@ -454,11 +489,18 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
               cleanDesc.toLowerCase().includes('demuestra desempeño acorde al nivel') ||
               cleanDesc.toLowerCase().includes('en los aprendizajes del criterio');
 
-            return {
+            const normalized = cleanDesc.toLowerCase().replace(/\s+/g, ' ');
+            // Si está vacío, es genérico o se repite con un nivel anterior:
+            if (isGenericOrEmpty || seenDescriptors.has(normalized)) {
+              cleanDesc = dynamicLevelFallbacks[idx];
+            }
+
+            seenDescriptors.add(cleanDesc.toLowerCase().replace(/\s+/g, ' '));
+            cleanLevels.push({
               nivel: lbl,
-              descriptor: isGenericOrEmpty ? dynamicLevelFallbacks[idx] : cleanDesc
-            };
-          });
+              descriptor: cleanDesc
+            });
+          }
 
           return {
             criterioCodigo: item.criterioCodigo || 'Criterio EF',
@@ -554,7 +596,64 @@ Devuelve un JSON array de objetos con el siguiente esquema:
 
       const parsed = safeParseAIJson(response.text, []);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return res.json({ rubrica: parsed });
+        const labels = ['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)'];
+        const levelMatchers = [
+          (s: string) => (s.includes('iniciad') || s.includes('iniciac') || s.includes('1-4') || /\bnivel\s*1\b/.test(s)) && !s.includes('excelent') && !s.includes('sobresal'),
+          (s: string) => (s.includes('proceso') || s.includes('5-6') || /\bnivel\s*2\b/.test(s) || s.includes('suficiente')),
+          (s: string) => (s.includes('consegui') || s.includes('notable') || s.includes('avanzad') || s.includes('7-8') || /\bnivel\s*3\b/.test(s)),
+          (s: string) => (s.includes('excelent') || s.includes('sobresal') || s.includes('9-10') || /\bnivel\s*4\b/.test(s)) && !s.includes('iniciad') && !s.includes('1-4'),
+        ];
+
+        const sanitized = parsed.map((item: any, sIdx: number) => {
+          const rawLevels = Array.isArray(item.niveles) ? item.niveles : [];
+          const usedIndices = new Set<number>();
+          const cleanLevels: Array<{ nivel: string; descriptor: string }> = [];
+          const seenDescriptors = new Set<string>();
+
+          for (let idx = 0; idx < 4; idx++) {
+            const lbl = labels[idx];
+            let chosenIndex = -1;
+            if (rawLevels[idx] && levelMatchers[idx](String(rawLevels[idx]?.nivel || '').toLowerCase()) && !usedIndices.has(idx)) {
+              chosenIndex = idx;
+            } else {
+              chosenIndex = rawLevels.findIndex((n: any, rIdx: number) =>
+                !usedIndices.has(rIdx) && levelMatchers[idx](String(n?.nivel || '').toLowerCase())
+              );
+              if (chosenIndex === -1 && rawLevels[idx] && !usedIndices.has(idx)) {
+                const lvlStr = String(rawLevels[idx]?.nivel || '').toLowerCase();
+                if (!(idx === 3 && (lvlStr.includes('iniciad') || lvlStr.includes('1-4')))) {
+                  chosenIndex = idx;
+                }
+              }
+            }
+
+            if (chosenIndex !== -1) usedIndices.add(chosenIndex);
+            const found = chosenIndex !== -1 ? rawLevels[chosenIndex] : null;
+            let cleanDesc = String(found?.descriptor || found?.descripcion || found?.texto || '')
+              .replace(/undefined/gi, '')
+              .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
+              .trim();
+
+            const normalized = cleanDesc.toLowerCase().replace(/\s+/g, ' ');
+            if (!cleanDesc || cleanDesc.length < 15 || seenDescriptors.has(normalized)) {
+              if (idx === 0) cleanDesc = `Presenta dificultades para ejecutar los juegos y tareas motrices de la sesión. Requiere ayuda docente permanente.`;
+              else if (idx === 1) cleanDesc = `Participa y realiza de forma básica los juegos de la sesión con indicaciones o apoyos puntuales.`;
+              else if (idx === 2) cleanDesc = `Demuestra solvencia, fluidez y autonomía en las actividades lúdico-motrices de la sesión.`;
+              else cleanDesc = `Manifiesta un dominio sobresaliente y creativo en la sesión, cooperando activamente y dinamizando al grupo.`;
+            }
+
+            seenDescriptors.add(cleanDesc.toLowerCase().replace(/\s+/g, ' '));
+            cleanLevels.push({ nivel: lbl, descriptor: cleanDesc });
+          }
+
+          return {
+            criterioCodigo: item.criterioCodigo || `Sesión ${sIdx + 1}`,
+            criterioTexto: item.criterioTexto || 'Actividades de práctica motriz',
+            niveles: cleanLevels
+          };
+        });
+
+        return res.json({ rubrica: sanitized });
       }
     } catch (aiErr) {
       console.warn('[generate-session-rubric] Gemini AI error, fallback local por sesión:', aiErr);

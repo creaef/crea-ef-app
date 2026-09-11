@@ -404,27 +404,56 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
                 Criterio ${r.criterioCodigo}: ${(r.criterioTexto || '').replace(/undefined/gi, '').trim()}
               </div>
               <div style="display: flex; gap: 8px; margin-top: 10px;">
-                ${['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)']
-                  .map((lbl, nIdx) => {
-                    const found = r.niveles?.find((n: any) => n.nivel?.includes(lbl.split(' ')[0]) || n.nivel?.includes(String(nIdx + 1))) || r.niveles?.[nIdx];
-                    let cleanDesc = (found?.descriptor || '')
+                ${(() => {
+                  const labels = ['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)'];
+                  const levelMatchers = [
+                    (s: string) => (s.includes('iniciad') || s.includes('iniciac') || s.includes('1-4') || /\bnivel\s*1\b/.test(s)) && !s.includes('excelent') && !s.includes('sobresal'),
+                    (s: string) => (s.includes('proceso') || s.includes('5-6') || /\bnivel\s*2\b/.test(s) || s.includes('suficiente')),
+                    (s: string) => (s.includes('consegui') || s.includes('notable') || s.includes('avanzad') || s.includes('7-8') || /\bnivel\s*3\b/.test(s)),
+                    (s: string) => (s.includes('excelent') || s.includes('sobresal') || s.includes('9-10') || /\bnivel\s*4\b/.test(s)) && !s.includes('iniciad') && !s.includes('1-4'),
+                  ];
+                  const used = new Set<number>();
+                  const renderedLevels: string[] = [];
+                  const seenDesc = new Set<string>();
+
+                  for (let nIdx = 0; nIdx < 4; nIdx++) {
+                    const lbl = labels[nIdx];
+                    let chosenIdx = -1;
+                    if (r.niveles?.[nIdx] && levelMatchers[nIdx](String(r.niveles[nIdx]?.nivel || '').toLowerCase()) && !used.has(nIdx)) {
+                      chosenIdx = nIdx;
+                    } else {
+                      chosenIdx = (r.niveles || []).findIndex((n: any, idx: number) => !used.has(idx) && levelMatchers[nIdx](String(n?.nivel || '').toLowerCase()));
+                      if (chosenIdx === -1 && r.niveles?.[nIdx] && !used.has(nIdx)) {
+                        const lvlStr = String(r.niveles[nIdx]?.nivel || '').toLowerCase();
+                        if (!(nIdx === 3 && (lvlStr.includes('iniciad') || lvlStr.includes('1-4')))) {
+                          chosenIdx = nIdx;
+                        }
+                      }
+                    }
+                    if (chosenIdx !== -1) used.add(chosenIdx);
+                    const found = chosenIdx !== -1 ? r.niveles?.[chosenIdx] : null;
+                    let cleanDesc = (found?.descriptor || found?.descripcion || found?.texto || '')
                       .replace(/undefined/gi, '')
                       .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
                       .trim();
-                    if (!cleanDesc || (cleanDesc.toLowerCase().includes('iniciado') && nIdx > 0)) {
+
+                    const norm = cleanDesc.toLowerCase().replace(/\s+/g, ' ');
+                    if (!cleanDesc || cleanDesc.length < 15 || seenDesc.has(norm)) {
                       if (nIdx === 0) cleanDesc = `Presenta dificultades para alcanzar los objetivos de este criterio. Requiere ayuda docente permanente.`;
                       else if (nIdx === 1) cleanDesc = `Alcanza de forma básica y guiada los aprendizajes del criterio con apoyos puntuales.`;
                       else if (nIdx === 2) cleanDesc = `Aplica con soltura, corrección y autonomía los aprendizajes y valores de este criterio.`;
                       else cleanDesc = `Demuestra un dominio excelente, creativo y autónomo, cooperando y sirviendo de referente positivo.`;
                     }
-                    return `
+                    seenDesc.add(cleanDesc.toLowerCase().replace(/\s+/g, ' '));
+                    renderedLevels.push(`
                       <div style="flex: 1; background: ${nIdx === 0 ? '#fee2e2' : nIdx === 1 ? '#fef9c3' : nIdx === 2 ? '#ffedd5' : '#dcfce7'}; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; font-size: 10.5px;">
                         <strong style="color: #0f172a; display: block; margin-bottom: 4px; font-size: 11px;">${lbl}</strong>
                         ${cleanDesc}
                       </div>
-                    `;
-                  })
-                  .join('')}
+                    `);
+                  }
+                  return renderedLevels.join('');
+                })()}
               </div>
             </div>
           `
@@ -779,11 +808,23 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
         const descTexto = (r.criterioTexto || 'aprendizaje y práctica motriz').replace(/undefined/gi, '').trim();
 
         const getDescriptorForLevel = (targetIndex: number, keywords: string[]) => {
-          // 1. Buscar por índice directo si coincide
           let candidate = r.niveles?.[targetIndex]?.descriptor;
-          // 2. Buscar por palabras clave del nivel
+          const candidateLvl = String(r.niveles?.[targetIndex]?.nivel || '').toLowerCase();
+
+          if (targetIndex === 3 && (candidateLvl.includes('iniciad') || candidateLvl.includes('1-4'))) {
+            candidate = '';
+          }
+          if (targetIndex === 0 && (candidateLvl.includes('excelent') || candidateLvl.includes('sobresal'))) {
+            candidate = '';
+          }
+
           if (!candidate || (candidate.toLowerCase().includes('iniciado') && targetIndex > 0)) {
-            const found = r.niveles?.find((n: any) => keywords.some((k) => n.nivel?.toLowerCase().includes(k.toLowerCase())));
+            const found = r.niveles?.find((n: any) => {
+              const nLvl = String(n.nivel || '').toLowerCase();
+              if (targetIndex === 3 && (nLvl.includes('iniciad') || nLvl.includes('1-4'))) return false;
+              if (targetIndex === 0 && (nLvl.includes('excelent') || nLvl.includes('sobresal'))) return false;
+              return keywords.some((k) => nLvl.includes(k.toLowerCase()));
+            });
             if (found?.descriptor) candidate = found.descriptor;
           }
           let clean = (candidate || '').replace(/undefined/gi, '').replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado').trim();
@@ -797,10 +838,10 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           return clean;
         };
 
-        const n4 = getDescriptorForLevel(3, ['4', 'sobresaliente', 'excelente', 'consolidado']);
-        const n3 = getDescriptorForLevel(2, ['3', 'notable', 'conseguido', 'avanzado']);
-        const n2 = getDescriptorForLevel(1, ['2', 'proceso', 'suficiente', 'aprobado']);
-        const n1 = getDescriptorForLevel(0, ['1', 'iniciación', 'iniciado', 'insuficiente']);
+        const n4 = getDescriptorForLevel(3, ['sobresaliente', 'excelente', 'consolidado', 'nivel 4', '9-10']);
+        const n3 = getDescriptorForLevel(2, ['notable', 'conseguido', 'avanzado', 'nivel 3', '7-8']);
+        const n2 = getDescriptorForLevel(1, ['proceso', 'suficiente', 'aprobado', 'nivel 2', '5-6']);
+        const n1 = getDescriptorForLevel(0, ['iniciación', 'iniciado', 'insuficiente', 'nivel 1', '1-4']);
 
         return `
           <tr style="background-color: #15803d; color: white;">
