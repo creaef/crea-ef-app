@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import {
   Upload,
   FileText,
@@ -43,42 +44,91 @@ export const LocalFilesModal: React.FC<LocalFilesModalProps> = ({
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+
       try {
         setStatusMsg(`Leyendo y procesando "${file.name}"...`);
+        let extractedText = '';
 
-        // Convert File to base64
-        const base64Data = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const result = reader.result as string;
-            const base64 = result.split(',')[1] || result;
-            resolve(base64);
-          };
-          reader.onerror = (err) => reject(err);
-          reader.readAsDataURL(file);
-        });
-
-        const res = await fetch('/api/parse-local-file', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fileName: file.name,
-            base64Data,
-          }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Error al procesar ${file.name}`);
-
-        if (data.extractedText) {
-          onAddLocalDocumentation(data.extractedText, file.name);
-          totalChars += data.charCount || data.extractedText.length;
-          newAddedFiles.push({
-            name: file.name,
-            size: file.size,
-            charCount: data.charCount || data.extractedText.length,
-          });
+        // 1. Procesamiento nativo en cliente para TXT y Markdown
+        if (ext === '.txt' || ext === '.md') {
+          extractedText = await file.text();
+        } 
+        // 2. Procesamiento nativo en cliente para Excel y CSV (usando XLSX ya disponible en el navegador)
+        else if (ext === '.xlsx' || ext === '.xls' || ext === '.csv') {
+          try {
+            const buffer = await file.arrayBuffer();
+            const workbook = XLSX.read(buffer, { type: 'array' });
+            const sheetTexts: string[] = [];
+            workbook.SheetNames.forEach((sheetName) => {
+              const sheet = workbook.Sheets[sheetName];
+              if (sheet) {
+                const csv = XLSX.utils.sheet_to_csv(sheet);
+                if (csv && csv.trim()) {
+                  sheetTexts.push(`--- HOJA EXCEL: ${sheetName} ---\n${csv.trim()}`);
+                }
+              }
+            });
+            extractedText = sheetTexts.join('\n\n');
+          } catch (xlClientErr) {
+            console.warn('Fallo parseo local de Excel, recurriendo a servidor:', xlClientErr);
+          }
         }
+
+        // 3. Si aún no se ha extraído texto (PDF, DOCX o si falló el parseo previo), llamar al endpoint
+        if (!extractedText) {
+          // Convert File to base64
+          const base64Data = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const result = reader.result as string;
+              const base64 = result.split(',')[1] || result;
+              resolve(base64);
+            };
+            reader.onerror = (err) => reject(err);
+            reader.readAsDataURL(file);
+          });
+
+          const res = await fetch('/api/parse-local-file', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fileName: file.name,
+              base64Data,
+            }),
+          });
+
+          const contentType = res.headers.get('content-type') || '';
+          let data: any = null;
+
+          if (contentType.includes('application/json')) {
+            data = await res.json();
+          } else {
+            const rawBody = await res.text();
+            console.warn(`[LocalFilesModal] Respuesta no-JSON recibida para ${file.name}:`, rawBody.substring(0, 150));
+            throw new Error(`El servidor devolvió un error inesperado (código ${res.status}). Asegúrate de que el servidor backend esté en ejecución.`);
+          }
+
+          if (!res.ok) {
+            throw new Error(data?.error || `Error al procesar el archivo "${file.name}".`);
+          }
+
+          extractedText = data.extractedText || '';
+        }
+
+        const cleanText = extractedText.trim();
+        if (!cleanText) {
+          throw new Error(`No se encontró texto legible en el archivo "${file.name}". Si es un PDF escaneado, asegúrate de que contenga texto seleccionable.`);
+        }
+
+        onAddLocalDocumentation(cleanText, file.name);
+        const charCount = cleanText.length;
+        totalChars += charCount;
+        newAddedFiles.push({
+          name: file.name,
+          size: file.size,
+          charCount,
+        });
       } catch (err: any) {
         console.error('Error procesando archivo:', err);
         setErrorMsg(err.message || `No se pudo leer el archivo ${file.name}`);

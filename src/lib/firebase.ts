@@ -1,5 +1,17 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
+import {
+  initializeAuth,
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  User,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  indexedDBLocalPersistence,
+  inMemoryPersistence,
+  setPersistence,
+} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import firebaseConfig from '../../firebase-applet-config.json';
@@ -12,7 +24,18 @@ declare global {
 
 // Initialize Firebase App instance
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const auth = getAuth(app);
+
+// Configure Auth with resilient multi-tier persistence (preferring localStorage/sessionStorage if IndexedDB closes)
+let authInstance;
+try {
+  authInstance = initializeAuth(app, {
+    persistence: [browserLocalPersistence, indexedDBLocalPersistence, browserSessionPersistence, inMemoryPersistence],
+  });
+} catch {
+  authInstance = getAuth(app);
+}
+
+export const auth = authInstance;
 export const db = getFirestore(app);
 export const analytics = getAnalytics(app);
 
@@ -81,20 +104,40 @@ export const loginWithGoogleDrive = async (): Promise<{ user: User | null; token
     prompt: 'select_account'
   });
 
-  try {
+  // Helper to run popup auth
+  const runPopupAuth = async () => {
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
-    
     if (!credential?.accessToken) {
       throw new Error('No se pudo obtener el token de acceso de Google Drive.');
     }
-
     return { user: result.user, token: credential.accessToken };
+  };
+
+  try {
+    return await runPopupAuth();
   } catch (err: any) {
     if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
       const friendlyErr = new Error('La ventana de inicio de sesión se cerró antes de completar el acceso a Google Drive. Por favor, inténtalo de nuevo.');
       (friendlyErr as any).code = err.code;
       throw friendlyErr;
+    }
+
+    const errStr = String(err?.message || err || '').toLowerCase();
+    const isIdbClosingError =
+      errStr.includes('closing') ||
+      errStr.includes('hidden') ||
+      errStr.includes('database') ||
+      err?.name === 'InvalidStateError';
+
+    if (isIdbClosingError) {
+      console.warn('Detectado error de IndexedDB en Firebase Auth. Cambiando persistencia a localStorage y reintentando...');
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        return await runPopupAuth();
+      } catch (retryErr: any) {
+        console.warn('Reintento con localStorage falló:', retryErr);
+      }
     }
 
     console.warn('Firebase login failed, trying direct Google Identity Services (GIS) fallback...', err);
@@ -107,6 +150,9 @@ export const loginWithGoogleDrive = async (): Promise<{ user: User | null; token
         const customErr = new Error('El navegador o el marco incrustado bloqueó la red de autenticación de Firebase (auth/network-request-failed). Por favor reintenta o abre la aplicación en una nueva pestaña.');
         (customErr as any).code = 'auth/network-request-failed';
         throw customErr;
+      }
+      if (isIdbClosingError) {
+        throw new Error('El navegador ha bloqueado o suspendido el almacenamiento interno (IndexedDB) para la cuenta de Google. Abre la aplicación en una pestaña nueva o ventana normal, o utiliza la opción "Cargar PDF/Word/Excel Local" para cargar tus materiales sin Google Drive.');
       }
       throw err;
     }

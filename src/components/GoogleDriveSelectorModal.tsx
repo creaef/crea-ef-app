@@ -152,7 +152,12 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
       if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
         setErrorMsg('Ventana de autenticación cerrada. Haz clic de nuevo en "Iniciar Sesión con Google Drive" cuando quieras conectar tu cuenta.');
       } else {
-        setErrorMsg(err.message || 'Error al iniciar sesión con Google Drive.');
+        const msg = String(err?.message || '');
+        if (msg.includes('IndexedDB') || msg.includes('closing') || msg.includes('hidden') || msg.includes('database')) {
+          setErrorMsg('El navegador ha suspendido la conexión de almacenamiento de Google (IndexedDB). Por favor, intenta abrir la aplicación en una pestaña nueva o sube tus archivos directamente desde "Cargar PDF / Word Local".');
+        } else {
+          setErrorMsg(err.message || 'Error al iniciar sesión con Google Drive.');
+        }
       }
     } finally {
       setLoadingAuth(false);

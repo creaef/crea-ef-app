@@ -66,7 +66,7 @@ export interface ActividadEnSesion {
 }
 
 export interface TacticalPitchElement {
-  tipo: 'alumno' | 'jugador_azul' | 'jugador_rojo' | 'portero' | 'cono' | 'balon' | 'pica' | 'diana' | 'aro' | 'colchoneta' | 'banco' | 'flecha';
+  tipo: 'alumno' | 'jugador_azul' | 'jugador_rojo' | 'portero' | 'porteria' | 'cono' | 'balon' | 'pica' | 'diana' | 'aro' | 'colchoneta' | 'banco' | 'flecha';
   x: number; // Coordenada horizontal (0-100%)
   y: number; // Coordenada vertical (0-100%)
   label?: string; // Etiqueta (ej: "1", "2", "3" para conos)

@@ -9,7 +9,7 @@ import { createServer as createViteServer } from 'vite';
 import { google } from 'googleapis';
 import mammoth from 'mammoth';
 import * as pdfParseModule from 'pdf-parse';
-const pdfParse: any = (pdfParseModule as any).default || pdfParseModule;
+const PDFParseClass: any = (pdfParseModule as any).PDFParse || (pdfParseModule as any).default?.PDFParse || (pdfParseModule as any).default || pdfParseModule;
 import * as XLSX from 'xlsx';
 import { formatGameDescription } from './src/types';
 import { getNormativaForEtapa } from './src/utils/documentHeader';
@@ -776,12 +776,20 @@ Cada sesión DEBE contener exactamente 6 objetos en la lista "fases" (1 Calentam
 5. Fase 5: "fase": "Parte Principal / Práctica", "duracionMin": 10
 6. Fase 6: "fase": "Vuelta a la Calma / Reflexión", "duracionMin": 10
 
+INSTRUCCIÓN MANDATORIA DE PORCENTAJES Y FUENTES:
+- Si NO se han adjuntado documentos de Drive ni archivos Excel en el prompt (o no hay contenido previo del usuario):
+  "porcentajeDrive": 0,
+  "porcentajeBancoJuegos": 0,
+  "porcentajeIA": 100,
+  "fuentesUtilizadas": []
+- Solo si se proporcionaron documentos, calcula el porcentaje real estimado y lista los nombres de archivo exactos aportados por el docente.
+
 Devuelve una respuesta JSON estricta con este formato:
 {
-  "porcentajeDrive": 45,
-  "porcentajeBancoJuegos": 35,
-  "porcentajeIA": 20,
-  "fuentesUtilizadas": ["Banco de Juegos Excel: Juegos_Cooperativos.xlsx", "Carpeta Drive: UD_Habilidades"],
+  "porcentajeDrive": 0,
+  "porcentajeBancoJuegos": 0,
+  "porcentajeIA": 100,
+  "fuentesUtilizadas": [],
   "sesiones": [
     {
       "numeroSesion": 1,
@@ -996,19 +1004,50 @@ Devuelve una respuesta JSON estricta con este formato:
       }
     });
 
-    const hasDriveDocs = Boolean(driveDocumentationText && driveDocumentationText.trim().length > 0 && (driveDocumentationText.includes('Google Drive') || driveDocumentationText.includes('PDF') || driveDocumentationText.includes('Ficha') || driveDocumentationText.includes('UD_') || driveDocumentationText.includes('Documento')));
-    const hasBancoJuegos = Boolean(driveDocumentationText && (driveDocumentationText.includes('BANCO DE JUEGOS') || driveDocumentationText.includes('Excel') || driveDocumentationText.includes('EXCEL') || driveDocumentationText.includes('.xlsx')));
+    const hasDriveDocs = Boolean(
+      driveDocumentationText &&
+      driveDocumentationText.trim().length > 0 &&
+      (driveDocumentationText.includes('Google Drive') ||
+       driveDocumentationText.includes('PDF') ||
+       driveDocumentationText.includes('Ficha') ||
+       driveDocumentationText.includes('UD_') ||
+       driveDocumentationText.includes('Documento') ||
+       driveDocumentationText.includes('ARCHIVO LOCAL'))
+    );
+    const hasBancoJuegos = Boolean(
+      driveDocumentationText &&
+      (driveDocumentationText.includes('BANCO DE JUEGOS') ||
+       driveDocumentationText.includes('Excel') ||
+       driveDocumentationText.includes('EXCEL') ||
+       driveDocumentationText.includes('.xlsx') ||
+       driveDocumentationText.includes('.csv'))
+    );
 
-    let pDrive = typeof parsed.porcentajeDrive === 'number' ? parsed.porcentajeDrive : (hasDriveDocs ? 45 : 0);
-    let pBanco = typeof parsed.porcentajeBancoJuegos === 'number' ? parsed.porcentajeBancoJuegos : (hasBancoJuegos ? 35 : 0);
-    let pIA = typeof parsed.porcentajeIA === 'number' ? parsed.porcentajeIA : Math.max(10, 100 - pDrive - pBanco);
+    let pDrive = hasDriveDocs ? (typeof parsed.porcentajeDrive === 'number' && parsed.porcentajeDrive > 0 ? parsed.porcentajeDrive : 45) : 0;
+    let pBanco = hasBancoJuegos ? (typeof parsed.porcentajeBancoJuegos === 'number' && parsed.porcentajeBancoJuegos > 0 ? parsed.porcentajeBancoJuegos : 35) : 0;
+
+    // Normalizar si la suma supera el 85% para dejar margen pedagógico a la IA
+    if (pDrive + pBanco > 85) {
+      const ratio = 85 / (pDrive + pBanco);
+      pDrive = Math.round(pDrive * ratio);
+      pBanco = Math.round(pBanco * ratio);
+    }
+    let pIA = Math.max(0, 100 - pDrive - pBanco);
+
+    let cleanFuentes: string[] = Array.isArray(parsed.fuentesUtilizadas) ? parsed.fuentesUtilizadas : [];
+    if (!hasBancoJuegos) {
+      cleanFuentes = cleanFuentes.filter((f: string) => !/banco.*juego|\.xlsx|\.xls|excel/i.test(f));
+    }
+    if (!hasDriveDocs) {
+      cleanFuentes = cleanFuentes.filter((f: string) => !/drive|carpeta|ud_|documento/i.test(f));
+    }
 
     res.json({
       sesiones: sesionesRes,
       porcentajeDrive: pDrive,
       porcentajeBancoJuegos: pBanco,
       porcentajeIA: pIA,
-      fuentesUtilizadas: parsed.fuentesUtilizadas || [],
+      fuentesUtilizadas: cleanFuentes,
     });
   } catch (error: any) {
     console.error('Error generating sessions:', error);
@@ -1145,7 +1184,7 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
 // API: Lectura y Extracción de Archivos Locales (PDF, Word, Excel, TXT)
 app.post('/api/parse-local-file', async (req, res) => {
   try {
-    const { fileName, base64Data } = req.body;
+    const { fileName = '', base64Data = '' } = req.body;
     if (!fileName || !base64Data) {
       return res.status(400).json({ error: 'Faltan parámetros fileName o base64Data' });
     }
@@ -1156,10 +1195,19 @@ app.post('/api/parse-local-file', async (req, res) => {
 
     if (ext === '.pdf') {
       try {
-        const data = await pdfParse(buffer);
-        extractedText = data.text || '';
-      } catch (pdfErr) {
-        console.error('Error parseando PDF:', pdfErr);
+        if (typeof PDFParseClass === 'function' && PDFParseClass.prototype && PDFParseClass.prototype.getText) {
+          const parser = new PDFParseClass({ data: buffer });
+          const parsedResult = await parser.getText();
+          extractedText = parsedResult?.text || '';
+        } else if (typeof PDFParseClass === 'function') {
+          const legacyData = await PDFParseClass(buffer);
+          extractedText = legacyData?.text || '';
+        } else {
+          throw new Error('Módulo PDF no disponible.');
+        }
+      } catch (pdfErr: any) {
+        console.warn('Error parseando PDF con PDFParse:', pdfErr?.message || pdfErr);
+        // Fallback para streams de texto legibles dentro del PDF
         extractedText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r\táéíóúÁÉÍÓÚñÑ]/g, ' ');
       }
     } else if (ext === '.docx' || ext === '.doc') {
@@ -1191,14 +1239,16 @@ app.post('/api/parse-local-file', async (req, res) => {
       extractedText = buffer.toString('utf-8');
     }
 
-    if (!extractedText || extractedText.trim().length === 0) {
-      return res.status(400).json({ error: 'No se pudo extraer texto del archivo seleccionado.' });
+    const cleanText = extractedText.trim();
+    if (!cleanText) {
+      return res.status(400).json({ error: `No se pudo extraer texto legible del archivo "${fileName}".` });
     }
 
     res.json({
+      success: true,
       fileName,
-      charCount: extractedText.length,
-      extractedText: extractedText.trim(),
+      charCount: cleanText.length,
+      extractedText: cleanText,
     });
   } catch (error: any) {
     console.error('Error en /api/parse-local-file:', error);
@@ -1542,8 +1592,17 @@ app.post('/api/drive/read-selected', async (req, res) => {
         } else if (type === 'application/pdf' || (name && name.toLowerCase().endsWith('.pdf'))) {
           try {
             const pdfRes = await drive.files.get({ fileId, alt: 'media' }, { responseType: 'arraybuffer' });
-            const pdfData = await pdfParse(Buffer.from(pdfRes.data as ArrayBuffer));
-            aggregatedText += `\n--- ARCHIVO / FUENTE: ${name} ---\n${pdfData.text}\n`;
+            const pdfBuf = Buffer.from(pdfRes.data as ArrayBuffer);
+            let pdfText = '';
+            if (typeof PDFParseClass === 'function' && PDFParseClass.prototype && PDFParseClass.prototype.getText) {
+              const parser = new PDFParseClass({ data: pdfBuf });
+              const parsedResult = await parser.getText();
+              pdfText = parsedResult?.text || '';
+            } else if (typeof PDFParseClass === 'function') {
+              const legacyData = await PDFParseClass(pdfBuf);
+              pdfText = legacyData?.text || '';
+            }
+            aggregatedText += `\n--- ARCHIVO / FUENTE: ${name} ---\n${pdfText}\n`;
           } catch (pdfErr) {
             console.warn(`Could not parse PDF ${name} from Drive:`, pdfErr);
             aggregatedText += `\n--- ARCHIVO / FUENTE: ${name} ---\n`;
@@ -1850,74 +1909,6 @@ app.post('/api/docs/create-doc', async (req, res) => {
     res.json({ docId: documentId, docUrl });
   } catch (error: any) {
     handleDriveError(res, error, 'Error al crear el documento en Google Docs.');
-  }
-});
-
-// API: Parse local uploaded file (Word .docx, PDF .pdf, Excel .xlsx, TXT)
-app.post('/api/parse-local-file', async (req, res) => {
-  try {
-    const { fileName = '', base64Data = '' } = req.body;
-    if (!base64Data) {
-      return res.status(400).json({ error: 'Faltan los datos del archivo local en base64.' });
-    }
-
-    const fileBuffer = Buffer.from(base64Data, 'base64');
-    const ext = path.extname(fileName).toLowerCase();
-    let extractedText = '';
-
-    if (ext === '.docx' || ext === '.doc') {
-      try {
-        const result = await mammoth.extractRawText({ buffer: fileBuffer });
-        extractedText = result.value || '';
-      } catch (docErr) {
-        console.warn(`Error parsing docx ${fileName}:`, docErr);
-        extractedText = fileBuffer.toString('utf-8');
-      }
-    } else if (ext === '.pdf') {
-      try {
-        const pdfData = await pdfParse(fileBuffer);
-        extractedText = pdfData.text || '';
-      } catch (pdfErr) {
-        console.warn(`Error parsing pdf ${fileName}:`, pdfErr);
-        extractedText = fileBuffer.toString('utf-8');
-      }
-    } else if (ext === '.xlsx' || ext === '.xls') {
-      try {
-        const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-        const sheetNames = workbook.SheetNames || [];
-        const textParts: string[] = [];
-        sheetNames.forEach((sheetName) => {
-          const sheet = workbook.Sheets[sheetName];
-          if (sheet) {
-            const csv = XLSX.utils.sheet_to_csv(sheet);
-            textParts.push(`--- HOJA EXCEL: ${sheetName} ---\n${csv}`);
-          }
-        });
-        extractedText = textParts.join('\n\n');
-      } catch (xlErr) {
-        console.warn(`Error parsing excel ${fileName}:`, xlErr);
-        extractedText = fileBuffer.toString('utf-8');
-      }
-    } else {
-      extractedText = fileBuffer.toString('utf-8');
-    }
-
-    const cleanText = extractedText.trim();
-    if (!cleanText) {
-      return res.status(400).json({ error: `No se pudo extraer texto legible del archivo local "${fileName}".` });
-    }
-
-    const formattedOutput = `\n--- ARCHIVO LOCAL ADJUNTO: ${fileName} ---\n${cleanText}\n`;
-
-    res.json({
-      success: true,
-      fileName,
-      extractedText: formattedOutput,
-      charCount: cleanText.length,
-    });
-  } catch (error: any) {
-    console.error('Error in /api/parse-local-file:', error);
-    res.status(500).json({ error: error.message || 'Error al procesar el archivo local.' });
   }
 });
 
