@@ -1,16 +1,10 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
-  initializeAuth,
   getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
   User,
-  browserLocalPersistence,
-  browserSessionPersistence,
-  indexedDBLocalPersistence,
-  inMemoryPersistence,
-  setPersistence,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
@@ -24,18 +18,7 @@ declare global {
 
 // Initialize Firebase App instance
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-
-// Configure Auth with resilient multi-tier persistence (preferring localStorage/sessionStorage if IndexedDB closes)
-let authInstance;
-try {
-  authInstance = initializeAuth(app, {
-    persistence: [browserLocalPersistence, indexedDBLocalPersistence, browserSessionPersistence, inMemoryPersistence],
-  });
-} catch {
-  authInstance = getAuth(app);
-}
-
-export const auth = authInstance;
+export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const analytics = getAnalytics(app);
 
@@ -130,16 +113,6 @@ export const loginWithGoogleDrive = async (): Promise<{ user: User | null; token
       errStr.includes('database') ||
       err?.name === 'InvalidStateError';
 
-    if (isIdbClosingError) {
-      console.warn('Detectado error de IndexedDB en Firebase Auth. Cambiando persistencia a localStorage y reintentando...');
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-        return await runPopupAuth();
-      } catch (retryErr: any) {
-        console.warn('Reintento con localStorage falló:', retryErr);
-      }
-    }
-
     console.warn('Firebase login failed, trying direct Google Identity Services (GIS) fallback...', err);
     try {
       const gisToken = await requestDriveTokenViaGIS();
@@ -151,8 +124,11 @@ export const loginWithGoogleDrive = async (): Promise<{ user: User | null; token
         (customErr as any).code = 'auth/network-request-failed';
         throw customErr;
       }
+      if (err?.code === 'auth/unauthorized-domain') {
+        throw new Error('El dominio de la aplicación no está autorizado en la consola de Firebase Authentication. Puedes usar "Token manual" o subir tus materiales desde "Cargar PDF/Word/Excel Local".');
+      }
       if (isIdbClosingError) {
-        throw new Error('El navegador ha bloqueado o suspendido el almacenamiento interno (IndexedDB) para la cuenta de Google. Abre la aplicación en una pestaña nueva o ventana normal, o utiliza la opción "Cargar PDF/Word/Excel Local" para cargar tus materiales sin Google Drive.');
+        throw new Error('El navegador ha suspendido el almacenamiento de Google (IndexedDB). Abre la web en una pestaña normal o utiliza "Cargar PDF/Word/Excel Local" para usar tus materiales sin Google Drive.');
       }
       throw err;
     }

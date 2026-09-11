@@ -347,6 +347,7 @@ Instrucciones:
 });
 
 // API 2: Generar Rúbrica de Evaluación
+// API 2: Generar Rúbrica de Evaluación
 app.post('/api/ai/generate-rubric', async (req, res) => {
   try {
     const { criterios, etapa, comunidad } = req.body;
@@ -355,40 +356,41 @@ app.post('/api/ai/generate-rubric', async (req, res) => {
     }
 
     const ai = getGenAIClient();
-    const prompt = `Genera los descriptores de una Rúbrica de Evaluación Formativa y Cuadrante de Desempeño para los siguientes Criterios de Evaluación de Educación Física (LOMLOE ${comunidad || 'Andalucía'}):
+    const prompt = `Actúa como Catedrático Experto en Evaluación Docente de Educación Física y LOMLOE en ${comunidad || 'Andalucía'}.
+Genera los descriptores de una Rúbrica de Evaluación Formativa y Cuadrante de Desempeño Motriz para los siguientes Criterios de Evaluación:
 ${JSON.stringify(criterios, null, 2)}
 
-INSTRUCCIONES PEDAGÓGICAS ESTRICTAS:
-- Para CADA criterio debes generar OBLIGATORIAMENTE 4 niveles de desempeño progresivos y diferenciados:
-  1. "Iniciado (1-4)": Dificultad notable o necesidad de guía constante del docente.
-  2. "En proceso (5-6)": Aplicación básica o ejecución con apoyos y correcciones puntuales.
-  3. "Conseguido (7-8)": Dominio autónomo, correcto y seguro en las situaciones motrices habituales.
-  4. "Excelente (9-10)": Dominio sobresaliente, fluido, creativo y con iniciativa de colaboración con el grupo.
-- TOTALMENTE PROHIBIDO usar nombres propios ficticios de alumnos (como "Luis", "Ana", etc.). Describe acciones pedagógicas impersonales ("Presenta dificultad para...", "Aplica de forma autónoma...", etc.).
-- PROHIBIDO repetir el mismo texto en diferentes niveles.
-- El texto del criterio debe corresponder exactamente con el criterio curricular indicado.
+INSTRUCCIONES PEDAGÓGICAS ESTRICTAS Y MANDATORIAS:
+1. Para CADA criterio debes generar OBLIGATORIAMENTE 4 niveles de desempeño progresivos, detallados y 100% personalizados según el contenido motriz concreto del criterio:
+   - "Iniciado (1-4)": Describe qué dificultades concretas experimenta el alumno respecto a este criterio motriz y la necesidad de supervisión permanente.
+   - "En proceso (5-6)": Describe el desempeño elemental con apoyos, indicaciones o pautas docentes para cumplir el criterio.
+   - "Conseguido (7-8)": Describe la ejecución autónoma, correcta, segura y eficaz en las situaciones motrices vinculadas al criterio.
+   - "Excelente (9-10)": Describe un dominio sobresaliente, creativo, adaptativo y con liderazgo o colaboración positiva en el grupo para este criterio.
+2. TOTALMENTE PROHIBIDO usar frases plantilla genéricas como "Demuestra desempeño acorde al nivel...". CADA descriptor DEBE mencionar los aprendizajes y habilidades específicas del criterio (postura, higiene, cooperación, habilidades motrices, juego limpio, etc.).
+3. TOTALMENTE PROHIBIDO usar nombres propios ficticios de alumnos (como "Luis", "Ana", etc.). Usa expresiones docentes impersonales ("Presenta dificultad al...", "Ejecuta con autonomía...", "Demuestra solvencia en...", etc.).
+4. PROHIBIDO repetir el mismo texto entre niveles o entre criterios.
 
 Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 [
   {
     "criterioCodigo": "código del criterio (ej: EFI.1.1.a)",
-    "criterioTexto": "texto íntegro del criterio",
+    "criterioTexto": "texto íntegro del criterio curricular",
     "niveles": [
-      { "nivel": "Iniciado (1-4)", "descriptor": "descripción concreta del desempeño para nivel iniciado" },
-      { "nivel": "En proceso (5-6)", "descriptor": "descripción concreta del desempeño para nivel en proceso" },
-      { "nivel": "Conseguido (7-8)", "descriptor": "descripción concreta del desempeño para nivel conseguido" },
-      { "nivel": "Excelente (9-10)", "descriptor": "descripción concreta del desempeño para nivel excelente" }
+      { "nivel": "Iniciado (1-4)", "descriptor": "redacción personalizada del desempeño motriz con dificultades para este criterio específico" },
+      { "nivel": "En proceso (5-6)", "descriptor": "redacción personalizada del desempeño motriz básico y con apoyos para este criterio específico" },
+      { "nivel": "Conseguido (7-8)", "descriptor": "redacción personalizada del desempeño motriz autónomo y solvente para este criterio específico" },
+      { "nivel": "Excelente (9-10)", "descriptor": "redacción personalizada del desempeño motriz sobresaliente y creativo para este criterio específico" }
     ]
   }
 ]`;
 
     try {
       const response = await callGeminiWithRetry(req, ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-latest',
         contents: prompt,
         config: {
           systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
-          temperature: 0.3,
+          temperature: 0.4,
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.ARRAY,
@@ -415,24 +417,52 @@ Devuelve una respuesta en formato JSON estricto con el siguiente esquema:
 
       const parsed = safeParseAIJson(response.text, []);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Validar que no contenga valores corruptos ni repeticiones
+        // Validar que no contenga valores corruptos ni repeticiones genéricas
         const validRubric = parsed.map((item: any) => {
           const rawLevels = Array.isArray(item.niveles) ? item.niveles : [];
           const labels = ['Iniciado (1-4)', 'En proceso (5-6)', 'Conseguido (7-8)', 'Excelente (9-10)'];
+          
+          const critText = (item.criterioTexto || item.criterioCodigo || 'el criterio motriz').replace(/undefined/gi, '').trim();
+          const shortCrit = critText.length > 70 ? critText.substring(0, 70) + '...' : critText;
+
+          const dynamicLevelFallbacks: Record<number, string> = {
+            0: `Presenta dificultades para identificar, regular y aplicar de forma práctica: "${shortCrit}". Precisa acompañamiento y guía constante del docente.`,
+            1: `Aplica de manera elemental y en situaciones guiadas: "${shortCrit}", requiriendo correcciones o apoyos puntuales para completar la tarea motriz.`,
+            2: `Demuestra solvencia, eficacia y autonomía al desarrollar: "${shortCrit}", participando activamente y cumpliendo los objetivos fijados.`,
+            3: `Manifiesta un dominio sobresaliente, fluido y creativo en: "${shortCrit}", anticipando respuestas motrices y colaborando constructivamente con el grupo.`
+          };
+
           const cleanLevels = labels.map((lbl, idx) => {
             const found = rawLevels.find((n: any) => n.nivel?.includes(lbl.split(' ')[0]) || n.nivel?.includes(String(idx + 1))) || rawLevels[idx];
-            const cleanDesc = (found?.descriptor || '')
+            const rawDesc = (
+              found?.descriptor ||
+              found?.descripcion ||
+              found?.description ||
+              found?.texto ||
+              found?.desempeno ||
+              found?.detalle ||
+              (typeof found === 'string' ? found : '')
+            );
+            const cleanDesc = String(rawDesc || '')
               .replace(/undefined/gi, '')
               .replace(/Luis\/a|Luis|alumn[oa] fictici[oa]/gi, 'El alumnado')
               .trim();
+
+            const isGenericOrEmpty =
+              !cleanDesc ||
+              cleanDesc.length < 15 ||
+              cleanDesc.toLowerCase().includes('demuestra desempeño acorde al nivel') ||
+              cleanDesc.toLowerCase().includes('en los aprendizajes del criterio');
+
             return {
               nivel: lbl,
-              descriptor: cleanDesc || `Demuestra desempeño acorde al nivel ${lbl} en los aprendizajes del criterio.`
+              descriptor: isGenericOrEmpty ? dynamicLevelFallbacks[idx] : cleanDesc
             };
           });
+
           return {
             criterioCodigo: item.criterioCodigo || 'Criterio EF',
-            criterioTexto: (item.criterioTexto || '').replace(/undefined/gi, '').trim(),
+            criterioTexto: critText,
             niveles: cleanLevels
           };
         });

@@ -168,233 +168,211 @@ export function buildCustomVisualElementsForGame(text = '', title = ''): Tactica
   const elements: TacticalPitchElement[] = [];
 
   // Categorías de detección semántica
-  const isPersecucion = /perseguid|cazador|pillar|pilla-pilla|pilla\s*pilla|mancha|atrapar|tocar|tulip[aá]n|cortahilos|polis\s*y\s*cacos|lobo|zorro|la\s*lleva|el\s*que\s*pilla|robar|escapar/i.test(combined);
-  const isTerrenoDividido = /terreno\s*dividido|campo\s*dividido|cancha\s*dividida|a\s*cada\s*lado|red|volei|v[oó]leibol|datchball|bal[oó]n\s*prisionero|cementerio|dodgeball|balontiro|dos\s*campos|campo\s*propio|campo\s*contrario|mitad\s*de\s*campo|a\s*su\s*campo|frontera/i.test(combined);
-  const isTransporte = /transport|llevar\s*el\s*material|trasladar|acarreo|llevar\s*un|llevando|coger\s*y\s*llevar|recoger\s*material|mudanza|almac[eé]n|banco\s*y\s*colchoneta|porteo/i.test(combined);
-  const isTrios = /tr[ií]o|tr[ií]os|por\s*tr[ií]os|en\s*tr[ií]os|grupos\s*de\s*3|grupos\s*de\s*tres/i.test(combined);
   const isParejas = /pareja|parejas|por\s*parejas|en\s*parejas|d[uú]os|dos\s*en\s*dos/i.test(combined);
-  const isPunteria = /diana|dianas|derribar|punter[ií]a|bolos|tirar\s*conos|blanco|lanzamiento\s*de\s*precisi[oó]n/i.test(combined);
-  const isCircuito = /circuito|estaci[oó]n|estaciones|postas|recorrido\s*motriz/i.test(combined);
-  const isAros = /aro|aros|puente\s*de\s*aros|saltar\s*aros/i.test(combined);
-  const isPorteria = /porter[ií]a|portero|gol|penalti|chut|lanzamiento\s*a\s*porter[ií]a/i.test(combined);
-  const isFilas = /fila|filas|hilera|relevos|testigo|carrera\s*de\s*relevos/i.test(combined);
+  const isTrios = /tr[ií]o|tr[ií]os|por\s*tr[ií]os|en\s*tr[ií]os|grupos\s*de\s*3|grupos\s*de\s*tres/i.test(combined);
+  const isPersecucion = /perseguid|cazador|pillar|pilla-pilla|pilla\s*pilla|mancha|atrapar|tocar|tulip[aá]n|cortahilos|polis\s*y\s*cacos|lobo|zorro|la\s*lleva|el\s*que\s*pilla|robar|escapar/i.test(combined);
+  const isTerrenoDividido = /terreno\s*dividido|campo\s*dividido|cancha\s*dividida|a\s*cada\s*lado|red|volei|v[oó]leibol|datchball|bal[oó]n\s*prisionero|cementerio|dodgeball|balontiro|dos\s*campos|campo\s*propio|campo\s*contrario|mitad\s*de\s*campo/i.test(combined);
+  const isTransporte = /transport|llevar\s*el\s*material|trasladar|acarreo|llevar\s*un|llevando|coger\s*y\s*llevar|recoger\s*material|mudanza|almac[eé]n|banco\s*y\s*colchoneta|porteo/i.test(combined);
   const isRondo = /rondo|c[ií]rculo|corro|rueda|en\s*c[ií]rculo/i.test(combined);
+  const isFilas = /fila|filas|hilera|relevos|testigo|carrera\s*de\s*relevos/i.test(combined);
+  const isCircuito = /circuito|estaci[oó]n|estaciones|postas|recorrido\s*motriz/i.test(combined);
+  const isPunteria = /diana|dianas|derribar|punter[ií]a|bolos|tirar\s*conos|blanco|lanzamiento\s*de\s*precisi[oó]n/i.test(combined);
+  const isPorteria = /porter[ií]a|portero|gol|penalti|chut|lanzamiento\s*a\s*porter[ií]a/i.test(combined);
   const isSlalom = /slalom|zig-zag|zigzag|pica|picas/i.test(combined);
-  const hasBalon = /bal[oó]n|balones|pelota|pelotas|m[oó]vil/i.test(combined);
-  const hasConos = /cono|conos/i.test(combined);
 
-  // 1. JUEGO DE PERSECUCIÓN (Perseguidor con color rojo/amarillo destacado persiguiendo a azules/verdes)
-  if (isPersecucion) {
-    // 1 Perseguidor en color rojo vivo (#dc2626) en acción
-    elements.push({ tipo: 'alumno', x: 28, y: 55, color: '#dc2626' });
-    // Flecha de persecución directa hacia los fugitivos
-    elements.push({ tipo: 'flecha', x: 31, y: 50, x2: 52, y2: 45, curva: 'recta', color: '#dc2626' });
+  // Detección de materiales explícitos
+  const hasAros = /aro|aros|puente\s*de\s*aros|saltar\s*aros/i.test(combined);
+  const hasBalon = /bal[oó]n|balones|pelota|pelotas|m[oó]vil|esf[eé]rico/i.test(combined);
+  const hasConos = /cono|conos|chinos|picas/i.test(combined);
+  const hasColchoneta = /colchoneta|colchonetas|quitamiedos/i.test(combined);
+  const hasBanco = /banco|bancos|banco\s*sueco/i.test(combined);
 
-    // Alumnos perseguidos / fugitivos en azul y verde dispersos esquivando
-    elements.push({ tipo: 'alumno', x: 56, y: 44, color: '#0284c7' });
-    elements.push({ tipo: 'flecha', x: 58, y: 40, x2: 78, y2: 36, curva: 'arriba', color: '#16a34a' });
+  // 1. JUEGOS POR PAREJAS (DIBUJAR AL MENOS 3 PAREJAS DE NIÑOS A LO LARGO DE LA PISTA)
+  if (isParejas) {
+    // Pareja 1 (Izquierda - Azul)
+    elements.push({ tipo: 'alumno', x: 14, y: 56, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 26, y: 56, color: '#0284c7' });
+    elements.push({ tipo: 'flecha', x: 16, y: 48, x2: 24, y2: 48, curva: 'arriba', color: '#0284c7' });
 
-    elements.push({ tipo: 'alumno', x: 70, y: 70, color: '#0284c7' });
-    elements.push({ tipo: 'flecha', x: 72, y: 66, x2: 86, y2: 66, curva: 'arriba', color: '#0284c7' });
+    // Pareja 2 (Centro - Verde)
+    elements.push({ tipo: 'alumno', x: 44, y: 56, color: '#16a34a' });
+    elements.push({ tipo: 'alumno', x: 56, y: 56, color: '#16a34a' });
+    elements.push({ tipo: 'flecha', x: 46, y: 48, x2: 54, y2: 48, curva: 'arriba', color: '#16a34a' });
 
-    elements.push({ tipo: 'alumno', x: 14, y: 42, color: '#16a34a' });
-    elements.push({ tipo: 'alumno', x: 45, y: 72, color: '#0284c7' });
+    // Pareja 3 (Derecha - Rojo)
+    elements.push({ tipo: 'alumno', x: 74, y: 56, color: '#dc2626' });
+    elements.push({ tipo: 'alumno', x: 86, y: 56, color: '#dc2626' });
+    elements.push({ tipo: 'flecha', x: 76, y: 48, x2: 84, y2: 48, curva: 'arriba', color: '#dc2626' });
 
-    // Cono de zona de refugio / casa a salvo
-    elements.push({ tipo: 'cono', x: 88, y: 48, label: 'Casa' });
+    // Si además el juego usa aros, dibujarlos directamente en la posición de cada pareja
+    if (hasAros) {
+      elements.push({ tipo: 'aro', x: 20, y: 64, color: '#0284c7' });
+      elements.push({ tipo: 'aro', x: 50, y: 64, color: '#16a34a' });
+      elements.push({ tipo: 'aro', x: 80, y: 64, color: '#dc2626' });
+    }
+    // Si además usa balones, dibujar un balón en cada pareja
+    if (hasBalon) {
+      elements.push({ tipo: 'balon', x: 20, y: 54 });
+      elements.push({ tipo: 'balon', x: 50, y: 54 });
+      elements.push({ tipo: 'balon', x: 80, y: 54 });
+    }
+    if (hasConos) {
+      elements.push({ tipo: 'cono', x: 8, y: 66, label: 'P1' });
+      elements.push({ tipo: 'cono', x: 92, y: 66, label: 'P3' });
+    }
     return elements;
   }
 
-  // 2. EQUIPOS CON TERRENO DIVIDIDO (Red / medio campo / dos mitades enfrentadas: ej. datchball, volei, balón prisionero)
+  // 2. JUEGOS POR TRÍOS (DIBUJAR 2 TRÍOS COOPERATIVOS)
+  if (isTrios) {
+    // Trío 1 (Izquierda)
+    elements.push({ tipo: 'alumno', x: 14, y: 42, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 30, y: 42, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 22, y: 70, color: '#0284c7' });
+    elements.push({ tipo: 'flecha', x: 16, y: 42, x2: 28, y2: 42, curva: 'recta', color: '#0284c7' });
+
+    // Trío 2 (Derecha)
+    elements.push({ tipo: 'alumno', x: 66, y: 42, color: '#16a34a' });
+    elements.push({ tipo: 'alumno', x: 82, y: 42, color: '#16a34a' });
+    elements.push({ tipo: 'alumno', x: 74, y: 70, color: '#16a34a' });
+    elements.push({ tipo: 'flecha', x: 68, y: 42, x2: 80, y2: 42, curva: 'recta', color: '#16a34a' });
+
+    if (hasAros) {
+      elements.push({ tipo: 'aro', x: 22, y: 52, color: '#0284c7' });
+      elements.push({ tipo: 'aro', x: 74, y: 52, color: '#16a34a' });
+    }
+    if (hasBalon) {
+      elements.push({ tipo: 'balon', x: 22, y: 52 });
+      elements.push({ tipo: 'balon', x: 74, y: 52 });
+    }
+    return elements;
+  }
+
+  // 3. RONDO / CÍRCULO COLECTIVO
+  if (isRondo) {
+    elements.push(
+      { tipo: 'alumno', x: 18, y: 55, color: '#0284c7' },
+      { tipo: 'alumno', x: 32, y: 70, color: '#16a34a' },
+      { tipo: 'alumno', x: 50, y: 36, color: '#ea580c' },
+      { tipo: 'alumno', x: 68, y: 70, color: '#9333ea' },
+      { tipo: 'alumno', x: 82, y: 55, color: '#dc2626' }
+    );
+    if (hasAros) {
+      elements.push(
+        { tipo: 'aro', x: 18, y: 64, color: '#0284c7' },
+        { tipo: 'aro', x: 50, y: 45, color: '#ea580c' },
+        { tipo: 'aro', x: 82, y: 64, color: '#dc2626' }
+      );
+    }
+    if (hasBalon) {
+      elements.push({ tipo: 'balon', x: 44, y: 55 });
+      elements.push({ tipo: 'flecha', x: 34, y: 64, x2: 66, y2: 64, curva: 'arriba', color: '#0284c7' });
+    }
+    return elements;
+  }
+
+  // 4. TERRENO DIVIDIDO / RED CENTRAL
   if (isTerrenoDividido) {
-    // Conos delimitando la línea central divisoria
     elements.push({ tipo: 'cono', x: 50, y: 26, label: 'Red' });
     elements.push({ tipo: 'cono', x: 50, y: 72 });
-
-    // Equipo A (Azul - campo izquierdo)
-    elements.push({ tipo: 'alumno', x: 16, y: 42, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 26, y: 70, color: '#0284c7' });
+    // Equipo A (Azul)
+    elements.push({ tipo: 'alumno', x: 16, y: 44, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 26, y: 68, color: '#0284c7' });
     elements.push({ tipo: 'alumno', x: 38, y: 46, color: '#0284c7' });
+    // Equipo B (Rojo)
+    elements.push({ tipo: 'alumno', x: 62, y: 46, color: '#dc2626' });
+    elements.push({ tipo: 'alumno', x: 74, y: 68, color: '#dc2626' });
+    elements.push({ tipo: 'alumno', x: 84, y: 44, color: '#dc2626' });
 
-    // Equipo B (Rojo - campo derecho)
-    elements.push({ tipo: 'alumno', x: 62, y: 46, color: '#b91c1c' });
-    elements.push({ tipo: 'alumno', x: 74, y: 70, color: '#b91c1c' });
-    elements.push({ tipo: 'alumno', x: 84, y: 42, color: '#b91c1c' });
-
-    // Balón en trayectoria curva alta sobrevolando la red divisoria
-    elements.push({ tipo: 'balon', x: 39, y: 38 });
-    elements.push({ tipo: 'flecha', x: 37, y: 42, x2: 66, y2: 42, curva: 'arriba', color: '#ea580c' });
+    if (hasAros) {
+      elements.push({ tipo: 'aro', x: 26, y: 68, color: '#0284c7' });
+      elements.push({ tipo: 'aro', x: 74, y: 68, color: '#dc2626' });
+    }
+    if (hasBalon) {
+      elements.push({ tipo: 'balon', x: 39, y: 38 });
+      elements.push({ tipo: 'flecha', x: 37, y: 42, x2: 66, y2: 42, curva: 'arriba', color: '#ea580c' });
+    }
     return elements;
   }
 
-  // 3. JUEGOS TRANSPORTANDO MATERIAL (Acarreos, mudanza motriz, rescate de material de almacén a meta)
-  if (isTransporte) {
-    // Zona de salida / Almacén de material a la izquierda
-    elements.push({ tipo: 'cono', x: 10, y: 36, label: 'Inicio' });
-    elements.push({ tipo: 'colchoneta', x: 12, y: 64 });
+  // 5. JUEGOS CON AROS (Puente de aros, saltos, desplazamientos en aros)
+  if (hasAros) {
+    elements.push({ tipo: 'alumno', x: 10, y: 70, color: '#0284c7' });
+    elements.push({ tipo: 'flecha', x: 12, y: 54, x2: 88, y2: 48, curva: 'arriba', color: '#0f766e' });
+    // Serie de aros de colores en el suelo
+    elements.push({ tipo: 'aro', x: 28, y: 58, color: '#dc2626' });
+    elements.push({ tipo: 'aro', x: 44, y: 58, color: '#2563eb' });
+    elements.push({ tipo: 'aro', x: 60, y: 58, color: '#16a34a' });
+    elements.push({ tipo: 'aro', x: 76, y: 58, color: '#eab308' });
 
-    // Pareja de alumnos en Azul transportando el material juntos
-    elements.push({ tipo: 'alumno', x: 36, y: 55, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 48, y: 55, color: '#0284c7' });
-    // Balón/móvil transportado en medio de la pareja
-    elements.push({ tipo: 'balon', x: 42, y: 56 });
-
-    // Flecha direccional de transporte rápido hacia la zona de depósito
-    elements.push({ tipo: 'flecha', x: 50, y: 52, x2: 76, y2: 52, curva: 'recta', color: '#0f766e' });
-
-    // Zona de meta / Almacén receptor a la derecha
-    elements.push({ tipo: 'aro', x: 82, y: 58, color: '#ea580c' });
-    elements.push({ tipo: 'cono', x: 88, y: 38, label: 'Meta' });
+    if (hasColchoneta) elements.push({ tipo: 'colchoneta', x: 88, y: 56 });
+    if (hasBanco) elements.push({ tipo: 'banco', x: 20, y: 56 });
+    if (hasConos) elements.push({ tipo: 'cono', x: 92, y: 62, label: 'Meta' });
+    if (hasBalon) elements.push({ tipo: 'balon', x: 12, y: 72 });
     return elements;
   }
 
-  // 4. JUEGOS POR TRÍOS (Formación triangular de cooperación y pases)
-  if (isTrios) {
-    // Trío 1 (lado izquierdo, azules)
-    elements.push({ tipo: 'alumno', x: 14, y: 40, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 32, y: 40, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 23, y: 72, color: '#0284c7' });
-    elements.push({ tipo: 'balon', x: 23, y: 48 });
-    elements.push({ tipo: 'flecha', x: 17, y: 40, x2: 30, y2: 40, curva: 'recta', color: '#0284c7' });
-    elements.push({ tipo: 'flecha', x: 30, y: 44, x2: 24, y2: 68, curva: 'recta', color: '#0284c7' });
-
-    // Trío 2 (lado derecho, verdes)
-    elements.push({ tipo: 'alumno', x: 64, y: 40, color: '#16a34a' });
-    elements.push({ tipo: 'alumno', x: 82, y: 40, color: '#16a34a' });
-    elements.push({ tipo: 'alumno', x: 73, y: 72, color: '#16a34a' });
-    elements.push({ tipo: 'balon', x: 73, y: 48 });
-    elements.push({ tipo: 'flecha', x: 67, y: 40, x2: 80, y2: 40, curva: 'recta', color: '#16a34a' });
-    elements.push({ tipo: 'flecha', x: 80, y: 44, x2: 74, y2: 68, curva: 'recta', color: '#16a34a' });
+  // 6. JUEGO DE PERSECUCIÓN
+  if (isPersecucion) {
+    elements.push({ tipo: 'alumno', x: 26, y: 56, color: '#dc2626' }); // Perseguidor rojo
+    elements.push({ tipo: 'flecha', x: 29, y: 52, x2: 48, y2: 46, curva: 'recta', color: '#dc2626' });
+    elements.push({ tipo: 'alumno', x: 52, y: 46, color: '#0284c7' });
+    elements.push({ tipo: 'flecha', x: 55, y: 42, x2: 76, y2: 38, curva: 'arriba', color: '#16a34a' });
+    elements.push({ tipo: 'alumno', x: 68, y: 70, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 14, y: 42, color: '#16a34a' });
+    elements.push({ tipo: 'alumno', x: 82, y: 58, color: '#0284c7' });
+    if (hasConos) elements.push({ tipo: 'cono', x: 90, y: 48, label: 'Casa' });
+    if (hasBalon) elements.push({ tipo: 'balon', x: 28, y: 62 });
     return elements;
   }
 
-  // 5. JUEGOS POR PAREJAS (Enfrentadas o coordinadas con balón y conos)
-  if (isParejas) {
-    // Pareja 1 (lado izquierdo, azules)
-    elements.push({ tipo: 'alumno', x: 16, y: 55, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 36, y: 55, color: '#0284c7' });
-    elements.push({ tipo: 'balon', x: 26, y: 58 });
-    elements.push({ tipo: 'flecha', x: 18, y: 51, x2: 34, y2: 51, curva: 'arriba', color: '#0284c7' });
-    elements.push({ tipo: 'cono', x: 12, y: 68 });
-    elements.push({ tipo: 'cono', x: 40, y: 68 });
-
-    // Pareja 2 (lado derecho, rojas)
-    elements.push({ tipo: 'alumno', x: 64, y: 55, color: '#b91c1c' });
-    elements.push({ tipo: 'alumno', x: 84, y: 55, color: '#b91c1c' });
-    elements.push({ tipo: 'balon', x: 74, y: 58 });
-    elements.push({ tipo: 'flecha', x: 66, y: 51, x2: 82, y2: 51, curva: 'arriba', color: '#b91c1c' });
-    elements.push({ tipo: 'cono', x: 60, y: 68 });
-    elements.push({ tipo: 'cono', x: 88, y: 68 });
+  // 7. FILAS O RELEVOS
+  if (isFilas) {
+    elements.push({ tipo: 'alumno', x: 20, y: 65, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 13, y: 65, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 6, y: 65, color: '#0284c7' });
+    elements.push({ tipo: 'flecha', x: 22, y: 52, x2: 86, y2: 50, curva: 'arriba', color: '#0f766e' });
+    elements.push({ tipo: 'cono', x: 86, y: 60, label: 'Meta' });
+    if (hasBalon) elements.push({ tipo: 'balon', x: 24, y: 68 });
     return elements;
   }
 
-  // 6. PUNTERÍA / DIANAS / DERRIBAR CONOS
-  if (isPunteria) {
-    // Línea de lanzadores
-    elements.push({ tipo: 'alumno', x: 16, y: 45, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 16, y: 70, color: '#0284c7' });
-    elements.push({ tipo: 'balon', x: 22, y: 45 });
-    elements.push({ tipo: 'balon', x: 22, y: 70 });
-
-    // Flechas de tiro parabólico directo
-    elements.push({ tipo: 'flecha', x: 24, y: 46, x2: 74, y2: 40, curva: 'arriba', color: '#ea580c' });
-    elements.push({ tipo: 'flecha', x: 24, y: 69, x2: 74, y2: 68, curva: 'arriba', color: '#0f766e' });
-
-    // Fila de conos numerados como dianas
-    elements.push({ tipo: 'cono', x: 76, y: 38, label: '1' });
-    elements.push({ tipo: 'cono', x: 84, y: 55, label: '2' });
-    elements.push({ tipo: 'cono', x: 76, y: 72, label: '3' });
-    return elements;
-  }
-
-  // 7. CIRCUITO POR ESTACIONES / POSTAS (Estaciones numeradas con material variado)
+  // 8. CIRCUITO POR ESTACIONES / POSTAS
   if (isCircuito) {
-    // Estación 1: Banco sueco
     elements.push({ tipo: 'banco', x: 18, y: 56 });
     elements.push({ tipo: 'alumno', x: 18, y: 44, color: '#0284c7' });
     elements.push({ tipo: 'cono', x: 10, y: 36, label: 'E1' });
 
-    // Estación 2: Aros de salto
     elements.push({ tipo: 'aro', x: 40, y: 58, color: '#ea580c' });
     elements.push({ tipo: 'alumno', x: 40, y: 44, color: '#16a34a' });
     elements.push({ tipo: 'cono', x: 33, y: 36, label: 'E2' });
 
-    // Estación 3: Conos de slalom
     elements.push({ tipo: 'cono', x: 62, y: 58, label: 'E3' });
     elements.push({ tipo: 'alumno', x: 62, y: 44, color: '#b91c1c' });
-    elements.push({ tipo: 'balon', x: 67, y: 58 });
 
-    // Estación 4: Diana / lanzamiento
     elements.push({ tipo: 'cono', x: 85, y: 58, label: 'E4' });
     elements.push({ tipo: 'alumno', x: 80, y: 44, color: '#9333ea' });
 
-    // Flechas de rotación
     elements.push({ tipo: 'flecha', x: 22, y: 40, x2: 32, y2: 40, curva: 'recta', color: '#0f766e' });
     elements.push({ tipo: 'flecha', x: 45, y: 40, x2: 55, y2: 40, curva: 'recta', color: '#0f766e' });
     elements.push({ tipo: 'flecha', x: 67, y: 40, x2: 75, y2: 40, curva: 'recta', color: '#0f766e' });
     return elements;
   }
 
-  // 8. RONDO / CÍRCULO COLECTIVO
-  if (isRondo) {
-    elements.push(
-      { tipo: 'alumno', x: 16, y: 55, color: '#ea580c' },
-      { tipo: 'alumno', x: 30, y: 72, color: '#9333ea' },
-      { tipo: 'alumno', x: 50, y: 36, color: '#0284c7' },
-      { tipo: 'alumno', x: 70, y: 72, color: '#b91c1c' },
-      { tipo: 'alumno', x: 84, y: 55, color: '#16a34a' }
-    );
-    if (hasBalon) {
-      elements.push({ tipo: 'balon', x: 44, y: 54 });
-      elements.push({ tipo: 'flecha', x: 32, y: 64, x2: 66, y2: 64, curva: 'arriba', color: '#0284c7' });
-    }
+  // 9. TRANSPORTE DE MATERIAL
+  if (isTransporte) {
+    elements.push({ tipo: 'cono', x: 10, y: 36, label: 'Inicio' });
+    elements.push({ tipo: 'colchoneta', x: 12, y: 64 });
+    elements.push({ tipo: 'alumno', x: 36, y: 55, color: '#0284c7' });
+    elements.push({ tipo: 'alumno', x: 48, y: 55, color: '#0284c7' });
+    elements.push({ tipo: 'balon', x: 42, y: 56 });
+    elements.push({ tipo: 'flecha', x: 50, y: 52, x2: 76, y2: 52, curva: 'recta', color: '#0f766e' });
+    elements.push({ tipo: 'aro', x: 82, y: 58, color: '#ea580c' });
+    elements.push({ tipo: 'cono', x: 88, y: 38, label: 'Meta' });
     return elements;
   }
 
-  // 9. PUENTE DE AROS / CIRCUITO CON AROS
-  if (isAros) {
-    elements.push({ tipo: 'alumno', x: 10, y: 72, color: '#b91c1c' });
-    elements.push({ tipo: 'flecha', x: 12, y: 55, x2: 88, y2: 48, curva: 'arriba', color: '#9333ea' });
-
-    if (/banco|colchoneta/i.test(combined)) {
-      elements.push({ tipo: 'banco', x: 32, y: 56 });
-      elements.push({ tipo: 'colchoneta', x: 56, y: 56 });
-      elements.push({ tipo: 'aro', x: 80, y: 54, color: '#ea580c' });
-    } else {
-      elements.push({ tipo: 'aro', x: 34, y: 58, color: '#dc2626' });
-      elements.push({ tipo: 'aro', x: 54, y: 58, color: '#2563eb' });
-      elements.push({ tipo: 'aro', x: 74, y: 58, color: '#eab308' });
-      if (hasConos) {
-        elements.push({ tipo: 'cono', x: 88, y: 62 });
-      }
-    }
-    return elements;
-  }
-
-  // 10. FILAS O RELEVOS (Alumnos alineados esperando relevo y alumno corriendo hacia cono)
-  if (isFilas) {
-    // Alumno en acción + compañeros esperando en fila detrás
-    elements.push({ tipo: 'alumno', x: 18, y: 65, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 11, y: 65, color: '#0284c7' });
-    elements.push({ tipo: 'alumno', x: 5, y: 65, color: '#0284c7' });
-
-    elements.push({ tipo: 'flecha', x: 21, y: 52, x2: 86, y2: 50, curva: 'arriba', color: '#0f766e' });
-
-    if (hasConos) {
-      elements.push({ tipo: 'cono', x: 40, y: 60, label: '1' });
-      elements.push({ tipo: 'cono', x: 60, y: 60, label: '2' });
-      elements.push({ tipo: 'cono', x: 80, y: 60, label: '3' });
-    } else {
-      elements.push({ tipo: 'cono', x: 86, y: 62, label: 'Meta' });
-    }
-
-    if (hasBalon) {
-      elements.push({ tipo: 'balon', x: 23, y: 68 });
-    }
-    return elements;
-  }
-
-  // 11. PORTERÍA O LANZAMIENTO A META
+  // 10. PORTERÍA O META
   if (isPorteria) {
     elements.push({ tipo: 'alumno', x: 15, y: 58, color: '#0284c7' });
     elements.push({ tipo: 'alumno', x: 28, y: 72, color: '#0284c7' });
@@ -408,27 +386,23 @@ export function buildCustomVisualElementsForGame(text = '', title = ''): Tactica
     return elements;
   }
 
-  // 12. SLALOM O CONOS NUMERADOS
+  // 11. SLALOM O CONOS
   if (isSlalom || hasConos) {
     elements.push({ tipo: 'alumno', x: 12, y: 72, color: '#b91c1c' });
     elements.push({ tipo: 'flecha', x: 14, y: 55, x2: 86, y2: 45, curva: 'arriba', color: '#0f766e' });
     elements.push({ tipo: 'cono', x: 38, y: 60, label: '1' });
     elements.push({ tipo: 'cono', x: 56, y: 60, label: '2' });
     elements.push({ tipo: 'cono', x: 74, y: 60, label: '3' });
-    if (hasBalon) {
-      elements.push({ tipo: 'balon', x: 17, y: 72 });
-    }
+    if (hasBalon) elements.push({ tipo: 'balon', x: 17, y: 72 });
     return elements;
   }
 
-  // 13. CASO GENERAL CONTEXTUALIZADO
+  // 12. CASO GENERAL CONTEXTUALIZADO
   elements.push({ tipo: 'alumno', x: 16, y: 60, color: '#0284c7' });
   elements.push({ tipo: 'flecha', x: 20, y: 52, x2: 80, y2: 52, curva: 'arriba', color: '#0f766e' });
   elements.push({ tipo: 'cono', x: 50, y: 56, label: '1' });
   elements.push({ tipo: 'alumno', x: 84, y: 60, color: '#b91c1c' });
-  if (hasBalon) {
-    elements.push({ tipo: 'balon', x: 22, y: 62 });
-  }
+  if (hasBalon) elements.push({ tipo: 'balon', x: 22, y: 62 });
 
   return elements;
 }
@@ -446,21 +420,29 @@ export function getTacticalPitchHtml(
   const width = 500;
   const height = 74;
 
-  // Si la actividad trae coordenadas específicas de la IA, úsalas; si no, analiza el texto del juego
-  const rawElements: TacticalPitchElement[] = (esquemaTactico?.elementos && esquemaTactico.elementos.length > 0)
+  // Analizar semánticamente el texto del juego para garantizar que refleje
+  // con total exactitud parejas de niños, aros, conos, balones y formaciones.
+  const semanticElements = buildCustomVisualElementsForGame(gameDescription || title, title);
+
+  // Si la IA generó la plantilla genérica repetitiva (A1, A2, Defensa, Pase), ignorarla y usar los elementos semánticos precisos
+  const isGenericTemplate = esquemaTactico?.elementos && (
+    esquemaTactico.elementos.some(e => e.label === 'A1' || e.label === 'A2' || e.label === 'Defensa' || e.label === 'Pase')
+  );
+
+  const rawElements: TacticalPitchElement[] = (!isGenericTemplate && esquemaTactico?.elementos && esquemaTactico.elementos.length >= 3)
     ? esquemaTactico.elementos
-    : buildCustomVisualElementsForGame(gameDescription, title);
+    : semanticElements;
 
   const fullText = `${title} ${gameDescription || ''}`.toLowerCase();
 
   // Color de borde de pista y fondo adaptativo según la temática
-  let borderColor = '#99f6e4'; // verde menta suave (imágenes 2 y 3)
+  let borderColor = '#99f6e4'; // verde menta suave
   let bgColor = '#f0fdfa';
   if (/rondo|c[ií]rculo|corro/i.test(fullText)) {
     borderColor = '#a7f3d0';
     bgColor = '#f0fdf4';
   } else if (/aro|puente|violeta|morad|acrosport|salto/i.test(fullText)) {
-    borderColor = '#ddd6fe'; // lila suave (imagen 4)
+    borderColor = '#ddd6fe'; // lila suave
     bgColor = '#faf5ff';
   }
 
@@ -471,13 +453,30 @@ export function getTacticalPitchHtml(
     svgElementsHtml += `<line x1="${width / 2}" y1="5" x2="${width / 2}" y2="${height - 5}" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,3" />`;
   }
 
-  // Si es un rondo, dibujar el círculo interior elíptico en el centro (como en tu imagen 3)
+  // Si es un rondo, dibujar el círculo interior elíptico en el centro
   if (/rondo|c[ií]rculo|corro/i.test(fullText)) {
     svgElementsHtml += `<ellipse cx="${width / 2}" cy="${height / 2}" rx="85" ry="13" fill="none" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,4" />`;
   }
 
+  // Ordenar para que el material de suelo (aros, colchonetas, bancos) quede dibujado bajo los niños
+  const sortOrder: Record<string, number> = {
+    colchoneta: 1,
+    banco: 2,
+    aro: 3,
+    cono: 4,
+    porteria: 5,
+    flecha: 6,
+    balon: 7,
+    alumno: 8,
+    jugador_azul: 8,
+    jugador_rojo: 8,
+    portero: 8,
+  };
+
+  const sortedElements = [...rawElements].sort((a, b) => (sortOrder[a.tipo] || 5) - (sortOrder[b.tipo] || 5));
+
   // Renderizar cada elemento en sus coordenadas relativas
-  for (const el of rawElements) {
+  for (const el of sortedElements) {
     const cx = (el.x / 100) * width;
     const cy = (el.y / 100) * height;
 
@@ -517,6 +516,7 @@ export function getTacticalPitchHtml(
     </div>
   `;
 }
+
 
 /**
  * Alias de compatibilidad
