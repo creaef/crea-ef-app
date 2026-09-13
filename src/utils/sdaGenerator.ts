@@ -77,10 +77,12 @@ export function generarSesionesAuto(
     const materialesSet = new Set<string>();
 
     if (modeloEstructura === 'Modelo 1: Tradicional') {
-      // 3 fases: Animación (10m), Principal (40m), Vuelta a la Calma (10m)
+      // 6 fases: Animación (10m), Principal Reto 1 (10m), Principal Reto 2 (10m), Principal Reto 3 (10m), Principal Reto 4 (10m), Vuelta a la Calma (10m)
       const juegoIni = iniciales[(i - 1) % (iniciales.length || 1)] || actividadesDisponibles[0];
-      const juegoPrin1 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[1] || juegoIni;
-      const juegoPrin2 = principales[i % (principales.length || 1)] || actividadesDisponibles[2] || juegoPrin1;
+      const p1 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[1] || juegoIni;
+      const p2 = principales[i % (principales.length || 1)] || actividadesDisponibles[2] || p1;
+      const p3 = principales[(i + 1) % (principales.length || 1)] || actividadesDisponibles[3 % actividadesDisponibles.length] || p2;
+      const p4 = principales[(i + 2) % (principales.length || 1)] || actividadesDisponibles[4 % actividadesDisponibles.length] || p3;
       const juegoCalma = calmas[(i - 1) % (calmas.length || 1)] || actividadesDisponibles[actividadesDisponibles.length - 1];
 
       fases.push({
@@ -94,26 +96,44 @@ export function generarSesionesAuto(
       });
 
       fases.push({
-        fase: 'Parte Principal (Módulo 1)',
-        duracionMin: 20,
-        juegoId: juegoPrin1.id,
-        nombreJuego: juegoPrin1.nombre,
-        descripcion: juegoPrin1.descripcion,
-        materiales: juegoPrin1.materiales,
-        adaptacionDUA: juegoPrin1.atencionDiversidad,
+        fase: 'Parte Principal / Reto Motriz 1',
+        duracionMin: 10,
+        juegoId: p1.id,
+        nombreJuego: p1.nombre,
+        descripcion: p1.descripcion,
+        materiales: p1.materiales,
+        adaptacionDUA: p1.atencionDiversidad,
       });
 
-      if (juegoPrin2 && juegoPrin2.id !== juegoPrin1.id) {
-        fases.push({
-          fase: 'Parte Principal (Módulo 2)',
-          duracionMin: 20,
-          juegoId: juegoPrin2.id,
-          nombreJuego: juegoPrin2.nombre,
-          descripcion: juegoPrin2.descripcion,
-          materiales: juegoPrin2.materiales,
-          adaptacionDUA: juegoPrin2.atencionDiversidad,
-        });
-      }
+      fases.push({
+        fase: 'Parte Principal / Reto Motriz 2',
+        duracionMin: 10,
+        juegoId: p2.id,
+        nombreJuego: p2.nombre,
+        descripcion: p2.descripcion,
+        materiales: p2.materiales,
+        adaptacionDUA: p2.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Reto Motriz 3',
+        duracionMin: 10,
+        juegoId: p3.id,
+        nombreJuego: p3.nombre,
+        descripcion: p3.descripcion,
+        materiales: p3.materiales,
+        adaptacionDUA: p3.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Reto Motriz 4',
+        duracionMin: 10,
+        juegoId: p4.id,
+        nombreJuego: p4.nombre,
+        descripcion: p4.descripcion,
+        materiales: p4.materiales,
+        adaptacionDUA: p4.atencionDiversidad,
+      });
 
       fases.push({
         fase: 'Vuelta a la Calma',
@@ -125,11 +145,13 @@ export function generarSesionesAuto(
         adaptacionDUA: juegoCalma.atencionDiversidad,
       });
     } else if (modeloEstructura === 'Modelo 2: Competencial') {
-      // 4 fases: Activación y Conexión (10m), Exploración (15m), Estructuración (15m), Aplicación y Reflexión (20m)
+      // 6 fases: Activación (10m), Exploración 1 (10m), Exploración 2 (10m), Estructuración (10m), Aplicación (10m), Reflexión (10m)
       const juego1 = iniciales[(i - 1) % (iniciales.length || 1)] || actividadesDisponibles[0];
-      const juego2 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[1] || juego1;
-      const juego3 = principales[i % (principales.length || 1)] || actividadesDisponibles[2] || juego2;
-      const juego4 = calmas[(i - 1) % (calmas.length || 1)] || actividadesDisponibles[actividadesDisponibles.length - 1];
+      const p1 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[1] || juego1;
+      const p2 = principales[i % (principales.length || 1)] || actividadesDisponibles[2] || p1;
+      const p3 = principales[(i + 1) % (principales.length || 1)] || actividadesDisponibles[3 % actividadesDisponibles.length] || p2;
+      const p4 = principales[(i + 2) % (principales.length || 1)] || actividadesDisponibles[4 % actividadesDisponibles.length] || p3;
+      const juegoCalma = calmas[(i - 1) % (calmas.length || 1)] || actividadesDisponibles[actividadesDisponibles.length - 1];
 
       fases.push({
         fase: 'Activación y Conexión',
@@ -142,57 +164,109 @@ export function generarSesionesAuto(
       });
 
       fases.push({
-        fase: 'Exploración Divergente',
-        duracionMin: 15,
-        juegoId: juego2.id,
-        nombreJuego: juego2.nombre,
-        descripcion: `Ensayo y error en grupos para resolver la tarea propuesta: ${juego2.descripcion}`,
-        materiales: juego2.materiales,
-        adaptacionDUA: juego2.atencionDiversidad,
+        fase: 'Parte Principal / Exploración 1',
+        duracionMin: 10,
+        juegoId: p1.id,
+        nombreJuego: p1.nombre,
+        descripcion: `Ensayo y error en grupos para resolver la tarea motriz propuesta: ${p1.descripcion}`,
+        materiales: p1.materiales,
+        adaptacionDUA: p1.atencionDiversidad,
       });
 
       fases.push({
-        fase: 'Estructuración y Ajuste Táctico',
-        duracionMin: 15,
-        juegoId: juego3.id,
-        nombreJuego: `Puesta a punto: ${juego3.nombre}`,
-        descripcion: `Sistematización de los aprendizajes, aclaración de patrones técnicos y normas de seguridad: ${juego3.descripcion}`,
-        materiales: juego3.materiales,
-        adaptacionDUA: juego3.atencionDiversidad,
+        fase: 'Parte Principal / Exploración 2',
+        duracionMin: 10,
+        juegoId: p2.id,
+        nombreJuego: p2.nombre,
+        descripcion: `Progresión de la tarea motriz incorporando oposición/cooperación activa: ${p2.descripcion}`,
+        materiales: p2.materiales,
+        adaptacionDUA: p2.atencionDiversidad,
       });
 
       fases.push({
-        fase: 'Aplicación y Reflexión Formativa',
-        duracionMin: 20,
-        juegoId: juego4.id,
-        nombreJuego: juego4.nombre,
-        descripcion: `Puesta en práctica final y autoevaluación formativa: ${juego4.descripcion}`,
-        materiales: juego4.materiales,
-        adaptacionDUA: juego4.atencionDiversidad,
+        fase: 'Parte Principal / Estructuración Táctica',
+        duracionMin: 10,
+        juegoId: p3.id,
+        nombreJuego: `Puesta a punto: ${p3.nombre}`,
+        descripcion: `Sistematización de los aprendizajes y patrones técnicos/tácticos: ${p3.descripcion}`,
+        materiales: p3.materiales,
+        adaptacionDUA: p3.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Aplicación y Desafío',
+        duracionMin: 10,
+        juegoId: p4.id,
+        nombreJuego: `Desafío Aplicado: ${p4.nombre}`,
+        descripcion: `Puesta en práctica final en situación real inclusiva: ${p4.descripcion}`,
+        materiales: p4.materiales,
+        adaptacionDUA: p4.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Vuelta a la Calma / Reflexión Formativa',
+        duracionMin: 10,
+        juegoId: juegoCalma.id,
+        nombreJuego: juegoCalma.nombre,
+        descripcion: `Puesta en común, autorregulación y feedback formativo: ${juegoCalma.descripcion}`,
+        materiales: juegoCalma.materiales,
+        adaptacionDUA: juegoCalma.atencionDiversidad,
       });
     } else {
-      // Modelo 3: Metodologías Activas (Planificación 10m, Ejecución en Postas/Reto 40m, Puesta en común 10m)
-      const juegoPrin1 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[0];
-      const juegoPrin2 = principales[i % (principales.length || 1)] || actividadesDisponibles[1] || juegoPrin1;
-      const juegoCalma = calmas[(i - 1) % (calmas.length || 1)] || actividadesDisponibles[2];
+      // Modelo 3: Metodologías Activas (Planificación 10m, 4 Estaciones/Postas de 10m c/u, Evaluación 10m)
+      const p1 = principales[(i - 1) % (principales.length || 1)] || actividadesDisponibles[0];
+      const p2 = principales[i % (principales.length || 1)] || actividadesDisponibles[1] || p1;
+      const p3 = principales[(i + 1) % (principales.length || 1)] || actividadesDisponibles[2 % actividadesDisponibles.length] || p2;
+      const p4 = principales[(i + 2) % (principales.length || 1)] || actividadesDisponibles[3 % actividadesDisponibles.length] || p3;
+      const juegoCalma = calmas[(i - 1) % (calmas.length || 1)] || actividadesDisponibles[actividadesDisponibles.length - 1];
 
       fases.push({
         fase: 'Planificación / Asamblea Inicial',
         duracionMin: 10,
         nombreJuego: `Asamblea de Roles y Presentación de Misiones (Sesión ${i})`,
         descripcion:
-          'Explicación del reto o estaciones de trabajo en el patio, reparto de roles (capitán, encargado de material, observador de Fair Play) y consenso de normas.',
+          'Explicación del reto de estaciones de trabajo en el patio, reparto de roles rotativos (capitán, material, observador) y consenso de normas.',
         materiales: ['Pizarra táctica', 'Petos de roles'],
       });
 
       fases.push({
-        fase: 'Ejecución / Rotación Activa por Postas',
-        duracionMin: 40,
-        juegoId: juegoPrin1.id,
-        nombreJuego: `Estaciones de Trabajo: ${juegoPrin1.nombre} & ${juegoPrin2.nombre}`,
-        descripcion: `Desarrollo de los retos centrales en pequeños grupos heterogéneos: 1) ${juegoPrin1.descripcion} 2) ${juegoPrin2.descripcion}`,
-        materiales: [...juegoPrin1.materiales, ...juegoPrin2.materiales],
-        adaptacionDUA: juegoPrin1.atencionDiversidad,
+        fase: 'Parte Principal / Estación 1',
+        duracionMin: 10,
+        juegoId: p1.id,
+        nombreJuego: `Estación 1: ${p1.nombre}`,
+        descripcion: `Reto motriz en la posta 1: ${p1.descripcion}`,
+        materiales: p1.materiales,
+        adaptacionDUA: p1.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Estación 2',
+        duracionMin: 10,
+        juegoId: p2.id,
+        nombreJuego: `Estación 2: ${p2.nombre}`,
+        descripcion: `Reto motriz en la posta 2: ${p2.descripcion}`,
+        materiales: p2.materiales,
+        adaptacionDUA: p2.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Estación 3',
+        duracionMin: 10,
+        juegoId: p3.id,
+        nombreJuego: `Estación 3: ${p3.nombre}`,
+        descripcion: `Reto motriz en la posta 3: ${p3.descripcion}`,
+        materiales: p3.materiales,
+        adaptacionDUA: p3.atencionDiversidad,
+      });
+
+      fases.push({
+        fase: 'Parte Principal / Estación 4',
+        duracionMin: 10,
+        juegoId: p4.id,
+        nombreJuego: `Estación 4: ${p4.nombre}`,
+        descripcion: `Reto motriz en la posta 4: ${p4.descripcion}`,
+        materiales: p4.materiales,
+        adaptacionDUA: p4.atencionDiversidad,
       });
 
       fases.push({

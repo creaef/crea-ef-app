@@ -227,13 +227,22 @@ function safeParseAIJson<T = any>(text: string | undefined | null, defaultValue:
   } catch (err) {
     console.warn('[safeParseAIJson] Primary JSON parse failed, attempting sanitization...', err);
     try {
-      const sanitized = cleaned
+      let sanitized = cleaned
         .replace(/,\s*([\}\]])/g, '$1')
+        .replace(/\\([^"\\\/bfnrtu])/g, '$1')
         .replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => (c === '\n' || c === '\r' || c === '\t' ? c : ''));
       return JSON.parse(sanitized);
     } catch (e2) {
-      console.error('[safeParseAIJson] Failed to parse JSON response:', e2, '\nLength:', text.length);
-      return defaultValue;
+      try {
+        // Segundo intento de reparación: escapar barras invertidas sueltas
+        let aggressive = cleaned
+          .replace(/\\/g, '/')
+          .replace(/,\s*([\}\]])/g, '$1');
+        return JSON.parse(aggressive);
+      } catch (e3) {
+        console.error('[safeParseAIJson] Failed to parse JSON response:', e2, '\nLength:', text.length);
+        return defaultValue;
+      }
     }
   }
 }
@@ -722,7 +731,7 @@ app.post('/api/ai/generate-final-challenge', async (req, res) => {
         }).join(' | ')
       : '');
 
-    // Prompt optimizado, directo y ágil para respuesta inmediata (menos de 2 segundos)
+    // Prompt optimizado, directo y estructurado
     const prompt = `Actúa como docente de Educación Física y diseña un Desafío Motor o Producto Final muy original, tangible y motivador para culminar esta SdA:
 Título: "${titulo || 'SdA Educación Física'}"
 Curso: ${curso || 'Educación Primaria'} (${etapa || 'Primaria'})
@@ -730,15 +739,18 @@ Temática: ${tematica || 'Habilidades y Juegos Motores'}
 Metodología: ${metodologia || 'Metodología Activa y Cooperativa'}
 ${sesionesContexto ? `Juegos y dinámicas clave de las sesiones: "${sesionesContexto}"` : ''}
 
-CRITERIOS:
-1. Elige una modalidad de culminación atractiva y específica para la temática (ej: "Torneo de Retos Cooperativos con tarjetas Fair Play", "Gymkana de Misiones Motrices Gamificadas", "Escape Room Motor Colaborativo", "Festival / Muestra Expresiva Coeducativa", "Circuito de Estaciones Motrices Inclusivas").
-2. Evita fórmulas trilladas o genéricas. Debe sonar como una propuesta real y emocionante para el alumnado.
-3. Extensión: entre 60 y 90 palabras, directo al grano y redactado en tono docente motivador.
+CRITERIOS PEDAGÓGICOS OBLIGATORIOS:
+1. Modalidad de culminación atractiva y específica para la temática (ej: "Torneo de Retos Cooperativos con tarjetas Fair Play", "Gymkana de Misiones Motrices Gamificadas", "Escape Room Motor Colaborativo", "Festival / Muestra Expresiva Coeducativa", "Circuito de Estaciones Motrices Inclusivas").
+2. DESGLOSE EXHAUSTIVO Y REDACCIÓN COMPLETA (PROHIBIDO DEJAR ELEMENTOS EN BLANCO):
+   - Si en el reto final se menciona algún elemento como "Decálogo de normas", "Tarjetas de retos", "Pautas de convivencia", "Código de Fair Play" o "Hoja de autoevaluación", la IA DEBE REDACTAR EXPLÍCITAMENTE EL CONTENIDO COMPLETO (por ejemplo, enumerar y redactar las 10 normas concretas del decálogo punto por punto, no solo decir "se elaborará un decálogo").
+3. REPRESENTACIONES GRÁFICAS Y FIGURAS VISUALES:
+   - Si la temática o el reto habla de figuras corporales (ej. figuras o pirámides de Acrosport, coreografías de expresión corporal, formaciones grupales o circuitos espaciales), DEBEN APARECER DETALLADAS con su descripción visual de distribución (estructura de bases/portores, ágiles, apoyos seguros en escápulas y pelvis, y colocación en pista).
+4. Redacción motivante, estructurada y aplicable directamente por el docente en el centro escolar (entre 90 y 160 palabras bien aprovechadas).
 
 Devuelve estrictamente un JSON con este formato:
 {
   "tituloReto": "Nombre breve y atractivo del Reto",
-  "descripcionReto": "Descripción de la actividad culminante integrando los aprendizajes."
+  "descripcionReto": "Descripción completa de la actividad culminante integrando las normas redactadas o figuras descritas."
 }`;
 
     let data: any = {};
@@ -821,18 +833,19 @@ ${driveDocumentationText.slice(0, 45000)}
 ---
 
 REGLAS OBLIGATORIAS DE LECTURA, BÚSQUEDA Y CUMPLIMENTACIÓN:
-1. BÚSQUEDA Y SELECCIÓN INTELIGENTE: Examina minuciosamente todo el texto adjunto arriba. Si el docente ha adjuntado un Banco de Juegos o documentos con fichas de juegos, busca aquellos juegos que mejor se adapten a la temática ("${tematica}"), a la edad y al ciclo (${curso} - ${ciclo}).
-2. JUEGOS SELECCIONADOS MANUALMENTE O DESDE BANCO: Si hay juegos explícitamente nombrados o importados desde el Banco de Juegos en el texto, INCORPÓRALOS OBLIGATORIAMENTE con su nombre exacto y utiliza el texto explicativo de su descripción real que aparece tras el nombre del juego en el documento.
-3. DESGLOSE CONCISO EN 5 APARTADOS OBLIGATORIOS: Para cada juego extraído del documento/banco, sintetiza su explicación en 5 apartados breves, directos y operativos (entre 70 y 110 palabras por juego, eliminando textos tediosos o redundantes):
+1. BÚSQUEDA Y SELECCIÓN INTELIGENTE (FILTRADO POR EDAD): Examina minuciosamente todo el texto adjunto arriba. Si el docente ha adjuntado un Banco de Juegos o documentos con fichas de juegos, busca y SELECCIONA ÚNICAMENTE aquellos juegos que mejor se adapten a la temática ("${tematica}"), a la edad y al ciclo (${curso} - ${ciclo}), descartando los que no encajen.
+2. REGLA DE JUEGO ÚNICO E INDIVIDUAL (PROHIBIDO UNIR DOS JUEGOS EN UNO): Cada fase/actividad contiene EXACTAMENTE UN SOLO JUEGO individual. Si en los documentos hay 15 o 20 juegos, NO intentes meterlos todos. Selecciona sólo los necesarios. ESTÁ TERMINANTEMENTE PROHIBIDO unir dos juegos con la conjunción "y" (ej. Prohibido "Juego A y Juego B").
+3. JUEGOS SELECCIONADOS MANUALMENTE O DESDE BANCO: Si hay juegos explícitamente nombrados o importados desde el Banco de Juegos en el texto, INCORPÓRALOS con su nombre exacto y utiliza el texto explicativo de su descripción real que aparece tras el nombre del juego en el documento.
+4. DESGLOSE CONCISO EN 5 APARTADOS OBLIGATORIOS: Para cada juego extraído del documento/banco, sintetiza su explicación en 5 apartados breves, directos y operativos (entre 70 y 110 palabras por juego, eliminando textos tediosos o redundantes):
    - Terreno de juego: Dónde se juega con medida aproximada (ej. Media pista polideportiva, 20x15m delimitada con conos).
    - Roles: Roles activos del alumnado (ej. 4 cazadores con peto y fugitivos). Obviar la posición del docente y las rotaciones DUA.
-   - Desarrollo del juego: Explicación concisa y directa de cómo se juega (dinámica motriz principal).
+   - Desarrollo del juego: Explicación concisa y directa de cómo se juega (dinámica motriz principal única).
    - Normas: Normas claras y directas en viñetas (faltas, puntuación y objetivo motor).
    - Variaciones: 1 o 2 variantes rápidas para aumentar/disminuir dificultad o dinamizar.
-4. SI EL TEXTO DEL DOCUMENTO ES SINTÉTICO O BREVE: Completa y redacta pedagógicamente la mecánica de juego de forma transparente para que quede 100% explicada para el docente en clase.
-5. REGISTRO DE FUENTES: En la lista "fuentesUtilizadas", incluye los nombres exactos de los archivos Word, PDF, carpetas de Drive o Excel de donde extrajiste la información (indicados en '--- ARCHIVO / FUENTE: ... ---' o '--- ARCHIVO LOCAL ADJUNTO: ... ---').`;
+5. SI EL TEXTO DEL DOCUMENTO ES SINTÉTICO O BREVE: Completa y redacta pedagógicamente la mecánica de juego de forma transparente para que quede 100% explicada para el docente en clase.
+6. REGISTRO DE FUENTES: En la lista "fuentesUtilizadas", incluye los nombres exactos de los archivos Word, PDF, carpetas de Drive o Excel de donde extrajiste la información (indicados en '--- ARCHIVO / FUENTE: ... ---' o '--- ARCHIVO LOCAL ADJUNTO: ... ---').`;
     } else {
-      documentationInstruction = `Genera actividades y juegos originales, altamente pedagógicos e innovadores para Educación Física, acordes a la temática "${tematica}" y nivel ${curso} (${ciclo}). Cada juego debe incluir su desarrollo conciso y directo estructurado con los 5 apartados obligatorios (Terreno de juego, Roles, Desarrollo del juego, Normas, Variaciones).`;
+      documentationInstruction = `Genera actividades y juegos individuales originales, altamente pedagógicos e innovadores para Educación Física, acordes a la temática "${tematica}" y nivel ${curso} (${ciclo}). Cada juego debe ser ÚNICO por actividad e incluir su desarrollo conciso estructurado con los 5 apartados obligatorios (Terreno de juego, Roles, Desarrollo del juego, Normas, Variaciones).`;
     }
 
     const prompt = `Diseña una secuencia didáctica completa de EXACTAMENTE ${numSesiones} SESIONES de Educación Física (60 minutos cada una).
@@ -847,46 +860,47 @@ INSTRUCCIÓN MANDATORIA Y CRÍTICA PARA CADA UNA DE LAS SESIONES (DESDE LA SESI�
 Debes generar un array "sesiones" con EXACTAMENTE ${numSesiones} OBJETOS DE SESIÓN (desde numeroSesion 1 hasta numeroSesion ${numSesiones}). NINGUNA SESIÓN PUEDE SER ABREVIADA O RESUMIDA.
 
 ¡REGLAS INDISPENSABLES DE CONTENIDO Y ESTRUCTURA DE JUEGOS!:
-1. PROHIBICIÓN ABSOLUTA DE JUEGOS REPETIDOS EN LA MISMA SESIÓN: Dentro de una misma sesión (los 4 juegos de la Parte Principal), NUNCA repitas el mismo juego ni el mismo nombre. Cada una de las 4 actividades de la Parte Principal debe tener un nombre original distinto y una dinámica motriz completamente diferente.
-2. BÚSQUEDA Y EXTRACCIÓN PRIORITARIA EN DOCUMENTOS COMPARTIDOS (EXCEL / DRIVE): Analiza con prioridad absoluta el banco de recursos en Excel y documentos de Google Drive compartidos por el docente. Si no alcanzan para cubrir todas las actividades de las ${numSesiones} sesiones, completa los juegos restantes con actividades de EF originales, coherentes y adaptadas al nivel ${curso}.
-3. ADECUACIÓN ESTRICTA A LA EDAD Y NIVEL COGNITIVO/MOTRIZ: Es OBLIGATORIO que TODOS los juegos seleccionados o inventados sean estrictamente adecuados para la edad, curso y nivel madurativo del alumnado (${curso} - ${ciclo}). Si un juego del banco de recursos es demasiado complejo, infantil o peligroso para su edad, ADÁPTALO obligatoriamente simplificando/complicando sus reglas, o DESCÁRTALO y crea uno nuevo adecuado. Nunca incluyas actividades complejas de secundaria para infantil/primer ciclo, ni juegos infantiles para cursos altos.
-4. EXPLICACIONES REALES Y ESPECÍFICAS (PROHIBIDO TEXTO PLANTILLA GENÉRICO): Queda estrictamente prohibido usar frases genéricas o copiadas de plantilla como "El juego inicia con la señal sonora del docente...". CADA JUEGO DEBE EXPLICAR DETALLADAMENTE CÓMO SE JUEGA REALMENTE (reglas concretas, forma de puntuar, normas tácticas y objetivo motor).
+1. REGLA ESTRICTA DE JUEGO ÚNICO E INDIVIDUAL POR FASE (PROHIBICIÓN TERMINANTE DE JUEGOS FUSIONADOS O COMPUESTOS):
+- Cada fase/actividad de la sesión debe contener EXACTAMENTE UN ÚNICO JUEGO individual.
+- PROHIBICIÓN ABSOLUTA DE TÍTULOS COMPUESTOS O DOBLES: Está terminantemente prohibido unir dos juegos con la conjunción "y", con barras "/" o con guiones "-" (ejemplos totalmente prohibidos: "Espejos y el Lazarillo", "Las Olas y Coyote y Correcaminos", "La Araña y Cuatro Esquinas", "Tren Ciego y Letras y Números"). Cada juego es una entidad única con un solo nombre y una sola dinámica motriz.
+- FILTRADO Y SELECCIÓN INTELIGENTE POR EDAD (${curso}): Si los documentos del docente contienen un banco con muchos juegos (ej. 10, 15 o más), la IA DEBE FILTRAR Y ELEGIR ÚNICAMENTE los juegos individuales que mejor se adapten al curso y desarrollo motor de ${curso} (${ciclo}), descartando los restantes. NUNCA agrupes dos juegos en una ficha para intentar meterlos todos. Si la parte principal tiene 3 o 4 juegos, debe haber 3 o 4 juegos individuales independientes, jamás 6 u 8 embutidos de dos en dos.
+2. PRIORIDAD 1 A DOCUMENTOS DEL DOCENTE (DOCUMENT-FIRST): Examina todo el texto de documentos adjuntos (PDF, Word, Excel, Google Drive). Si hay fichas o listas de juegos, INCORPÓRALOS OBLIGATORIAMENTE en las primeras posiciones de las sesiones manteniendo su nombre exacto y dinámica real (siempre como un solo juego individual por fase). Para cada fase incluye un campo "origen": "documento" si proviene de los archivos aportados, o "origen": "ia" si fue propuesto complementariamente por la IA.
+3. ADECUACIÓN ESTRICTA A LA EDAD Y NIVEL COGNITIVO/MOTRIZ: Todos los juegos deben ser estrictamente acordes a ${curso} (${ciclo}). Nunca propongas juegos de secundaria en infantil/primer ciclo, ni juegos infantiles en cursos superiores.
+4. EXPLICACIONES OPERATIVAS A PIE DE PISTA ("REGLA DE LOS 15 SEGUNDOS"):
+El docente debe entender el juego en un solo vistazo. Ficha concisa (entre 60 y 90 palabras por juego) desglosada en:
+- Terreno de juego: Espacio y medida aproximada (ej. Media pista polideportiva, 20x15m).
+- Roles: Distribución de los alumnos (ej. 3 cazadores con peto rojo y resto libres).
+- Desarrollo del juego: Dinámica motriz principal directa (2-3 líneas).
+- Normas: 2 viñetas clave (objetivo motor y falta/puntuación).
+- Variaciones: 1 variante rápida de progresión de dificultad.
 
-FORMATO CONCISO Y SINTETIZADO POR JUEGO (entre 70 y 110 palabras por juego, directo y operativo a pie de pista):
-Queda terminantemente prohibido meter parrafadas teóricas, rotaciones DUA individuales y medidas de seguridad repetitivas dentro de los juegos. El docente necesita una ficha ágil:
+5. JUEGOS CANTADOS Y CANCIONES POPULARES (LETRA COMPLETA OBLIGATORIA):
+Si el juego es un juego cantado, canción tradicional, danza, corro o juego de comba (especialmente en Infantil y Primaria), es TERMINANTEMENTE OBLIGATORIO incluir la letra completa de la canción dentro del campo "descripcion" con el encabezado:
+🎵 Canción / Letra:
+"Escribe aquí las estrofas completas de la canción tradicional para que el docente pueda cantarla en clase."
 
-Terreno de juego:
-Señala dónde se debe jugar con una medida aproximada (ej. Media pista polideportiva, 20x15m delimitada con conos).
+6. GAMIFICACIÓN MOTRIZ TANGIBLE Y FACTIBLE (ENFOQUE DE PISTA ESCOLAR):
+Si la metodología seleccionada es Gamificación o Aprendizaje Basado en Juegos:
+- PROHIBICIÓN de mecánicas fantasiosas de videojuegos o rol masivo (nada de pociones, barras de maná, 20 cartas por alumno ni apps en pista).
+- UTILIZA dinámicas analógicas reales y viables: narrativa inmersiva breve (1 min inicial de contextualización: detectives, rescate espacial, exploradores), mural/tablero visible en la pared del gimnasio, pasaporte de retos con gomets/sellos, y roles motrices reales (capitán de material, juez de fair-play, cronometrador, estratega).
 
-Roles:
-Señala los roles del alumnado (ej. 4 atacantes con peto amarillo y defensores libres). Obvia la posición del profesorado y las rotaciones DUA individuales.
-
-Desarrollo del juego:
-Explicación concisa y directa del juego y su dinámica motriz (máximo 3-4 líneas).
-
-Normas:
-Normas claras y directas en viñetas (faltas, puntuación y objetivo).
-
-Variaciones:
-1 o 2 variantes rápidas que se pueden realizar en el juego.
+7. DESARROLLO COMPLETO DE CONTENIDOS Y REPRESENTACIONES GRÁFICAS:
+- Si alguna actividad o juego habla de normas o códigos (ej. decálogo de normas), deben redactarse explícitamente.
+- Si una actividad incluye figuras corporales (como figuras o pirámides de Acrosport, danzas o circuitos), describe con precisión la representación gráfica de las posturas (portores, ágiles, apoyos seguros) y acompáñala de su esquema táctico en pista.
 
 PROPUESTA B - COORDENADAS TÁCTICAS LIGERAS (IA TÁCTICA):
-Para cada juego genera OBLIGATORIAMENTE un campo "esquemaTactico" ligero con la distribución en pista:
+Para cada juego genera un campo "esquemaTactico" ligero con la distribución en pista:
 "esquemaTactico": {
   "tipoPista": "pabellon" | "circuito" | "paredon" | "porteria" | "rondo",
-  "descripcionCorta": "Breve frase de la disposición táctica (ej. Dos equipos con zona de pase central)",
+  "descripcionCorta": "Breve frase descriptiva (ej. Dos equipos con zona central de pase)",
   "elementos": [
-    { "tipo": "jugador_azul", "x": 25, "y": 40, "label": "A1" },
-    { "tipo": "jugador_azul", "x": 25, "y": 60, "label": "A2" },
-    { "tipo": "balon", "x": 45, "y": 50, "label": "Pase" },
-    { "tipo": "jugador_rojo", "x": 75, "y": 50, "label": "Defensa" },
-    { "tipo": "cono", "x": 10, "y": 15, "label": "Límite" }
+    { "tipo": "alumno", "x": 20, "y": 55, "color": "#0284c7" },
+    { "tipo": "flecha", "x": 25, "y": 55, "x2": 75, "y2": 55, "curva": "arriba", "color": "#0f766e" },
+    { "tipo": "cono", "x": 50, "y": 65, "label": "1" },
+    { "tipo": "alumno", "x": 80, "y": 55, "color": "#b91c1c" }
   ]
 }
-Tipos de elementos válidos: "jugador_azul", "jugador_rojo", "portero", "cono", "balon", "pica", "diana". Las coordenadas x e y son números porcentuales entre 5 y 95.
-
-HILO NARRATIVO Y GAMIFICACIÓN:
-Integra un hilo narrativo continuo y gamificado que conecte todas las sesiones de principio a fin si la metodología es Gamificación (ej. misiones, niveles, insignias, mapa del tesoro, historia envolvente). Si es otra metodología, contextualiza los retos y juegos en la temática del título y en el Reto/Producto Final.
+Tipos válidos: "alumno", "jugador_azul", "jugador_rojo", "portero", "cono", "balon", "aro", "banco", "colchoneta", "porteria", "flecha". Coordenadas x entre 10 y 90, y entre 28 y 78.
 
 ${
   ((typeof ciclo === 'string' && (ciclo.toLowerCase().includes('tercer') || ciclo.toLowerCase().includes('3º') || ciclo.toLowerCase().includes('secundaria') || ciclo.toLowerCase().includes('eso'))) ||
@@ -896,14 +910,15 @@ Puedes incorporar de forma puntual y motivadora el uso de herramientas digitales
     : `PROHIBICIÓN ESTRICTA DE DISPOSITIVOS DIGITALES (INFANTIL Y 1º-4º DE PRIMARIA):
 ESTÁ TERMINANTEMENTE PROHIBIDO incluir tabletas, teléfonos móviles, lectores de códigos QR, vídeos o pantallas en las actividades o materiales de estas sesiones. El alumnado de Infantil, 1º Ciclo (1º y 2º) y 2º Ciclo (3º y 4º de Primaria) debe realizar práctica motriz 100% viva, analógica y tangible utilizando exclusivamente materiales convencionales de Educación Física (balones, petos, aros, picas, cuerdas, colchonetas, etc.). NUNCA propongas tabletas ni móviles para este curso (${curso}).`
 }
-ESTRUCURA Y FASES DE CADA SESIÓN (60 MINUTOS TOTALES):
-Cada sesión DEBE contener exactamente 6 objetos en la lista "fases" (1 Calentamiento + 4 Juegos en la Parte Principal + 1 Vuelta a la Calma):
-1. Fase 1: "fase": "Calentamiento / Inicio", "duracionMin": 10
-2. Fase 2: "fase": "Parte Principal / Práctica", "duracionMin": 10
-3. Fase 3: "fase": "Parte Principal / Práctica", "duracionMin": 10
-4. Fase 4: "fase": "Parte Principal / Práctica", "duracionMin": 10
-5. Fase 5: "fase": "Parte Principal / Práctica", "duracionMin": 10
-6. Fase 6: "fase": "Vuelta a la Calma / Reflexión", "duracionMin": 10
+
+ESTRUCTURA OBLIGATORIA DE CADA SESIÓN (60 MINUTOS TOTALES, AL MENOS 4 JUEGOS EN LA PARTE PRINCIPAL):
+La Parte Principal (o Exploración / Estaciones) es el bloque más extenso y nuclear de la sesión (40 minutos) y DEBE CONTENER OBLIGATORIAMENTE AL MENOS 4 JUEGOS INDIVIDUALES Y DIFERENTES (10 minutos por juego):
+1. Fase 1: "fase": "Calentamiento / Activación Dinámica", "duracionMin": 10 (1 juego motivante de animación)
+2. Fase 2: "fase": "Parte Principal / Reto Motriz 1", "duracionMin": 10 (Juego 1 individual: familiarización y técnica)
+3. Fase 3: "fase": "Parte Principal / Reto Motriz 2", "duracionMin": 10 (Juego 2 individual: progresión y oposición/cooperación)
+4. Fase 4: "fase": "Parte Principal / Reto Motriz 3", "duracionMin": 10 (Juego 3 individual: desafío táctico cooperativo)
+5. Fase 5: "fase": "Parte Principal / Reto Motriz 4 (o Aplicación / Torneo)", "duracionMin": 10 (Juego 4 individual: situación real de juego o competición inclusiva)
+6. Fase 6: "fase": "Vuelta a la Calma / Reflexión y Hábitos", "duracionMin": 10 (Juego sensorial, calma o puesta en común)
 
 INSTRUCCIÓN MANDATORIA DE PORCENTAJES Y FUENTES:
 - Si NO se han adjuntado documentos de Drive ni archivos Excel en el prompt (o no hay contenido previo del usuario):
@@ -927,40 +942,104 @@ Devuelve una respuesta JSON estricta con este formato:
       "materialesTotales": ["Conos", "Pelotas", "Petos"],
       "fases": [
         {
-          "fase": "Calentamiento / Inicio",
+          "fase": "Calentamiento / Activación Dinámica",
           "duracionMin": 10,
           "nombreJuego": "Activación Inicial",
+          "origen": "documento",
           "descripcion": "Terreno de juego:\nEspacio delimitado de 15x15m con conos.\n\nRoles:\nParejas colaborativas libres en pista.\n\nDesarrollo del juego:\nDesplazamientos continuos realizando cambios de ritmo y movilidad articular imitando figuras motrices.\n\nNormas:\n- Respetar el espacio personal de los compañeros.\n- Reaccionar rápidamente al cambio de consigna.\n\nVariaciones:\n- Cambiar de pareja a la señal sonora.",
           "materiales": ["Conos"],
           "esquemaTactico": {
             "tipoPista": "pabellon",
             "descripcionCorta": "Desplazamientos y parejas",
             "elementos": [
-              { "tipo": "alumno", "x": 15, "y": 60, "color": "#0284c7" },
-              { "tipo": "flecha", "x": 20, "y": 55, "x2": 80, "y2": 50, "curva": "arriba", "color": "#0f766e" },
-              { "tipo": "cono", "x": 40, "y": 65, "label": "1" },
-              { "tipo": "cono", "x": 60, "y": 65, "label": "2" },
-              { "tipo": "alumno", "x": 85, "y": 60, "color": "#b91c1c" }
+              { "tipo": "alumno", "x": 20, "y": 55, "color": "#0284c7" },
+              { "tipo": "flecha", "x": 25, "y": 55, "x2": 75, "y2": 55, "curva": "arriba", "color": "#0f766e" },
+              { "tipo": "cono", "x": 50, "y": 65, "label": "1" },
+              { "tipo": "alumno", "x": 80, "y": 55, "color": "#b91c1c" }
             ]
           }
         },
         {
-          "fase": "Parte Principal / Práctica",
+          "fase": "Parte Principal / Reto Motriz 1",
           "duracionMin": 10,
           "nombreJuego": "Juego 1: El Rescate Cooperativo",
-          "descripcion": "Terreno de juego:\nMedia pista polideportiva (20x15m) con zona segura delimitada con conos.\n\nRoles:\n3 perseguidores con peto rojo y el resto de la clase como rescatadores.\n\nDesarrollo del juego:\nLos perseguidores intentan tocar a los compañeros con un balón de espuma. Los tocados quedan congelados con piernas abiertas hasta que otro pasa por debajo para rescatar.\n\nNormas:\n- El toque debe ser suave de cintura para abajo.\n- La zona segura sólo permite permanecer 5 segundos.\n\nVariaciones:\n- Añadir un perseguidor más o rescatar chocando ambas palmas.",
+          "origen": "documento",
+          "descripcion": "Terreno de juego:\nMedia pista polideportiva (20x15m) con zona segura delimitada con conos.\n\nRoles:\n3 perseguidores con peto rojo y el resto como rescatadores.\n\nDesarrollo del juego:\nLos perseguidores intentan tocar a los compañeros con un balón de espuma. Los tocados quedan congelados con piernas abiertas hasta que otro pasa por debajo para rescatar.\n\nNormas:\n- El toque debe ser suave de cintura para abajo.\n- La zona segura sólo permite permanecer 5 segundos.\n\nVariaciones:\n- Añadir un perseguidor más o rescatar chocando ambas palmas.",
           "materiales": ["Pelotas", "Petos"],
           "esquemaTactico": {
             "tipoPista": "pabellon",
             "descripcionCorta": "Perseguidores y rescatadores",
             "elementos": [
-              { "tipo": "alumno", "x": 12, "y": 68, "color": "#0284c7" },
-              { "tipo": "flecha", "x": 15, "y": 55, "x2": 82, "y2": 52, "curva": "arriba", "color": "#0284c7" },
+              { "tipo": "alumno", "x": 20, "y": 60, "color": "#0284c7" },
+              { "tipo": "flecha", "x": 25, "y": 50, "x2": 75, "y2": 50, "curva": "arriba", "color": "#0284c7" },
               { "tipo": "alumno", "x": 50, "y": 50, "color": "#b91c1c" },
               { "tipo": "cono", "x": 50, "y": 70, "label": "1" },
-              { "tipo": "alumno", "x": 84, "y": 65, "color": "#16a34a" }
+              { "tipo": "alumno", "x": 80, "y": 60, "color": "#16a34a" }
             ]
           }
+        },
+        {
+          "fase": "Parte Principal / Reto Motriz 2",
+          "duracionMin": 10,
+          "nombreJuego": "Juego 2: Desafío de Pases en Cadena",
+          "origen": "ia",
+          "descripcion": "Terreno de juego:\nPista completa dividida en 4 zonas de paso.\n\nRoles:\nEquipos de 4 jugadores cooperando para completar 5 pases seguidos sin intercepción.\n\nDesarrollo del juego:\nCada equipo intenta progresar pasándose el balón sin caminar más de 3 pasos.\n\nNormas:\n- Balón recuperado tras pase completado.\n- Prohibido contacto físico.\n\nVariaciones:\n- Limitar el tiempo de retención del móvil a 3 segundos.",
+          "materiales": ["Balones", "Petos"],
+          "esquemaTactico": {
+            "tipoPista": "pabellon",
+            "descripcionCorta": "Equipos y líneas de pase",
+            "elementos": [
+              { "tipo": "alumno", "x": 25, "y": 45, "color": "#0284c7" },
+              { "tipo": "alumno", "x": 40, "y": 65, "color": "#0284c7" },
+              { "tipo": "balon", "x": 30, "y": 50 },
+              { "tipo": "alumno", "x": 65, "y": 55, "color": "#b91c1c" }
+            ]
+          }
+        },
+        {
+          "fase": "Parte Principal / Reto Motriz 3",
+          "duracionMin": 10,
+          "nombreJuego": "Juego 3: Circuito de Estaciones Tácticas",
+          "origen": "ia",
+          "descripcion": "Terreno de juego:\nTres postas delimitadas en el perímetro de la pista.\n\nRoles:\nGrupos rotativos de 5 alumnos por estación.\n\nDesarrollo del juego:\nCada equipo supera el reto motor de su posta sumando aciertos cooperativos antes de rotar en sentido horario.\n\nNormas:\n- Completar la posta de forma coordinada.\n- Respetar los turnos de lanzamiento.\n\nVariaciones:\n- Añadir un obstáculo de salto o zig-zag.",
+          "materiales": ["Picas", "Aros", "Conos"],
+          "esquemaTactico": {
+            "tipoPista": "circuito",
+            "descripcionCorta": "Estaciones periféricas rotativas",
+            "elementos": [
+              { "tipo": "cono", "x": 25, "y": 50, "label": "1" },
+              { "tipo": "alumno", "x": 35, "y": 50, "color": "#0284c7" },
+              { "tipo": "aro", "x": 55, "y": 50 },
+              { "tipo": "alumno", "x": 75, "y": 50, "color": "#16a34a" }
+            ]
+          }
+        },
+        {
+          "fase": "Parte Principal / Reto Motriz 4 (o Aplicación)",
+          "duracionMin": 10,
+          "nombreJuego": "Juego 4: Torneo de Retos Global",
+          "origen": "ia",
+          "descripcion": "Terreno de juego:\nDos campos simultáneos de 15x15m.\n\nRoles:\nEquipos enfrentados en partido modificado sin contacto.\n\nDesarrollo del juego:\nLos equipos aplican las destrezas practicadas en los juegos anteriores en una situación real y dinámica de juego colectivo.\n\nNormas:\n- Tarjeta verde de Fair Play por cada muestra de compañerismo.\n- Todos los miembros del equipo deben intervenir.\n\nVariaciones:\n- Comodín ofensivo rotativo.",
+          "materiales": ["Balones", "Petos"],
+          "esquemaTactico": {
+            "tipoPista": "pabellon",
+            "descripcionCorta": "Juego global con metas",
+            "elementos": [
+              { "tipo": "alumno", "x": 20, "y": 45, "color": "#0284c7" },
+              { "tipo": "alumno", "x": 20, "y": 65, "color": "#0284c7" },
+              { "tipo": "balon", "x": 50, "y": 55 },
+              { "tipo": "alumno", "x": 80, "y": 45, "color": "#b91c1c" },
+              { "tipo": "alumno", "x": 80, "y": 65, "color": "#b91c1c" }
+            ]
+          }
+        },
+        {
+          "fase": "Vuelta a la Calma / Reflexión y Hábitos",
+          "duracionMin": 10,
+          "nombreJuego": "El Escáner Corporal y Puesta en Común",
+          "origen": "ia",
+          "descripcion": "Terreno de juego:\nZona sombreada o colchonetas en círculo central.\n\nRoles:\nTodos en círculo sentados en postura de relajación.\n\nDesarrollo del juego:\nEjercicios de respiración diafragmática y chequeo de frecuencia cardíaca, cerrando con asamblea de reflexión y hábitos higiénicos.\n\nNormas:\n- Silencio y escucha activa del compañero.\n\nVariaciones:\n- Autoevaluación con el pulgar arriba/abajo.",
+          "materiales": ["Colchonetas"]
         }
       ]
     }
@@ -1107,68 +1186,195 @@ Devuelve una respuesta JSON estricta con este formato:
     // 1. Ensure game names within each session are UNIQUE (no repeated game names in the same session).
     // 2. Remove any leftover generic template paragraphs.
     // 3. Format game descriptions cleanly.
-    sesionesRes.forEach((ses) => {
-      if (ses.fases && Array.isArray(ses.fases)) {
-        const seenNames = new Set<string>();
+    // 4. GUARANTEE AT LEAST 4 MAIN GAMES in Parte Principal / Estaciones (60 min total).
+    sesionesRes.forEach((ses, sIdx) => {
+      if (!ses.fases || !Array.isArray(ses.fases)) {
+        ses.fases = [];
+      }
 
-        ses.fases.forEach((f: any, idx: number) => {
-          let gameName = String(f.nombreJuego || `Juego ${idx}`).trim();
-          if (seenNames.has(gameName.toLowerCase())) {
-            gameName = `${gameName} (Variante ${idx})`;
-            f.nombreJuego = gameName;
-          }
-          seenNames.add(gameName.toLowerCase());
+      // Classify phases into: Warmup, Cooldown, Main games
+      const isWarmup = (f: any) =>
+        /calentamiento|activaci[oó]n|inicial|animaci[oó]n/i.test(f.fase || '') ||
+        /calentamiento|activaci[oó]n|inicial|animaci[oó]n/i.test(f.nombreJuego || '');
+      const isCooldown = (f: any) =>
+        /vuelta a la calma|cierre|reflexi[oó]n|calma|puesta en com[uú]n|evaluaci[oó]n/i.test(f.fase || '') ||
+        /calma|relax|estiramiento|reflexi[oó]n/i.test(f.nombreJuego || '');
 
-          if (f.descripcion) {
-            let descStr = String(f.descripcion);
-            if (descStr.includes('El juego inicia con la señal sonora del docente')) {
-              descStr = descStr.replace(
-                /- Secuencia de juego y normas: El juego inicia con la señal sonora del docente\. Los participantes se desplazan controladamente por la zona delimitada buscando alcanzar la meta o completar el reto motor\. Se aplican normas de cooperación y oposición limpia: respetando el turno de acción, pasando el móvil a compañeros desmarcados para anotar o evitar la interceptación rival, y rotando posiciones tras cada ciclo de puntuación\./g,
-                `Desarrollo del juego: Inicio mediante consigna docente. Se desarrolla la dinámica específica de ${gameName} enfocada en la temática ${tematica}, cumpliendo la secuencia motriz.`
-              );
-            }
-            f.descripcion = formatGameDescription(descStr);
-          }
+      let warmup = ses.fases.find(isWarmup);
+      let cooldown = [...ses.fases].reverse().find(isCooldown);
+      let mainGames = ses.fases.filter((f: any) => f !== warmup && f !== cooldown);
+
+      // If no explicit warmup, take the first phase or create it
+      if (!warmup) {
+        if (ses.fases.length > 0) {
+          warmup = ses.fases[0];
+          mainGames = mainGames.filter((f: any) => f !== warmup);
+        } else {
+          warmup = {
+            fase: 'Calentamiento / Activación Dinámica',
+            duracionMin: 10,
+            nombreJuego: `Activación Motriz Dinámica (Sesión ${sIdx + 1})`,
+            descripcion: 'Terreno de juego:\nPista delimitada 15x15m.\n\nRoles:\nTodo el grupo activo libremente en el espacio.\n\nDesarrollo del juego:\nDesplazamientos variados y movilidad articular dinámica con consignas motrices progresivas.\n\nNormas:\n- Evitar contactos manteniendo distancia activa.\n- Reaccionar a las consignas sonoras del docente.\n\nVariaciones:\n- Desplazamientos por parejas en espejo.',
+            materiales: ['Conos'],
+            origen: 'ia',
+          };
+        }
+      }
+
+      // If no explicit cooldown, take the last phase or create it
+      if (!cooldown) {
+        if (ses.fases.length > 1 && ses.fases[ses.fases.length - 1] !== warmup) {
+          cooldown = ses.fases[ses.fases.length - 1];
+          mainGames = mainGames.filter((f: any) => f !== cooldown);
+        } else {
+          cooldown = {
+            fase: 'Vuelta a la Calma / Reflexión y Hábitos',
+            duracionMin: 10,
+            nombreJuego: 'Calma Sensorial y Diálogo Reflexivo',
+            descripcion: 'Terreno de juego:\nCírculo central del pabellón o pista.\n\nRoles:\nTodo el alumnado sentado en asamblea circular.\n\nDesarrollo del juego:\nEjercicios de respiración diafragmática consciente seguidos de una breve ronda de feedback sobre los retos conseguidos y registro de hábitos saludables.\n\nNormas:\n- Escucha activa y respeto al turno de palabra.\n- Participación sincera en la autoevaluación.\n\nVariaciones:\n- Autoevaluación rápida con pulgares (arriba / medio / abajo).',
+            materiales: ['Cuaderno de registro'],
+            origen: 'ia',
+          };
+        }
+      }
+
+      // GUARANTEE AT LEAST 4 MAIN GAMES
+      const defaultMainTitles = [
+        'Reto Motriz 1: Familiarización y Habilidades Base',
+        'Reto Motriz 2: Cooperación y Progresión Táctica',
+        'Reto Motriz 3: Oposición Inclusiva y Toma de Decisiones',
+        'Reto Motriz 4: Desafío Colectivo y Situación Real de Juego',
+      ];
+
+      while (mainGames.length < 4) {
+        const nextIdx = mainGames.length + 1;
+        const title = defaultMainTitles[nextIdx - 1] || `Reto Motriz ${nextIdx}: Aplicación y Desafío`;
+        mainGames.push({
+          fase: `Parte Principal / Reto Motriz ${nextIdx}`,
+          duracionMin: 10,
+          nombreJuego: `${title} (${tematica || 'General'})`,
+          descripcion: `Terreno de juego:\nMedia pista polideportiva (20x15m) delimitada con conos.\n\nRoles:\nEquipos heterogéneos rotativos de 4-5 participantes.\n\nDesarrollo del juego:\nDesafío motriz de aplicación de ${tematica || 'habilidades motrices'} donde cada equipo debe resolver una situación problema cooperativa con progresión de dificultad motriz.\n\nNormas:\n- Participación y pase activo de todos los integrantes del equipo antes de puntuar.\n- Sin eliminaciones: sistema de retos acumulativos o reincorporación inmediata.\n\nVariaciones:\n- Variar el tamaño del móvil o la distancia de interacción para adaptar el reto.`,
+          materiales: ['Balones', 'Petos', 'Conos'],
+          origen: 'ia',
+          esquemaTactico: {
+            tipoPista: 'pabellon',
+            descripcionCorta: `Reto motriz ${nextIdx} por subgrupos`,
+            elementos: [
+              { tipo: 'alumno', x: 25, y: 50, color: '#0284c7' },
+              { tipo: 'cono', x: 50, y: 50, label: 'Zona' },
+              { tipo: 'alumno', x: 75, y: 50, color: '#b91c1c' },
+              { tipo: 'flecha', x: 30, y: 50, x2: 70, y2: 50, curva: 'recta', color: '#0f766e' },
+            ],
+          },
         });
       }
+
+      // Balance durations: 10 min each for 1 warmup + 4 main games + 1 cooldown = 60 min
+      warmup.duracionMin = 10;
+      mainGames.forEach((mg: any, idx: number) => {
+        mg.duracionMin = 10;
+        if (!mg.fase || !/principal|estaci[oó]n|exploraci[oó]n|reto/i.test(mg.fase)) {
+          mg.fase = `Parte Principal / Reto Motriz ${idx + 1}`;
+        }
+      });
+      cooldown.duracionMin = 10;
+
+      // Reassemble fases
+      ses.fases = [warmup, ...mainGames, cooldown];
+
+      // Formatting and uniqueness checks
+      const seenNames = new Set<string>();
+      ses.fases.forEach((f: any, idx: number) => {
+        let gameName = String(f.nombreJuego || `Juego ${idx + 1}`).trim();
+        if (seenNames.has(gameName.toLowerCase())) {
+          gameName = `${gameName} (Variante ${idx + 1})`;
+          f.nombreJuego = gameName;
+        }
+        seenNames.add(gameName.toLowerCase());
+
+        if (f.descripcion) {
+          let descStr = String(f.descripcion);
+          if (descStr.includes('El juego inicia con la señal sonora del docente')) {
+            descStr = descStr.replace(
+              /- Secuencia de juego y normas: El juego inicia con la señal sonora del docente\. Los participantes se desplazan controladamente por la zona delimitada buscando alcanzar la meta o completar el reto motor\. Se aplican normas de cooperación y oposición limpia: respetando el turno de acción, pasando el móvil a compañeros desmarcados para anotar o evitar la interceptación rival, y rotando posiciones tras cada ciclo de puntuación\./g,
+              `Desarrollo del juego: Inicio mediante consigna docente. Se desarrolla la dinámica específica de ${gameName} enfocada en la temática ${tematica}, cumpliendo la secuencia motriz.`
+            );
+          }
+          f.descripcion = formatGameDescription(descStr);
+        }
+      });
     });
 
-    const hasDriveDocs = Boolean(
-      driveDocumentationText &&
-      driveDocumentationText.trim().length > 0 &&
-      (driveDocumentationText.includes('Google Drive') ||
-       driveDocumentationText.includes('PDF') ||
-       driveDocumentationText.includes('Ficha') ||
-       driveDocumentationText.includes('UD_') ||
-       driveDocumentationText.includes('Documento') ||
-       driveDocumentationText.includes('ARCHIVO LOCAL'))
-    );
+    const hasAnyDocs = Boolean(driveDocumentationText && driveDocumentationText.trim().length > 20);
     const hasBancoJuegos = Boolean(
       driveDocumentationText &&
       (driveDocumentationText.includes('BANCO DE JUEGOS') ||
        driveDocumentationText.includes('Excel') ||
        driveDocumentationText.includes('EXCEL') ||
        driveDocumentationText.includes('.xlsx') ||
-       driveDocumentationText.includes('.csv'))
+       driveDocumentationText.includes('.csv') ||
+       /banco.*juegos/i.test(driveDocumentationText))
     );
+    const hasDriveDocs = hasAnyDocs && !hasBancoJuegos;
 
-    let pDrive = hasDriveDocs ? (typeof parsed.porcentajeDrive === 'number' && parsed.porcentajeDrive > 0 ? parsed.porcentajeDrive : 45) : 0;
-    let pBanco = hasBancoJuegos ? (typeof parsed.porcentajeBancoJuegos === 'number' && parsed.porcentajeBancoJuegos > 0 ? parsed.porcentajeBancoJuegos : 35) : 0;
+    // Detect actual origins from generated games and documentation text
+    let docGamesCount = 0;
+    let bancoGamesCount = 0;
+    let totalGamesCount = 0;
+    const docTextLower = (driveDocumentationText || '').toLowerCase();
 
-    // Normalizar si la suma supera el 85% para dejar margen pedagógico a la IA
+    sesionesRes.forEach((ses) => {
+      if (Array.isArray(ses.fases)) {
+        ses.fases.forEach((f: any) => {
+          totalGamesCount++;
+          const nameLower = String(f.nombreJuego || '').toLowerCase().trim();
+          const matchesDoc = hasAnyDocs && nameLower.length > 3 && docTextLower.includes(nameLower);
+
+          if (f.origen === 'banco' || (hasBancoJuegos && (f.origen === 'documento' || matchesDoc))) {
+            bancoGamesCount++;
+            f.origen = 'banco';
+          } else if (f.origen === 'documento' || matchesDoc) {
+            docGamesCount++;
+            f.origen = 'documento';
+          }
+        });
+      }
+    });
+
+    let pDrive = 0;
+    let pBanco = 0;
+
+    if (hasAnyDocs) {
+      if (totalGamesCount > 0 && (docGamesCount > 0 || bancoGamesCount > 0)) {
+        pDrive = Math.round((docGamesCount / totalGamesCount) * 100);
+        pBanco = Math.round((bancoGamesCount / totalGamesCount) * 100);
+      }
+      
+      // Si la IA no etiquetó origen individualmente pero el usuario aportó documentos
+      if (pDrive === 0 && pBanco === 0) {
+        if (hasBancoJuegos) {
+          pBanco = typeof parsed.porcentajeBancoJuegos === 'number' && parsed.porcentajeBancoJuegos > 0 ? parsed.porcentajeBancoJuegos : 40;
+          pDrive = typeof parsed.porcentajeDrive === 'number' && parsed.porcentajeDrive > 0 ? parsed.porcentajeDrive : 35;
+        } else {
+          pDrive = typeof parsed.porcentajeDrive === 'number' && parsed.porcentajeDrive > 0 ? parsed.porcentajeDrive : 60;
+        }
+      }
+    }
+
+    // Normalizar si la suma supera el 85% para dejar margen a la IA (al menos 15%)
     if (pDrive + pBanco > 85) {
       const ratio = 85 / (pDrive + pBanco);
       pDrive = Math.round(pDrive * ratio);
       pBanco = Math.round(pBanco * ratio);
     }
-    let pIA = Math.max(0, 100 - pDrive - pBanco);
+    let pIA = Math.max(10, 100 - pDrive - pBanco);
 
     let cleanFuentes: string[] = Array.isArray(parsed.fuentesUtilizadas) ? parsed.fuentesUtilizadas : [];
     if (!hasBancoJuegos) {
       cleanFuentes = cleanFuentes.filter((f: string) => !/banco.*juego|\.xlsx|\.xls|excel/i.test(f));
     }
-    if (!hasDriveDocs) {
-      cleanFuentes = cleanFuentes.filter((f: string) => !/drive|carpeta|ud_|documento/i.test(f));
+    if (!hasAnyDocs) {
+      cleanFuentes = cleanFuentes.filter((f: string) => !/drive|carpeta|ud_|documento|archivo/i.test(f));
     }
 
     res.json({
@@ -1263,12 +1469,17 @@ Fases/Actividades actuales:
 ${JSON.stringify(sesion.fases, null, 2)}
 
 REGLA INDISPENSABLE:
-Cada una de las fases/actividades devueltas debe tener su "nombreJuego", "duracionMin", "materiales" y su "descripcion" REDACTADA DE FORMA CONCISA (70-110 palabras) con los 5 apartados obligatorios:
-Terreno de juego: ...
-Roles: ...
-Desarrollo del juego: ...
-Normas: ...
-Variaciones: ...
+Cada una de las fases/actividades devueltas debe tener su "nombreJuego", "duracionMin", "materiales" y su "descripcion" REDACTADA DE FORMA DIRECTA Y OPERATIVA (60-90 palabras a pie de pista):
+Terreno de juego: Espacio y dimensiones aproximadas
+Roles: Distribución del alumnado
+Desarrollo del juego: Explicación directa y motriz (2-3 líneas)
+Normas: 2 viñetas clave
+Variaciones: 1 variante de dificultad
+
+JUEGOS CANTADOS Y CANCIONES POPULARES:
+Si la actividad es un juego cantado, canción tradicional o corro, incluye OBLIGATORIAMENTE la letra completa bajo:
+🎵 Canción / Letra:
+"Estrofas o letra completa para cantar en clase."
 
 Devuelve un JSON estricto con la estructura de la sesión actualizada:
 {
@@ -1281,7 +1492,16 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
       "duracionMin": 10,
       "nombreJuego": "...",
       "descripcion": "...",
-      "materiales": ["..."]
+      "materiales": ["..."],
+      "esquemaTactico": {
+        "tipoPista": "pabellon",
+        "descripcionCorta": "Disposición táctica del juego",
+        "elementos": [
+          { "tipo": "alumno", "x": 25, "y": 55, "color": "#0284c7" },
+          { "tipo": "cono", "x": 50, "y": 65, "label": "1" },
+          { "tipo": "alumno", "x": 75, "y": 55, "color": "#b91c1c" }
+        ]
+      }
     }
   ]
 }`;

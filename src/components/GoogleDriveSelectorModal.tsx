@@ -363,20 +363,46 @@ export const GoogleDriveSelectorModal: React.FC<GoogleDriveSelectorModalProps> =
                 </div>
               </div>
 
+              <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-950 font-medium text-left flex items-start space-x-2">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <p>
+                  <strong>¿Solo quieres generar la SdA?</strong> Conectar Google Drive es <strong>100% opcional</strong>. Puedes cerrar esta ventana y pulsar directamente en <em>"Generar Sesiones con IA"</em> o usar <em>"Cargar PDF/Word Local"</em> con los archivos de tu ordenador.
+                </p>
+              </div>
+
               {errorMsg && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs space-y-2.5 max-w-md mx-auto text-left shadow-xs">
                   <div className="flex items-start space-x-2">
                     <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                     <span className="font-semibold leading-relaxed">{errorMsg}</span>
                   </div>
+                  {errorMsg.toLowerCase().includes('origin_mismatch') && (
+                    <div className="p-2.5 bg-white/80 border border-red-200 rounded-lg text-[11px] text-slate-700 space-y-1">
+                      <p className="font-bold text-red-900">¿Por qué ocurre este error?</p>
+                      <p>
+                        Google OAuth requiere que la dirección web exacta (<code>{typeof window !== 'undefined' ? window.location.origin : 'URL actual'}</code>) esté registrada en los "Orígenes de JavaScript autorizados" de Google Cloud Console.
+                      </p>
+                      <p className="text-emerald-700 font-semibold pt-1">
+                        👉 Solución rápida: Cierra esta ventana y pulsa <strong>"Generar Sesiones con IA"</strong> o sube tus archivos con <strong>"Cargar PDF / Word Local"</strong>.
+                      </p>
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-red-200/60">
+                    <button
+                      type="button"
+                      onClick={() => onClose()}
+                      className="px-3 py-1.5 bg-indigo-900 hover:bg-indigo-800 text-white rounded-lg text-[11px] font-bold inline-flex items-center space-x-1 shadow-xs"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Cerrar y generar con IA</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => window.open(window.location.href, '_blank')}
                       className="px-2.5 py-1.5 bg-white border border-red-300 hover:bg-red-100 text-red-900 rounded-lg text-[11px] font-bold inline-flex items-center space-x-1 shadow-2xs"
                     >
                       <ExternalLink className="w-3.5 h-3.5 text-red-700" />
-                      <span>Abrir app en ventana nueva</span>
+                      <span>Abrir en ventana nueva</span>
                     </button>
                     <button
                       type="button"

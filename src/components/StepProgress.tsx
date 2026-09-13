@@ -22,7 +22,7 @@ interface StepProgressProps {
 const STEPS = [
   { step: 1, label: 'Datos & Temática', icon: FileText },
   { step: 2, label: 'Currículo', icon: BookmarkCheck },
-  { step: 3, label: 'Saberes', icon: BookOpen },
+  { step: 3, label: 'Saberes & ODS', icon: BookOpen },
   { step: 4, label: 'Metodología', icon: Boxes },
   { step: 5, label: 'Sesiones', icon: Calendar },
   { step: 6, label: 'Producto Final', icon: Trophy },

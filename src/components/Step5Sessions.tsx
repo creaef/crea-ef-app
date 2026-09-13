@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import {
@@ -36,6 +36,7 @@ import { ExcelGameDatabaseModal } from './ExcelGameDatabaseModal';
 import { LocalFilesModal } from './LocalFilesModal';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
 import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
+import { downloadDuaCardsPdf, downloadAcrosportCardsPdf } from '../utils/cardDecksPdf';
 
 interface Step5Props {
   numSesiones: number;
@@ -97,6 +98,31 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   const [errorDrive, setErrorDrive] = useState<string | null>(null);
   const [successDrive, setSuccessDrive] = useState<string | null>(null);
 
+  const updatePDrive = (val: number) => {
+    setPorcentajeDriveState(val);
+    if (setParentPDrive) setParentPDrive(val);
+  };
+  const updatePBanco = (val: number) => {
+    setPorcentajeBancoJuegosState(val);
+    if (setParentPBanco) setParentPBanco(val);
+  };
+  const updatePIA = (val: number) => {
+    setPorcentajeIAState(val);
+    if (setParentPIA) setParentPIA(val);
+  };
+
+  useEffect(() => {
+    if (driveDocumentationText !== undefined && driveDocumentationText !== docText) {
+      setDocText(driveDocumentationText);
+    }
+  }, [driveDocumentationText]);
+
+  useEffect(() => {
+    if (typeof initialPDrive === 'number') setPorcentajeDriveState(initialPDrive);
+    if (typeof initialPBanco === 'number') setPorcentajeBancoJuegosState(initialPBanco);
+    if (typeof initialPIA === 'number') setPorcentajeIAState(initialPIA);
+  }, [initialPDrive, initialPBanco, initialPIA]);
+
   const handleAddLocalDocumentation = (extractedText: string, fileName: string) => {
     const formattedEntry = `\n\n--- ARCHIVO LOCAL: ${fileName} ---\n${extractedText}`;
     const newDocText = docText ? `${docText}${formattedEntry}` : `--- ARCHIVO LOCAL: ${fileName} ---\n${extractedText}`;
@@ -150,19 +176,6 @@ export const Step5Sessions: React.FC<Step5Props> = ({
     } finally {
       setEnrichingSession(false);
     }
-  };
-
-  const updatePDrive = (val: number) => {
-    setPorcentajeDriveState(val);
-    if (setParentPDrive) setParentPDrive(val);
-  };
-  const updatePBanco = (val: number) => {
-    setPorcentajeBancoJuegosState(val);
-    if (setParentPBanco) setParentPBanco(val);
-  };
-  const updatePIA = (val: number) => {
-    setPorcentajeIAState(val);
-    if (setParentPIA) setParentPIA(val);
   };
 
   const handleClearAllSourcesAndBank = () => {
@@ -569,11 +582,16 @@ export const Step5Sessions: React.FC<Step5Props> = ({
               <Cloud className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-extrabold text-slate-900 text-sm">
-                Integración con Google Drive: Juegos y Unidades de EF
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="font-extrabold text-slate-900 text-sm">
+                  Fuentes y Materiales Propios (Opcional)
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
+                  Opcional
+                </span>
+              </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Abre tu Google Drive, navega o busca entre tus carpetas y selecciona de dónde extraer información y juegos para tus sesiones.
+                Si no conectas fuentes externas, <strong>la IA generará el 100% de las sesiones y juegos automáticamente</strong>. Si lo deseas, puedes vincular Google Drive o cargar tus propios archivos locales (Word, PDF, Excel).
               </p>
             </div>
           </div>
@@ -874,11 +892,29 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                   </div>
                 </div>
 
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-                  <span className="font-bold text-slate-700 block">Materiales necesarios:</span>
-                  <p className="text-slate-600 font-medium mt-0.5">
-                    {sesiones[activeSessionIndex].materialesTotales?.join(', ') || 'Material habitual de EF'}
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="font-bold text-slate-700 block">📦 Materiales necesarios:</span>
+                    <p className="text-slate-600 font-medium mt-0.5">
+                      {sesiones[activeSessionIndex].materialesTotales?.join(', ') || 'Material habitual de EF'}
+                    </p>
+                  </div>
+
+                  <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 text-xs flex items-center justify-between">
+                    <div>
+                      <span className="font-extrabold text-emerald-950 block">⏱️ Tiempo de Compromiso Motor (TCM):</span>
+                      <p className="text-emerald-800 text-[11px] mt-0.5 font-semibold">
+                        {(() => {
+                          const numFases = sesiones[activeSessionIndex].fases?.length || 4;
+                          const tcm = Math.min(85, Math.max(50, 95 - numFases * 5));
+                          return `Estimado: ~${tcm}% de práctica activa (${numFases <= 4 ? 'Estructura ágil y dinámica' : 'Múltiples fases'})`;
+                        })()}
+                      </p>
+                    </div>
+                    <span className="text-xs font-black bg-emerald-200 text-emerald-950 px-2.5 py-1 rounded-lg shrink-0">
+                      {Math.min(85, Math.max(50, 95 - (sesiones[activeSessionIndex].fases?.length || 4) * 5))}%
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -1045,6 +1081,59 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                                 />
                                 <span>min</span>
                               </div>
+
+                              {/* Badge de Origen Documental vs IA */}
+                              {(fase as any).origen === 'documento' ? (
+                                <span className="text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                                  <span>📂</span>
+                                  <span>De tu documento</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-black bg-indigo-50 text-indigo-900 border border-indigo-200 px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                                  <span>✨</span>
+                                  <span>Propuesta IA</span>
+                                </span>
+                              )}
+
+                              {/* Badge si contiene letra de canción */}
+                              {/🎵|canci[oó]n|letra/i.test(fase.descripcion || '') && (
+                                <span className="text-[10px] font-black bg-pink-100 text-pink-950 border border-pink-300 px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                                  <span>🎵</span>
+                                  <span>Canción / Letra</span>
+                                </span>
+                              )}
+
+                              {/* Descarga rápida de Tarjetas DUA */}
+                              {(/dua|inclusi[oó]n/i.test(fase.descripcion || '') || (Array.isArray(fase.materiales) && fase.materiales.some((m) => /dua/i.test(m)))) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    downloadDuaCardsPdf();
+                                  }}
+                                  title="Descargar Baraja de Tarjetas DUA en PDF listo para imprimir"
+                                  className="text-[10px] font-black bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0 transition"
+                                >
+                                  <span>📥</span>
+                                  <span>Tarjetas DUA (PDF)</span>
+                                </button>
+                              )}
+
+                              {/* Descarga rápida de Tarjetas Acrosport */}
+                              {(/acrosport|pir[aá]mide/i.test(fase.descripcion || '') || /acrosport|pir[aá]mide/i.test(fase.nombreJuego || '') || (Array.isArray(fase.materiales) && fase.materiales.some((m) => /acrosport/i.test(m)))) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    downloadAcrosportCardsPdf();
+                                  }}
+                                  title="Descargar Fichas y Pirámides de Acrosport en PDF listo para imprimir"
+                                  className="text-[10px] font-black bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0 transition"
+                                >
+                                  <span>📥</span>
+                                  <span>Figuras Acrosport (PDF)</span>
+                                </button>
+                              )}
                             </div>
 
                             <button
@@ -1106,7 +1195,7 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                                 <span className="text-amber-500">📍</span>
                                 <span>Disposición Táctica en Pista (Generada automát. sin coste de tokens):</span>
                               </div>
-                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(fase.descripcion, fase.nombreJuego), fase.nombreJuego, undefined, fase.descripcion) }} />
+                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(fase.descripcion, fase.nombreJuego), fase.nombreJuego, fase.esquemaTactico, fase.descripcion) }} />
                             </div>
                           </div>
                         </div>

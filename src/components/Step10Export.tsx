@@ -43,8 +43,8 @@ function renderFormattedGameDescriptionReact(text: string) {
         const trimmed = line.trim();
         if (!trimmed) return <div key={idx} className="h-0.5" />;
 
-        // Header check: 5 apartados concisos o anteriores
-        if (/^(?:[1-5]\.)?\s*(Terreno de juego|Roles|Desarrollo del juego|Normas|Variaciones|Variantes|ORGANIZACIÓN|ROLES|DESARROLLO|VARIACIONES)/i.test(trimmed) && trimmed.endsWith(':')) {
+        // Header check: 5 apartados concisos o Canción / Letra
+        if (/^(?:[1-6]\.)?\s*(Terreno de juego|Roles|Desarrollo del juego|Normas|Variaciones|Variantes|ORGANIZACIÓN|ROLES|DESARROLLO|VARIACIONES)/i.test(trimmed) && trimmed.endsWith(':')) {
           let icon = '📌';
           let colorClass = 'text-indigo-950 bg-indigo-50 border-indigo-200';
           if (/terreno/i.test(trimmed)) { icon = '🏟️'; colorClass = 'text-sky-900 bg-sky-50 border-sky-200'; }
@@ -60,6 +60,29 @@ function renderFormattedGameDescriptionReact(text: string) {
             >
               <span>{icon}</span>
               <span>{trimmed}</span>
+            </div>
+          );
+        }
+
+        if (/^(?:🎵\s*)?(?:Canci[oó]n|Letra|Retah[ií]la)/i.test(trimmed) && trimmed.endsWith(':')) {
+          return (
+            <div
+              key={idx}
+              className="inline-flex items-center gap-1 font-extrabold text-[10.5px] px-2 py-0.5 rounded border mt-2 mb-0.5 select-none text-pink-950 bg-pink-50 border-pink-200"
+            >
+              <span>🎵</span>
+              <span>{trimmed}</span>
+            </div>
+          );
+        }
+
+        if (trimmed.startsWith('"') || trimmed.startsWith('«') || (trimmed.startsWith('- ') && trimmed.includes('"'))) {
+          return (
+            <div
+              key={idx}
+              className="pl-3 py-1 my-1 text-pink-950 bg-pink-50/70 border-l-2 border-pink-400 rounded-r text-xs italic font-medium leading-relaxed"
+            >
+              {trimmed}
             </div>
           );
         }
@@ -375,7 +398,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         `</ul>`;
 
       return `
-        <tr style="page-break-inside: auto; break-inside: auto;">
+        <tr style="page-break-inside: avoid !important; break-inside: avoid !important;">
           <td style="padding: 6px 8px; border: 1px solid #cbd5e1; vertical-align: top; background-color: #f8fafc; width: 33%; word-break: break-word; overflow-wrap: break-word; text-align: justify;">
             <strong style="color: #0a2240; font-size: 10.5px; display: block; margin-bottom: 3px;">${comp.id}: ${comp.nombre}</strong>
             <p style="margin: 0; font-size: 9.5px; color: #334155; line-height: 1.35; text-align: justify;">${comp.descripcion}</p>
@@ -402,7 +425,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       );
 
       let warmupHtml = warmup.map((f) => `
-        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: avoid !important; break-inside: avoid !important;">
           <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #f59e0b; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
             <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
               ${f?.nombreJuego || 'Actividad de Activación'}
@@ -425,7 +448,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
               PARTE PRINCIPAL / PRÁCTICA (40 MIN) — ${main.length} ACTIVIDADES / JUEGOS
             </div>
             ${main.map((f, mIdx) => `
-              <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+              <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #f59e0b; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                   <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
                     ${f?.nombreJuego || `Juego ${mIdx + 1}`}
@@ -444,7 +467,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       }
 
       let coolHtml = cool.map((f) => `
-        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: avoid !important; break-inside: avoid !important;">
           <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #10b981; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
             <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
               ${f?.nombreJuego || 'Vuelta a la Calma'}
@@ -459,7 +482,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       `).join('');
 
       let otherHtml = other.map((f) => `
-        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: auto; break-inside: auto;">
+        <div class="game-activity-card" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; page-break-inside: avoid !important; break-inside: avoid !important;">
           <div class="game-card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-left: 5px solid #6366f1; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
             <span style="font-size: 13px; font-weight: 900; color: #1e1b4b; text-transform: uppercase; letter-spacing: 0.3px;">
               ${f?.nombreJuego || 'Actividad'}
@@ -478,35 +501,38 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
       const matTot = Array.isArray(ses?.materialesTotales) ? ses.materialesTotales.join(', ') : 'Habitual de EF';
 
       return `
-        <div class="session-card" style="margin-bottom: 14px; border: 1.5px solid #0a2240; border-radius: 6px; page-break-inside: auto; break-inside: auto;">
-          <div class="session-header-wrapper avoid-break" style="page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
-            <table class="session-header-table avoid-break" style="width: 100%; border-collapse: collapse; background-color: #0a2240; border-bottom: 2px solid #e85d04; margin: 0; padding: 0; page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
-              <tr class="avoid-break" style="page-break-inside: avoid !important; break-inside: avoid !important;">
-                <td style="width: 58%; vertical-align: middle; text-align: left; padding: 7px 10px; border-right: 1.5px solid #1e3a8a;">
-                  <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ffffff; line-height: 1.3; display: block;">
-                    SESIÓN ${numSes}: ${titSes} (60 MINUTOS)
-                  </span>
-                </td>
-                <td style="width: 42%; vertical-align: middle; text-align: left; padding: 6px 10px; background-color: #0c284d;">
-                  <span style="font-size: 8.5px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 1px;">
-                    📦 Materiales Necesarios:
-                  </span>
-                  <span style="font-size: 9.5px; color: #fef08a; font-weight: 600; line-height: 1.3; display: block;">
-                    ${matTot}
-                  </span>
-                </td>
-              </tr>
-            </table>
-            ${ses?.objetivoSesion ? `
-              <div class="avoid-break" style="background-color: #1e293b; color: #ffffff; padding: 4px 10px; font-size: 9.5px; font-style: italic; text-align: justify; page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: avoid !important; break-after: avoid !important;">
-                <strong>Objetivo Pedagógico de Sesión:</strong> ${ses.objetivoSesion}
-              </div>
-            ` : ''}
-          </div>
-          <div style="padding: 6px 8px 2px 8px; background-color: #ffffff;">
+        <div class="session-block-wrapper" style="margin-bottom: 16px;">
+          <!-- Bloque indivisible: Cabecera de sesión + Calentamiento (evita cabeceras huérfanas y huecos en blanco) -->
+          <div class="session-start-block avoid-break" style="page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 6px;">
+            <div class="session-header-wrapper" style="border: 1.5px solid #0a2240; border-radius: 6px; overflow: hidden; margin-bottom: 6px; page-break-inside: avoid !important; break-inside: avoid !important;">
+              <table class="session-header-table" style="width: 100%; border-collapse: collapse; background-color: #0a2240; margin: 0; padding: 0;">
+                <tr>
+                  <td style="width: 58%; vertical-align: middle; text-align: left; padding: 7px 10px; border-right: 1.5px solid #1e3a8a;">
+                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ffffff; line-height: 1.3; display: block;">
+                      SESIÓN ${numSes}: ${titSes} (60 MINUTOS)
+                    </span>
+                  </td>
+                  <td style="width: 42%; vertical-align: middle; text-align: left; padding: 6px 10px; background-color: #0c284d;">
+                    <span style="font-size: 8.5px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 1px;">
+                      📦 Materiales Necesarios:
+                    </span>
+                    <span style="font-size: 9.5px; color: #fef08a; font-weight: 600; line-height: 1.3; display: block;">
+                      ${matTot}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+              ${ses?.objetivoSesion ? `
+                <div style="background-color: #1e293b; color: #ffffff; padding: 5px 10px; font-size: 9.5px; font-style: italic; text-align: justify; border-top: 1px solid #334155;">
+                  <strong>Objetivo Pedagógico de Sesión:</strong> ${ses.objetivoSesion}
+                </div>
+              ` : ''}
+            </div>
             ${warmupHtml}
           </div>
-          <div style="padding: 0 8px 6px 8px; background-color: #ffffff;">
+
+          <!-- Resto de actividades (cada una en su tarjeta indivisible que salta limpiamente si no cabe) -->
+          <div class="session-main-activities">
             ${mainHtml}
             ${coolHtml}
             ${otherHtml}
@@ -516,7 +542,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
     }).join('');
 
     const neaeTableRows = (sda.adaptacionesNEAE || []).map((a) => `
-      <tr style="page-break-inside: auto; break-inside: auto;">
+      <tr style="page-break-inside: avoid !important; break-inside: avoid !important;">
         <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #fff1f2; font-weight: bold; color: #9f1239; font-size: 10px; width: 25%; vertical-align: top;">
           ${a.categoria}
         </td>
@@ -529,7 +555,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
     `).join('');
 
     const duaTableRows = (sda.pautasDUAGlobales || []).map((p: any, i: number) => `
-      <tr style="page-break-inside: auto; break-inside: auto;">
+      <tr style="page-break-inside: avoid !important; break-inside: avoid !important;">
         <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #f0fdf4; font-weight: bold; color: #14532d; font-size: 10px; width: 25%; vertical-align: top;">
           ${typeof p === 'string' ? `Pauta DUA ${i + 1}` : p.principio}
         </td>
@@ -540,7 +566,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
     `).join('');
 
     const instTableRows = (sda.instrumentosEvaluacion || []).map((i) => `
-      <tr style="page-break-inside: auto; break-inside: auto;">
+      <tr style="page-break-inside: avoid !important; break-inside: avoid !important;">
         <td style="padding: 6px 8px; border: 1px solid #cbd5e1; background-color: #f8fafc; font-weight: bold; color: #0a2240; font-size: 10px; width: 28%; vertical-align: top;">
           ${i.tipo || i.nombre}
         </td>
@@ -601,18 +627,28 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
             page-break-inside: auto !important;
             break-inside: auto !important;
           }
-          tr, td {
-            page-break-inside: auto !important;
-            break-inside: auto !important;
+          tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
-          .session-card {
-            page-break-inside: auto !important;
-            break-inside: auto !important;
+          td, th {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          .session-start-block {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-bottom: 6px !important;
           }
           .game-activity-card {
-            page-break-inside: auto !important;
-            break-inside: auto !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             margin-bottom: 6px !important;
+          }
+          .section-container-avoid {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin-bottom: 22px !important;
           }
           .session-header-wrapper, .session-header-table, .game-card-header, h1, h2, h3, h4, thead, th, .avoid-break {
             page-break-inside: avoid !important;
@@ -735,18 +771,18 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           ${sessionsHtml}
         </div>
 
-        <!-- 5. PRODUCTO FINAL Y RETO MOTOR -->
-        <div class="section-container" style="margin-bottom: 22px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
+        <!-- 5. PRODUCTO FINAL Y RETO MOTOR (BLOQUE INDIVISIBLE QUE SALTA LIMPIO SI NO CABE) -->
+        <div class="section-container section-container-avoid" style="margin-bottom: 22px; page-break-inside: avoid !important; break-inside: avoid !important;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: avoid !important; break-inside: avoid !important;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   5. PRODUCTO FINAL Y RETO MOTOR COLECTIVO
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #eef2ff; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #eef2ff; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 14px; font-size: 11px; color: #1e1b4b; line-height: 1.6; text-align: justify; border: 1px solid #c7d2fe;">
                   ${sda.productoFinal || 'Sin definir.'}
                 </td>
@@ -759,7 +795,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         <div class="section-container" style="margin-bottom: 22px;">
           <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th colspan="3" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   6. ATENCIÓN A LA DIVERSIDAD (MARCO DUA Y ADAPTACIONES NEAE)
                 </th>
@@ -767,7 +803,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
             </thead>
             <tbody>
               ${neaeTableRows ? `
-                <tr style="background-color: #9f1239; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <tr style="background-color: #9f1239; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                   <td colspan="3" style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
                     ADAPTACIONES NEAE POR CASUÍSTICA ESPECÍFICA
                   </td>
@@ -775,7 +811,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                 ${neaeTableRows}
               ` : ''}
               ${duaTableRows ? `
-                <tr style="background-color: #047857; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+                <tr style="background-color: #047857; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                   <td colspan="3" style="padding: 8px 12px; font-weight: bold; font-size: 11px; text-transform: uppercase;">
                     PAUTAS UNIVERSALES DUA (DISEÑO UNIVERSAL PARA EL APRENDIZAJE)
                   </td>
@@ -790,14 +826,14 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         <div class="section-container" style="margin-bottom: 22px;">
           <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   7. EVALUACIÓN INICIAL Y DIAGNÓSTICA (HERRAMIENTAS FORMATIVAS)
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td colspan="2" style="padding: 12px; font-size: 11px; border: 1px solid #cbd5e1; text-align: justify; width: 100%;">
                   <strong style="color: #0a2240; font-size: 11px; display: block; margin-bottom: 4px;">🔍 Estrategia Diagnóstica Inicial de Partida:</strong>
                   <p style="margin: 0; color: #334155; text-align: justify; line-height: 1.6; width: 100%;">
@@ -805,12 +841,12 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                   </p>
                 </td>
               </tr>
-              <tr style="background-color: #1e293b; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #1e293b; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th style="padding: 8px 10px; width: 28%; text-align: left; font-size: 10.5px;">Herramienta / Instrumento</th>
                 <th style="padding: 8px 10px; width: 72%; text-align: left; font-size: 10.5px;">Criterios de Evaluación, Descripción y Aplicación Práctica</th>
               </tr>
               ${instTableRows || `
-                <tr style="page-break-inside: avoid; break-inside: avoid;">
+                <tr style="page-break-inside: avoid !important; break-inside: avoid !important;">
                   <td colspan="2" style="padding: 10px; font-size: 10.5px; text-align: center; color: #64748b; border: 1px solid #cbd5e1;">No se han registrado instrumentos específicos para esta SdA.</td>
                 </tr>
               `}
@@ -822,30 +858,30 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         <div class="section-container" style="margin-bottom: 22px;">
           <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   8. CONEXIONES INTERDISCIPLINARES
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">Matemáticas</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Conteo de puntos, cálculo de distancias y tiempos, orientación geométrica en el espacio de juego y registro estadístico.</td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #ffffff; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #0a2240; font-size: 10.5px; vertical-align: top;">Lengua Castellana</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Comprensión de reglamentos, vocabulario motriz específico, expresión oral en asambleas reflexivas y coevaluación dialogada.</td>
               </tr>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #047857; font-size: 10.5px; vertical-align: top;">Conocimiento del Medio</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Reconocimiento de frecuencia cardíaca/respiratoria, higiene corporal, educación para la salud, nutrición activa y respeto al entorno.</td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #ffffff; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #b45309; font-size: 10.5px; vertical-align: top;">Educación Artística</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">Expresión corporal, ritmo, acompañamiento musical, coordinación colectiva y diseño de tarjetas o insignias.</td>
               </tr>
-              <tr style="background-color: #f8fafc; page-break-inside: avoid; break-inside: avoid;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 25%; font-weight: bold; color: #6b21a8; font-size: 10.5px; vertical-align: top;">Competencia Digital</td>
                 <td style="padding: 8px 12px; border: 1px solid #cbd5e1; width: 75%; font-size: 10.5px; color: #334155; text-align: justify;">${digitalCompetenceText}</td>
               </tr>
@@ -853,18 +889,18 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           </table>
         </div>
 
-        <!-- 9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES -->
-        <div class="section-container" style="margin-bottom: 0px;">
-          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: auto; break-inside: auto;">
+        <!-- 9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES (TABLA INDIVISIBLE) -->
+        <div class="section-container section-container-avoid" style="margin-bottom: 0px; page-break-inside: avoid !important; break-inside: avoid !important;">
+          <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0a2240; page-break-inside: avoid !important; break-inside: avoid !important;">
             <thead>
-              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important;">
+              <tr style="background-color: #0a2240; color: #ffffff; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <th colspan="2" style="padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 900; text-transform: uppercase; border-bottom: 2px solid #e85d04;">
                   9. RECURSOS DIDÁCTICOS, INSTALACIONES Y MATERIALES
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr style="background-color: #f8fafc; page-break-inside: auto; break-inside: auto;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10px; vertical-align: top;">
                   <span style="background-color: #0a2240; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">ESPACIOS</span> Instalaciones y Espacios:
                 </td>
@@ -872,7 +908,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                   ${(sda.recursosEspaciales && sda.recursosEspaciales.length > 0) ? sda.recursosEspaciales.join(' • ') : 'Pista polideportiva exterior del centro, pabellón cubierto / gimnasio escolar y zonas delimitadas seguras.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: auto; break-inside: auto;">
+              <tr style="background-color: #ffffff; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #0a2240; font-size: 10px; vertical-align: top;">
                   <span style="background-color: #0284c7; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">MATERIAL</span> Materiales Escolares y Deportivos:
                 </td>
@@ -880,7 +916,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                   ${(sda.recursosMateriales && sda.recursosMateriales.length > 0) ? sda.recursosMateriales.join(' • ') : 'Balones de gomaespuma, petos de colores, aros, picas, conos delimitadores, colchonetas y material alternativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #f8fafc; page-break-inside: auto; break-inside: auto;">
+              <tr style="background-color: #f8fafc; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #047857; font-size: 10px; vertical-align: top;">
                   <span style="background-color: #047857; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">DIDÁCTICA</span> Recursos Didácticos y Curriculares:
                 </td>
@@ -888,7 +924,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                   ${(sda.recursosCurriculares && sda.recursosCurriculares.length > 0) ? sda.recursosCurriculares.join(' • ') : 'Tarjetas visuales DUA de apoyo a las reglas, dianas de autoevaluación motriz y fichas de registro cooperativo.'}
                 </td>
               </tr>
-              <tr style="background-color: #ffffff; page-break-inside: auto; break-inside: auto;">
+              <tr style="background-color: #ffffff; page-break-inside: avoid !important; break-inside: avoid !important;">
                 <td style="padding: 6px 8px; border: 1px solid #cbd5e1; width: 32%; font-weight: bold; color: #6b21a8; font-size: 10px; vertical-align: top;">
                   <span style="background-color: #6b21a8; color: #ffffff; padding: 2px 6px; border-radius: 3px; font-size: 8.5px; margin-right: 6px; font-weight: bold;">COMPLEMENTO</span> Recursos Complementarios:
                 </td>
@@ -943,7 +979,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: {
           mode: ['css', 'legacy'],
-          avoid: ['h1', 'h2', 'h3', 'h4', '.avoid-break', '.session-header-wrapper', '.game-card-header']
+          avoid: ['h1', 'h2', 'h3', 'h4', '.avoid-break', '.session-start-block', '.game-activity-card', '.section-container-avoid', 'tr']
         }
       };
 
@@ -1535,13 +1571,27 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                           {/* Calentamiento */}
                           {warmup.map((f, fIdx) => (
                             <div key={`w-${fIdx}`} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                              <div className="flex items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg">
-                                <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
-                                  {f.nombreJuego || 'Calentamiento Inicial'}
-                                </span>
-                                <span className="text-[10px] font-extrabold bg-sky-100 text-sky-900 px-2 py-0.5 rounded border border-sky-200 shrink-0">
-                                  Fase 1 • {f.duracionMin} min
-                                </span>
+                              <div className="flex flex-wrap items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg gap-2">
+                                <div className="flex items-center space-x-2">
+                                  {(f as any).origen === 'documento' && (
+                                    <span className="text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-full">
+                                      📂 De tu doc
+                                    </span>
+                                  )}
+                                  <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                    {f.nombreJuego || 'Calentamiento Inicial'}
+                                  </span>
+                                </div>
+                                <div className="flex items-center space-x-1.5">
+                                  {/🎵|canci[oó]n|letra/i.test(f.descripcion || '') && (
+                                    <span className="text-[10px] font-black bg-pink-100 text-pink-900 px-2 py-0.5 rounded border border-pink-200">
+                                      🎵 Con Letra
+                                    </span>
+                                  )}
+                                  <span className="text-[10px] font-extrabold bg-sky-100 text-sky-900 px-2 py-0.5 rounded border border-sky-200 shrink-0">
+                                    Fase 1 • {f.duracionMin} min
+                                  </span>
+                                </div>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
                               <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
@@ -1562,13 +1612,27 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                               </div>
                               {main.map((f, mIdx) => (
                                 <div key={`m-${mIdx}`} className="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-2xs space-y-2">
-                                  <div className="flex items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg">
-                                    <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
-                                      {f.nombreJuego || `Juego ${mIdx + 1}`}
-                                    </span>
-                                    <span className="text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-200 shrink-0">
-                                      Juego ${mIdx + 1} • {f.duracionMin} min
-                                    </span>
+                                  <div className="flex flex-wrap items-center justify-between bg-slate-50 border-l-4 border-amber-500 px-3 py-2 rounded-r-lg gap-2">
+                                    <div className="flex items-center space-x-2">
+                                      {(f as any).origen === 'documento' && (
+                                        <span className="text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-full">
+                                          📂 De tu doc
+                                        </span>
+                                      )}
+                                      <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                        {f.nombreJuego || `Juego ${mIdx + 1}`}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-1.5">
+                                      {/🎵|canci[oó]n|letra/i.test(f.descripcion || '') && (
+                                        <span className="text-[10px] font-black bg-pink-100 text-pink-900 px-2 py-0.5 rounded border border-pink-200">
+                                          🎵 Con Letra
+                                        </span>
+                                      )}
+                                      <span className="text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-200 shrink-0">
+                                        Juego ${mIdx + 1} • {f.duracionMin} min
+                                      </span>
+                                    </div>
                                   </div>
                                   {renderFormattedGameDescriptionReact(f.descripcion)}
                                   <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
@@ -1585,13 +1649,27 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                           {/* Vuelta a la calma */}
                           {cool.map((f, fIdx) => (
                             <div key={`c-${fIdx}`} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                              <div className="flex items-center justify-between bg-slate-50 border-l-4 border-emerald-500 px-3 py-2 rounded-r-lg">
-                                <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
-                                  {f.nombreJuego || 'Vuelta a la Calma'}
-                                </span>
-                                <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
-                                  Fase Final • {f.duracionMin} min
-                                </span>
+                              <div className="flex flex-wrap items-center justify-between bg-slate-50 border-l-4 border-emerald-500 px-3 py-2 rounded-r-lg gap-2">
+                                <div className="flex items-center space-x-2">
+                                  {(f as any).origen === 'documento' && (
+                                    <span className="text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-full">
+                                      📂 De tu doc
+                                    </span>
+                                  )}
+                                  <span className="font-black text-indigo-950 text-xs sm:text-sm uppercase tracking-wide">
+                                    {f.nombreJuego || 'Vuelta a la Calma'}
+                                  </span>
+                                </div>
+                                <div className="flex items-center space-x-1.5">
+                                  {/🎵|canci[oó]n|letra/i.test(f.descripcion || '') && (
+                                    <span className="text-[10px] font-black bg-pink-100 text-pink-900 px-2 py-0.5 rounded border border-pink-200">
+                                      🎵 Con Letra
+                                    </span>
+                                  )}
+                                  <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
+                                    Fase Final • {f.duracionMin} min
+                                  </span>
+                                </div>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
                               <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />

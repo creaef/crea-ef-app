@@ -144,12 +144,13 @@ export function formatGameDescription(text: string): string {
     h3: 'Desarrollo del juego:',
     h4: 'Normas:',
     h5: 'Variaciones:',
+    h6: '🎵 Canción / Letra:',
   };
 
-  // Parse lines into sections 1, 2, 3, 4, 5
+  // Parse lines into sections 1, 2, 3, 4, 5, 6
   const lines = str.split('\n');
   let currentSec = 0;
-  const secContents: { [key: number]: string[] } = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [] };
+  const secContents: { [key: number]: string[] } = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
 
   for (let l of lines) {
     let trimmed = l.trim();
@@ -179,7 +180,6 @@ export function formatGameDescription(text: string): string {
       const colonIdx = trimmed.indexOf(':');
       if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
         let val = trimmed.substring(colonIdx + 1).trim();
-        // Eliminar cualquier residuo de "y normas" al inicio del texto
         val = val.replace(/^[-*]?\s*(?:y\s*normas|normas):?\s*/i, '').trim();
         if (val) secContents[3].push(val);
       }
@@ -197,8 +197,14 @@ export function formatGameDescription(text: string): string {
         const val = trimmed.substring(colonIdx + 1).trim();
         if (val) secContents[5].push(val);
       }
+    } else if (/^(?:🎵\s*)?(?:Canci[oó]n|Letra|Canción\s*\/\s*Letra|Retah[ií]la)/i.test(trimmed)) {
+      currentSec = 6;
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && trimmed.length > colonIdx + 1) {
+        const val = trimmed.substring(colonIdx + 1).trim();
+        if (val) secContents[6].push(val);
+      }
     } else {
-      // Limpiar cualquier línea suelta que empiece por "y normas" en el desarrollo
       if (currentSec === 3) {
         trimmed = trimmed.replace(/^[-*]?\s*y\s*normas:?\s*/i, '').trim();
         if (trimmed) secContents[3].push(trimmed);
@@ -213,6 +219,7 @@ export function formatGameDescription(text: string): string {
   let p3 = secContents[3].join('\n').trim();
   let p4 = secContents[4].join('\n').trim();
   let p5 = secContents[5].join('\n').trim();
+  let p6 = secContents[6].join('\n').trim();
 
   // If unsectioned content exists
   if (secContents[0].length > 0) {
@@ -220,7 +227,7 @@ export function formatGameDescription(text: string): string {
     p3 = p3 ? `${unsectioned}\n${p3}` : unsectioned;
   }
 
-  // Clean sub-bullets that repeat the header name or residual 'y normas'
+  // Clean sub-bullets that repeat the header name
   p1 = p1.replace(/^[-*]?\s*(?:Terreno\s*y\s*delimitaci[oó]n|Terreno):?\s*/gim, '').trim();
   p2 = p2.replace(/^[-*]?\s*(?:Roles\s*activos|Roles):?\s*/gim, '').trim();
   p3 = p3.replace(/^[-*]?\s*(?:Secuencia\s*de\s*juego\s*(?:y\s*normas)?|Secuencia|Desarrollo\s*del\s*juego\s*(?:y\s*normas)?|Desarrollo):?\s*/gim, '').trim();
@@ -241,6 +248,9 @@ export function formatGameDescription(text: string): string {
     parts.push(`${HEADERS.h5}\n${p5}`);
   } else {
     parts.push(`${HEADERS.h5}\n- Reducir o ampliar el espacio de juego según fluidez motriz.`);
+  }
+  if (p6) {
+    parts.push(`${HEADERS.h6}\n${p6}`);
   }
 
   return parts.join('\n\n');
@@ -264,7 +274,7 @@ export function renderFormattedGameDescriptionHtml(text: string): string {
       continue;
     }
 
-    // Encabezados de los 5 apartados concisos
+    // Encabezados de apartados concisos
     if (/^(?:[1-5]\.)?\s*(Terreno de juego|Roles|Desarrollo del juego|Normas|Variaciones|Variantes)/i.test(trimmed) && trimmed.endsWith(':')) {
       let icon = '📌';
       let color = '#1e1b4b';
@@ -276,6 +286,11 @@ export function renderFormattedGameDescriptionHtml(text: string): string {
       else if (/variaci|variant/i.test(trimmed)) { icon = '🔀'; color = '#047857'; bg = '#d1fae5'; }
 
       html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: ${color}; background: ${bg}; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">${icon} ${trimmed}</div>`;
+    } else if (/^(?:🎵\s*)?(?:Canci[oó]n|Letra|Retah[ií]la)/i.test(trimmed) && trimmed.endsWith(':')) {
+      html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: #831843; background: #fce7f3; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">🎵 ${trimmed}</div>`;
+    } else if (trimmed.startsWith('"') || trimmed.startsWith('«') || (trimmed.startsWith('- ') && trimmed.includes('"'))) {
+      // Letra de canción destacada
+      html += `<div class="game-song-box" style="padding: 4px 8px; margin: 3px 0 4px 0; font-size: 9.5px; color: #831843; background: #fdf2f8; border-left: 3px solid #ec4899; border-radius: 4px; font-style: italic; line-height: 1.45; page-break-inside: avoid !important; break-inside: avoid !important;">${trimmed}</div>`;
     } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       // Viñeta con etiqueta destacada si tiene dos puntos
       const content = trimmed.substring(2);

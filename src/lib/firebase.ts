@@ -24,7 +24,7 @@ export const analytics = getAnalytics(app);
 
 export const requestDriveTokenViaGIS = (): Promise<string> => {
   return new Promise((resolve, reject) => {
-    const clientId = firebaseConfig.oAuthClientId || '62631616198-vrjm6rud4oeah317qg70blvp5lquhvag.apps.googleusercontent.com';
+    const clientId = firebaseConfig.oAuthClientId || '742780877768-vjqou9dfi20mk8m6lpgdatcdj552b0fg.apps.googleusercontent.com';
     const scope = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file';
 
     const triggerTokenClient = () => {
@@ -119,18 +119,22 @@ export const loginWithGoogleDrive = async (): Promise<{ user: User | null; token
       return { user: auth.currentUser, token: gisToken };
     } catch (gisErr: any) {
       console.error('GIS fallback error:', gisErr);
+      const gisMsg = String(gisErr?.message || '').toLowerCase();
+      if (gisMsg.includes('origin_mismatch') || gisMsg.includes('origin mismatch')) {
+        throw new Error(`Error 400: origin_mismatch. El origen actual (${typeof window !== 'undefined' ? window.location.origin : 'URL actual'}) no está registrado en los "Orígenes de JavaScript autorizados" de Google Cloud Console. Puedes generar tu SdA 100% con IA o usar "Cargar PDF/Word/Excel Local".`);
+      }
       if (err?.code === 'auth/network-request-failed') {
         const customErr = new Error('El navegador o el marco incrustado bloqueó la red de autenticación de Firebase (auth/network-request-failed). Por favor reintenta o abre la aplicación en una nueva pestaña.');
         (customErr as any).code = 'auth/network-request-failed';
         throw customErr;
       }
       if (err?.code === 'auth/unauthorized-domain') {
-        throw new Error('El dominio de la aplicación no está autorizado en la consola de Firebase Authentication. Puedes usar "Token manual" o subir tus materiales desde "Cargar PDF/Word/Excel Local".');
+        throw new Error(`El dominio (${typeof window !== 'undefined' ? window.location.origin : 'actual'}) no está autorizado en la consola de Firebase. Puedes generar tu SdA directamente con IA o cargar tus archivos desde "Cargar PDF/Word/Excel Local".`);
       }
       if (isIdbClosingError) {
         throw new Error('El navegador ha suspendido el almacenamiento de Google (IndexedDB). Abre la web en una pestaña normal o utiliza "Cargar PDF/Word/Excel Local" para usar tus materiales sin Google Drive.');
       }
-      throw err;
+      throw gisErr?.message ? gisErr : err;
     }
   }
 };

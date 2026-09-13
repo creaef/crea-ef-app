@@ -3,12 +3,16 @@ import { Layout, Users, Sparkles, MapPin, Edit3, Check, Image as ImageIcon, Link
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
+import { getTacticalPitchHtml, detectPitchType, PitchType } from '../utils/tacticalPitch';
+import { EsquemaTactico } from '../types';
 
 interface ActivityGraphicDiagramProps {
   nombreJuego: string;
   esquemaGrafico?: string;
   materiales?: string[];
   imageUrl?: string;
+  esquemaTactico?: EsquemaTactico;
+  descripcion?: string;
   onUpdateEsquema?: (nuevoEsquema: string) => void;
   onUpdateImageUrl?: (url: string) => void;
 }
@@ -60,6 +64,8 @@ export const ActivityGraphicDiagram: React.FC<ActivityGraphicDiagramProps> = ({
   esquemaGrafico,
   materiales = [],
   imageUrl: initialImageUrl = '',
+  esquemaTactico,
+  descripcion = '',
   onUpdateEsquema,
   onUpdateImageUrl,
 }) => {
@@ -69,7 +75,7 @@ export const ActivityGraphicDiagram: React.FC<ActivityGraphicDiagramProps> = ({
   const [esquemaText, setEsquemaText] = useState(
     esquemaGrafico || 'Pista delimitada con conos en las esquinas, 2 filas de alumnos con petos diferenciados enfrentados y zona central de paso.'
   );
-  const [fieldType, setFieldType] = useState<'pabellon' | 'circuito' | 'paredon' | 'porteria' | 'rondo'>('pabellon');
+  const [fieldType, setFieldType] = useState<PitchType>(detectPitchType(descripcion, nombreJuego));
 
   const handleSaveText = () => {
     setIsEditing(false);
@@ -228,151 +234,23 @@ export const ActivityGraphicDiagram: React.FC<ActivityGraphicDiagramProps> = ({
             </select>
           </div>
 
-          {/* CANVAS BOARD - LIGHT BACKGROUND */}
-          <div className="relative w-full h-44 rounded-xl border-2 border-slate-300 bg-amber-50/20 overflow-hidden p-3 select-none shadow-inner flex flex-col justify-between">
-            {/* Court Line Markings */}
-            <div className="absolute inset-2 border-2 border-slate-400/50 rounded-lg pointer-events-none">
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1.5px] bg-slate-400/50" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 border-slate-400/50" />
-            </div>
-
-            {/* TOP BAR LEGEND */}
-            <div className="relative z-10 flex items-center justify-between text-[11px] font-extrabold">
-              <div className="flex items-center space-x-2 bg-white/95 px-2.5 py-1 rounded-lg border border-slate-300 shadow-2xs">
-                <span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block" />
-                <span className="text-sky-950">Equipo Azul</span>
-              </div>
-
-              <div className="bg-amber-100 text-amber-950 px-2.5 py-1 rounded-lg border border-amber-300 shadow-2xs flex items-center space-x-1">
-                <span className="text-xs">🔺</span>
-                <span>Conos / Delimitadores</span>
-              </div>
-
-              <div className="flex items-center space-x-2 bg-white/95 px-2.5 py-1 rounded-lg border border-slate-300 shadow-2xs">
-                <span className="text-rose-950">Equipo Rojo</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-              </div>
-            </div>
-
-            {/* CENTER GRAPHIC LAYOUT WITH MUÑECOS */}
-            <div className="relative z-10 my-auto w-full">
-              {fieldType === 'pabellon' && (
-                <div className="flex items-center justify-between px-4 sm:px-10">
-                  {/* Left Cones + Team A Puppets */}
-                  <div className="flex items-center space-x-2">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-xs">🔺</span>
-                      <span className="text-xs">🔺</span>
-                    </div>
-                    <div className="flex space-x-1">
-                      <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" label="A1" />
-                      <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" hasStick label="A2" />
-                    </div>
-                  </div>
-
-                  {/* Pass trajectory arrow & Game Title Badge */}
-                  <div className="flex flex-col items-center">
-                    <span className="text-xs font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
-                      ⚽ Ball Pass / Trayectoria ➔
-                    </span>
-                    <span className="text-[11px] font-black text-indigo-950 mt-1 max-w-[160px] truncate text-center bg-white/90 px-2 py-0.5 rounded border border-slate-200">
-                      {nombreJuego || 'Zona de Juego'}
-                    </span>
-                  </div>
-
-                  {/* Right Cones + Team B Puppets */}
-                  <div className="flex items-center space-x-2">
-                    <div className="flex space-x-1">
-                      <StickPuppet colorShirt="#e11d48" headColor="#fecdd3" hasStick facingLeft label="B1" />
-                      <StickPuppet colorShirt="#e11d48" headColor="#fecdd3" facingLeft label="B2" />
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-xs">🔺</span>
-                      <span className="text-xs">🔺</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {fieldType === 'circuito' && (
-                <div className="flex items-center justify-around px-2 text-[10px] font-bold">
-                  <div className="flex flex-col items-center bg-white p-1.5 rounded-xl border border-indigo-200 shadow-2xs">
-                    <span className="text-indigo-900 font-extrabold mb-0.5">Estación 1: Saltos</span>
-                    <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" hasStick />
-                    <span className="text-[9px] text-slate-500">🧱 Bancos suecos</span>
-                  </div>
-
-                  <span className="text-amber-600 font-black text-base">➔</span>
-
-                  <div className="flex flex-col items-center bg-white p-1.5 rounded-xl border border-indigo-200 shadow-2xs">
-                    <span className="text-indigo-900 font-extrabold mb-0.5">Estación 2: Giro</span>
-                    <StickPuppet colorShirt="#16a34a" headColor="#bbf7d0" />
-                    <span className="text-[9px] text-slate-500">🧘 Colchonetas</span>
-                  </div>
-
-                  <span className="text-amber-600 font-black text-base">➔</span>
-
-                  <div className="flex flex-col items-center bg-white p-1.5 rounded-xl border border-indigo-200 shadow-2xs">
-                    <span className="text-indigo-900 font-extrabold mb-0.5">Estación 3: Sprint</span>
-                    <StickPuppet colorShirt="#e11d48" headColor="#fecdd3" facingLeft />
-                    <span className="text-[9px] text-slate-500">🔺 Conos Zigzag</span>
-                  </div>
-                </div>
-              )}
-
-              {fieldType === 'paredon' && (
-                <div className="flex items-center justify-between px-8">
-                  {/* Left Player */}
-                  <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" hasStick label="Jugador A" />
-
-                  {/* Net / Wall in middle */}
-                  <div className="flex flex-col items-center border-x-2 border-indigo-900 px-4 py-1 bg-indigo-50/80 rounded">
-                    <span className="text-xs font-black text-indigo-950">🧱 RED / PAREDÓN</span>
-                    <span className="text-[10px] font-bold text-amber-700">🎾 Golpeo sin bote</span>
-                  </div>
-
-                  {/* Right Player */}
-                  <StickPuppet colorShirt="#e11d48" headColor="#fecdd3" hasStick facingLeft label="Jugador B" />
-                </div>
-              )}
-
-              {fieldType === 'porteria' && (
-                <div className="flex items-center justify-around px-6">
-                  {/* Attacker */}
-                  <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-extrabold text-sky-800">Atacante</span>
-                    <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" hasBall label="Chutador" />
-                  </div>
-
-                  <span className="text-amber-600 font-black text-lg">🏹 ➔ ⚽</span>
-
-                  {/* Goalkeeper + Goal */}
-                  <div className="flex items-center space-x-2 bg-white/90 p-2 rounded-xl border-2 border-slate-400">
-                    <span className="text-lg">🥅</span>
-                    <StickPuppet colorShirt="#eab308" headColor="#fef08a" facingLeft label="Portero" />
-                  </div>
-                </div>
-              )}
-
-              {fieldType === 'rondo' && (
-                <div className="flex items-center justify-center space-x-4">
-                  <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" />
-                  <div className="w-20 h-20 rounded-full border-2 border-dashed border-indigo-400 flex items-center justify-center bg-white/80">
-                    <StickPuppet colorShirt="#e11d48" headColor="#fecdd3" label="Centro" />
-                  </div>
-                  <StickPuppet colorShirt="#0284c7" headColor="#bae6fd" facingLeft />
-                </div>
-              )}
-            </div>
+          {/* CANVAS BOARD - DYNAMIC TACTICAL PITCH */}
+          <div className="relative w-full rounded-xl border border-slate-200 bg-white overflow-hidden p-2 select-none shadow-xs flex flex-col justify-between">
+            <div
+              className="w-full flex justify-center"
+              dangerouslySetInnerHTML={{
+                __html: getTacticalPitchHtml(fieldType, nombreJuego, esquemaTactico, descripcion || esquemaText)
+              }}
+            />
 
             {/* BOTTOM FOOTER */}
-            <div className="relative z-10 flex items-center justify-between text-[10px] text-slate-600 border-t border-slate-300 pt-1 font-semibold">
+            <div className="flex items-center justify-between text-[10.5px] text-slate-600 border-t border-slate-200 pt-1.5 px-1 font-semibold">
               <span className="flex items-center space-x-1">
-                <MapPin className="w-3 h-3 text-indigo-600" />
-                <span>Pizarra Táctica EF de Disposición Espacial</span>
+                <MapPin className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="text-slate-700">Pizarra Táctica EF interactiva</span>
               </span>
               <span className="text-indigo-900 font-bold italic">
-                {materiales.length > 0 ? `Material: ${materiales.slice(0, 3).join(', ')}` : 'Materiales de EF'}
+                {materiales.length > 0 ? `Materiales: ${materiales.slice(0, 4).join(', ')}` : 'Materiales de EF'}
               </span>
             </div>
           </div>

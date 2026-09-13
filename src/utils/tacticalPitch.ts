@@ -408,8 +408,9 @@ export function buildCustomVisualElementsForGame(text = '', title = ''): Tactica
 }
 
 /**
- * Genera el esquema táctico visual puro en SVG (idéntico a los ejemplos del usuario).
- * Altura compacta (72px), sin textos, con muñecos, conos numerados, aros, balones y flechas.
+ * Genera el esquema táctico visual puro en SVG.
+ * Altura optimizada (115px), márgenes seguros anti-desbordamiento,
+ * con muñecos de palitos EF, conos numerados, aros, balones y flechas.
  */
 export function getTacticalPitchHtml(
   type: PitchType = 'pabellon',
@@ -418,7 +419,7 @@ export function getTacticalPitchHtml(
   gameDescription?: string
 ): string {
   const width = 500;
-  const height = 74;
+  const height = 115;
 
   // Analizar semánticamente el texto del juego para garantizar que refleje
   // con total exactitud parejas de niños, aros, conos, balones y formaciones.
@@ -444,18 +445,21 @@ export function getTacticalPitchHtml(
   } else if (/aro|puente|violeta|morad|acrosport|salto/i.test(fullText)) {
     borderColor = '#ddd6fe'; // lila suave
     bgColor = '#faf5ff';
+  } else if (/porter[ií]a|chut|tiro|gol|balonmano|f[uú]tbol/i.test(fullText)) {
+    borderColor = '#fed7aa'; // naranja suave
+    bgColor = '#fffbeb';
   }
 
   let svgElementsHtml = '';
 
   // Si es un juego con terreno dividido / red, dibujar la línea divisoria vertical central
   if (/terreno\s*dividido|campo\s*dividido|cancha\s*dividida|a\s*cada\s*lado|red|volei|v[oó]leibol|datchball|bal[oó]n\s*prisionero/i.test(fullText)) {
-    svgElementsHtml += `<line x1="${width / 2}" y1="5" x2="${width / 2}" y2="${height - 5}" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="4,3" />`;
+    svgElementsHtml += `<line x1="${width / 2}" y1="8" x2="${width / 2}" y2="${height - 8}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,3" />`;
   }
 
   // Si es un rondo, dibujar el círculo interior elíptico en el centro
   if (/rondo|c[ií]rculo|corro/i.test(fullText)) {
-    svgElementsHtml += `<ellipse cx="${width / 2}" cy="${height / 2}" rx="85" ry="13" fill="none" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,4" />`;
+    svgElementsHtml += `<ellipse cx="${width / 2}" cy="${height / 2}" rx="90" ry="26" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" />`;
   }
 
   // Ordenar para que el material de suelo (aros, colchonetas, bancos) quede dibujado bajo los niños
@@ -475,10 +479,14 @@ export function getTacticalPitchHtml(
 
   const sortedElements = [...rawElements].sort((a, b) => (sortOrder[a.tipo] || 5) - (sortOrder[b.tipo] || 5));
 
-  // Renderizar cada elemento en sus coordenadas relativas
+  // Renderizar cada elemento en sus coordenadas relativas con CLAMPING SEGURO (para evitar desbordes)
   for (const el of sortedElements) {
-    const cx = (el.x / 100) * width;
-    const cy = (el.y / 100) * height;
+    // Clamping de porcentajes dentro de márgenes seguros
+    const safeXPercent = Math.max(7, Math.min(93, el.x || 50));
+    const safeYPercent = Math.max(26, Math.min(84, el.y || 50));
+
+    const cx = (safeXPercent / 100) * width;
+    const cy = (safeYPercent / 100) * height;
 
     if (el.tipo === 'alumno' || el.tipo === 'jugador_azul' || el.tipo === 'jugador_rojo' || el.tipo === 'portero') {
       let c = el.color || '#b91c1c';
@@ -499,24 +507,25 @@ export function getTacticalPitchHtml(
     } else if (el.tipo === 'porteria') {
       svgElementsHtml += renderGoalSvg(cx, cy);
     } else if (el.tipo === 'flecha') {
-      const x2 = typeof el.x2 === 'number' ? (el.x2 / 100) * width : cx + 80;
-      const y2 = typeof el.y2 === 'number' ? (el.y2 / 100) * height : cy;
+      const rawX2 = typeof el.x2 === 'number' ? (el.x2 / 100) * width : cx + 70;
+      const rawY2 = typeof el.y2 === 'number' ? (el.y2 / 100) * height : cy;
+      const x2 = Math.max(20, Math.min(width - 20, rawX2));
+      const y2 = Math.max(20, Math.min(height - 20, rawY2));
       svgElementsHtml += renderArrowSvg(cx, cy, x2, y2, el.color || '#0f766e', el.curva || 'arriba');
     }
   }
 
   return `
-    <div class="tactical-pitch-box" style="margin-top: 4px; margin-bottom: 4px; width: 100%; display: flex; justify-content: center; page-break-inside: avoid !important; break-inside: avoid !important; box-sizing: border-box;">
-      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; max-width: 480px; height: auto; display: block; border-radius: 8px; overflow: visible;">
-        <!-- Fondo de pista con borde discontinuo redondeado -->
+    <div class="tactical-pitch-box" style="margin-top: 6px; margin-bottom: 6px; width: 100%; display: flex; justify-content: center; page-break-inside: avoid !important; break-inside: avoid !important; box-sizing: border-box; overflow: hidden;">
+      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; max-width: 500px; height: auto; display: block; border-radius: 8px; overflow: hidden; border: 1.5px solid ${borderColor}; background-color: ${bgColor};">
+        <!-- Fondo de pista con marcas interiores -->
         <rect x="2" y="2" width="${width - 4}" height="${height - 4}" rx="8" ry="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="1.8" stroke-dasharray="4,4" />
-        <!-- Elementos tácticos (Muñecos, conos numerados, flechas, aros, balones, etc.) -->
+        <!-- Elementos tácticos con posicionamiento seguro -->
         ${svgElementsHtml}
       </svg>
     </div>
   `;
 }
-
 
 /**
  * Alias de compatibilidad
