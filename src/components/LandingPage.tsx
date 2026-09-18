@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   ShieldCheck,
@@ -14,6 +14,14 @@ import {
   UserPlus,
   LogIn,
   Palette,
+  Crown,
+  Zap,
+  Check,
+  Flame,
+  Clock,
+  RotateCw,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { CreaEfLogo } from './CreaEfLogo';
 import { ThemeSelectorModal } from './ThemeSelectorModal';
@@ -21,11 +29,95 @@ import { useColorTheme } from '../utils/theme';
 import { db, analytics } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { logEvent } from 'firebase/analytics';
+import { getDeviceFingerprint } from '../utils/fingerprint';
+
+export type PlanType = 'mensual' | 'anual' | 'fundador';
+
+export interface PlanConfig {
+  id: PlanType;
+  name: string;
+  subtitle: string;
+  priceDisplay: string;
+  periodDisplay: string;
+  taxNote: string;
+  pill1?: string;
+  pill2?: string;
+  badge?: string;
+  badgeColor?: string;
+  features: string[];
+  footerNote: string;
+  stripeUrl: string;
+}
+
+export const STRIPE_LINKS: Record<PlanType, string> = {
+  mensual: 'https://buy.stripe.com/dRm14mcs7gmd6TW5tW3Nm00',
+  anual: 'https://buy.stripe.com/7sYaEWbo3ee5a685tW3Nm01',
+  fundador: 'https://buy.stripe.com/bJe28qcs7gmd4LO1dG3Nm02',
+};
+
+export const PLANS: PlanConfig[] = [
+  {
+    id: 'mensual',
+    name: 'Mensual',
+    subtitle: 'Puedes probar un mes y seguir suscrito el tiempo que lo desees.',
+    priceDisplay: '13 €',
+    periodDisplay: 'al mes',
+    taxNote: 'Impuestos incluidos',
+    features: [
+      'Creación de SdA ilimitadas durante un mes',
+      '8 SdA guardadas en tu usuario',
+      'Descarga en PDF y Documento de texto editable',
+    ],
+    footerNote: 'Se renueva cada mes a no ser que lo canceles antes del pago.',
+    stripeUrl: STRIPE_LINKS.mensual,
+  },
+  {
+    id: 'anual',
+    name: 'Anual',
+    subtitle: 'Disfruta todo el año de Crea-Ef',
+    priceDisplay: '75 €',
+    periodDisplay: 'al año',
+    taxNote: 'Impuestos incluidos',
+    pill1: '6,25 € al mes',
+    pill2: 'Ahorras 81 € al año',
+    badge: 'RECOMENDADO',
+    badgeColor: 'bg-blue-600 text-white shadow-lg shadow-blue-500/30',
+    features: [
+      'Creación de SdA ilimitadas durante un año',
+      '8 SdA guardadas en tu usuario',
+      'Descarga en PDF y Documento de texto editable',
+    ],
+    footerNote: 'Se renueva cada año a no ser que lo canceles antes del pago.',
+    stripeUrl: STRIPE_LINKS.anual,
+  },
+  {
+    id: 'fundador',
+    name: 'Suscripción Fundador Crea-Ef',
+    subtitle: 'Disfruta como fundador cada año de Crea-Ef al mismo precio',
+    priceDisplay: '59 €',
+    periodDisplay: 'al año',
+    taxNote: 'Impuestos incluidos',
+    pill1: '4,92 € al mes',
+    pill2: 'Ahorras 97 € al año',
+    badge: 'SÓLO LOS 30 PRIMEROS',
+    badgeColor: 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black',
+    features: [
+      'Creación de SdA ilimitadas durante un año',
+      '8 SdA guardadas en tu usuario',
+      'Descarga en PDF y Documento de texto editable',
+      'Precio Fundador para siempre',
+    ],
+    footerNote: 'Se renueva cada año a no ser que lo canceles antes del pago.',
+    stripeUrl: STRIPE_LINKS.fundador,
+  },
+];
 
 export interface UserSession {
   type: 'trial' | 'user' | 'admin';
   email: string;
-  estadoPago?: 'Pendiente' | 'Pagado';
+  estadoPago?: 'Pendiente' | 'Pagado' | 'Caducado';
+  plan?: PlanType;
+  currentPeriodEnd?: string | null;
   estadoAdmin?: 'Activo' | 'Inactivo';
   generacionesRestantes?: number;
   generacionesUsadas?: number;
@@ -41,26 +133,79 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
   // Via 1: Trial State
   const [trialEmail, setTrialEmail] = useState('');
   const [trialError, setTrialError] = useState<string | null>(null);
+  const [trialLoading, setTrialLoading] = useState(false);
 
-  // Via 2: User / Stripe State
+  // Via 2: User / Stripe State & Plans
   const [isRegister, setIsRegister] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('fundador');
+  const [founderStats, setFounderStats] = useState({
+    totalFundadores: 0,
+    maxFundadores: 30,
+    plazasRestantes: 30,
+    agotado: false,
+  });
   const [userNombre, setUserNombre] = useState('');
   const [userApellidos, setUserApellidos] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
+  const [userLoading, setUserLoading] = useState(false);
   const [showStripeCheckout, setShowStripeCheckout] = useState(false);
   const [stripeCheckoutUrl, setStripeCheckoutUrl] = useState('');
   const [currentUserPending, setCurrentUserPending] = useState<string | null>(null);
+  const [selectedPendingPlan, setSelectedPendingPlan] = useState<PlanType>('fundador');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+  const [expiredNotice, setExpiredNotice] = useState<string | null>(null);
 
   // Via 3: Admin / Developer State
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
 
-  // Local storage checks
+  // Detect URL Params for direct landing / preselection (Opción 1)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const shouldRegister =
+        params.get('registro') === 'true' ||
+        params.get('action') === 'register' ||
+        params.get('alta') === 'true';
+      const planParam = (params.get('plan') || '').toLowerCase();
+
+      if (shouldRegister || planParam) {
+        setActiveTab('user');
+        setIsRegister(true);
+        if (planParam === 'mensual' || planParam === 'anual' || planParam === 'fundador') {
+          setSelectedPlan(planParam as PlanType);
+        }
+      }
+    } catch (e) {
+      console.warn('Error parsing URL parameters:', e);
+    }
+  }, []);
+
+  // Fetch Founder Stats on Mount & on Tab Change
+  useEffect(() => {
+    const fetchFounderStats = async () => {
+      try {
+        const res = await fetch('/api/auth/founder-stats');
+        if (res.ok) {
+          const data = await res.json();
+          setFounderStats(data);
+          if (data.agotado && selectedPlan === 'fundador') {
+            setSelectedPlan('anual');
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch founder stats:', err);
+      }
+    };
+    fetchFounderStats();
+  }, [activeTab]);
+
+  // Local storage checks for quick client fallback
   const getDeviceTrialCount = (): number => {
     try {
       const stored = localStorage.getItem('trial_device_count');
@@ -78,55 +223,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
     }
   };
 
-  // Handle Trial Submission
+  // Handle Trial Submission (Vía 1 con Huella Digital anti-incógnito)
   const handleTrialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTrialError(null);
+    setTrialLoading(true);
 
     const cleanEmail = trialEmail.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes('@')) {
       setTrialError('Por favor, introduce un correo electrónico válido.');
-      return;
-    }
-
-    // Front-end localStorage double check for device lock
-    const deviceCount = getDeviceTrialCount();
-    const storedDeviceEmail = getDeviceTrialEmail();
-
-    if (deviceCount >= 3) {
-      setTrialError(
-        `Este dispositivo ya ha consumido el límite de 3 Situaciones de Aprendizaje de prueba. Por favor, regístrate en la Vía 2 para obtener acceso ilimitado.`
-      );
-      return;
-    }
-
-    if (storedDeviceEmail && storedDeviceEmail !== cleanEmail && deviceCount >= 3) {
-      setTrialError(
-        `Este dispositivo está bloqueado por haber alcanzado el límite de prueba con otra cuenta (${storedDeviceEmail}). Se requiere suscripción para continuar.`
-      );
+      setTrialLoading(false);
       return;
     }
 
     try {
-      // Backend validation request
+      // 1. Obtener huella digital determinista de hardware/canvas (idéntica en incógnito)
+      const deviceId = await getDeviceFingerprint();
+      const localCount = getDeviceTrialCount();
+
+      // 2. Validación en backend respaldada por Firestore
       const res = await fetch('/api/auth/trial', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, deviceCount }),
+        body: JSON.stringify({
+          email: cleanEmail,
+          deviceId,
+          deviceCount: localCount,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok || data.blocked) {
         setTrialError(
           data.message ||
-            'Has alcanzado el límite máximo de 3 SdAs de prueba con esta cuenta. Te invitamos a suscribirte en la Vía 2.'
+            'Has alcanzado el límite máximo de 3 SdAs de prueba en este dispositivo. Te invitamos a suscribirte en la Vía 2.'
         );
+        setTrialLoading(false);
         return;
       }
 
-      // Save device state
+      // Guardar estado local
       localStorage.setItem('trial_device_email', cleanEmail);
-      localStorage.setItem('trial_device_count', String(data.generacionesUsadas || deviceCount));
+      localStorage.setItem('trial_device_id', deviceId);
+      localStorage.setItem('trial_device_count', String(data.generacionesUsadas || localCount));
 
       if (analytics) {
         logEvent(analytics, 'trial_started', { email: cleanEmail });
@@ -135,112 +274,180 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
       onStartSession({
         type: 'trial',
         email: cleanEmail,
-        generacionesUsadas: data.generacionesUsadas || deviceCount,
-        generacionesRestantes: data.generacionesRestantes || Math.max(0, 3 - deviceCount),
+        generacionesUsadas: data.generacionesUsadas || localCount,
+        generacionesRestantes: data.generacionesRestantes || Math.max(0, 3 - localCount),
       });
     } catch (err) {
-      // Fallback local execution if offline or direct
-      const updatedCount = deviceCount;
-      if (updatedCount >= 3) {
-        setTrialError(
-          'Límite de prueba alcanzado en este dispositivo (3/3). Registrate para continuar.'
-        );
+      console.error('Error submitting trial session:', err);
+      // Fallback local seguro
+      const localCount = getDeviceTrialCount();
+      if (localCount >= 3) {
+        setTrialError('Límite de prueba alcanzado en este dispositivo (3/3). Registrate para continuar.');
+        setTrialLoading(false);
         return;
       }
-      localStorage.setItem('trial_device_email', cleanEmail);
       onStartSession({
         type: 'trial',
         email: cleanEmail,
-        generacionesUsadas: updatedCount,
-        generacionesRestantes: 3 - updatedCount,
+        generacionesUsadas: localCount,
+        generacionesRestantes: Math.max(0, 3 - localCount),
       });
+    } finally {
+      setTrialLoading(false);
     }
   };
 
-  // Handle User Registration & Login (Via 2)
+  // Handle User Registration & Login (Vía 2)
   const handleUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUserError(null);
+    setExpiredNotice(null);
+    setUserLoading(true);
 
     const cleanEmail = userEmail.trim().toLowerCase();
     if (!cleanEmail || !userPassword) {
       setUserError('Por favor, introduce tu correo electrónico y contraseña.');
+      setUserLoading(false);
       return;
     }
 
     if (isRegister && (!userNombre.trim() || !userApellidos.trim())) {
       setUserError('Por favor, completa tu nombre y apellidos.');
+      setUserLoading(false);
       return;
     }
 
     try {
       const userRef = doc(db, 'users', cleanEmail);
       const devRef = doc(db, 'devs', cleanEmail);
-      
+
       const devSnap = await getDoc(devRef);
       if (devSnap.exists()) {
         const devData = devSnap.data();
         if (devData.estado === 'Inactivo') {
           setUserError('⛔ Acceso revocado. La cuenta de tester se encuentra inactiva o eliminada.');
+          setUserLoading(false);
           return;
         }
       }
 
       if (isRegister) {
-        /*
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUserError('El correo ya se encuentra registrado. Por favor, inicia sesión.');
+        // Validación de cupo Fundador
+        if (selectedPlan === 'fundador' && founderStats.agotado) {
+          setUserError('Lo sentimos, las 30 plazas del Plan Fundador ya han sido completadas. Por favor, selecciona el Plan Anual.');
+          setSelectedPlan('anual');
+          setUserLoading(false);
           return;
         }
-        
+
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserError('El correo ya se encuentra registrado. Por favor, inicia sesión con tu contraseña.');
+          setUserLoading(false);
+          return;
+        }
+
+        // Crear usuario con estado Pendiente y su plan seleccionado
         await setDoc(userRef, {
           email: cleanEmail,
           password: userPassword,
           nombre: userNombre.trim(),
           apellidos: userApellidos.trim(),
-          estadoPago: 'Pendiente'
+          plan: selectedPlan,
+          estadoPago: 'Pendiente',
+          createdAt: new Date().toISOString(),
         });
 
-        const url = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
-        setCurrentUserPending(cleanEmail);
-        setStripeCheckoutUrl(url);
-        setShowStripeCheckout(true);
-        window.open(url, '_blank');
-        */
         if (analytics) {
-          logEvent(analytics, 'register_attempt', { email: cleanEmail });
+          logEvent(analytics, 'register_attempt', { email: cleanEmail, plan: selectedPlan });
         }
-        setShowComingSoonModal(true);
-        return;
+
+        // Preparar pasarela Stripe correspondiente
+        const baseUrl = STRIPE_LINKS[selectedPlan] || STRIPE_LINKS.mensual;
+        const checkoutUrl = `${baseUrl}?prefilled_email=${encodeURIComponent(cleanEmail)}`;
+
+        setCurrentUserPending(cleanEmail);
+        setSelectedPendingPlan(selectedPlan);
+        setStripeCheckoutUrl(checkoutUrl);
+        setPaymentSuccess(false);
+        setShowStripeCheckout(true);
+
+        // Abrir pestaña de Stripe
+        window.open(checkoutUrl, '_blank');
       } else {
+        // Modo Inicio de Sesión
         if (analytics) {
           logEvent(analytics, 'login_attempt', { email: cleanEmail });
         }
+
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists() || userSnap.data().password !== userPassword) {
-          setUserError('Credenciales de usuario incorrectas o cuenta no registrada.');
+          setUserError('Credenciales incorrectas o cuenta no registrada.');
+          setUserLoading(false);
           return;
         }
 
         const data = userSnap.data();
-        if (data.estadoPago === 'Pendiente') {
+        const userPlan: PlanType = data.plan || 'mensual';
+
+        // Comprobación de ciclo de vida / expiración
+        let effectiveEstado = data.estadoPago || 'Pendiente';
+        if (effectiveEstado === 'Pagado' && data.currentPeriodEnd) {
+          const periodEnd = new Date(data.currentPeriodEnd).getTime();
+          if (Date.now() > periodEnd) {
+            effectiveEstado = 'Caducado';
+            await setDoc(userRef, { estadoPago: 'Caducado' }, { merge: true });
+          }
+        }
+
+        if (effectiveEstado === 'Pendiente' || effectiveEstado === 'Caducado') {
           setCurrentUserPending(cleanEmail);
-          const url = `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(cleanEmail)}`;
-          setStripeCheckoutUrl(url);
+          setSelectedPendingPlan(userPlan);
+          const baseUrl = STRIPE_LINKS[userPlan] || STRIPE_LINKS.mensual;
+          setStripeCheckoutUrl(`${baseUrl}?prefilled_email=${encodeURIComponent(cleanEmail)}`);
+          setPaymentSuccess(false);
+          setExpiredNotice(
+            effectiveEstado === 'Caducado'
+              ? 'Tu suscripción ha completado su periodo y se encuentra vencida. Por favor, renueva tu suscripción para continuar con acceso ilimitado.'
+              : 'Tu cuenta está registrada pero aún no se ha confirmado el pago. Puedes completar el pago ahora en Stripe.'
+          );
           setShowStripeCheckout(true);
-          window.open(url, '_blank');
         } else {
           onStartSession({
             type: 'user',
             email: cleanEmail,
             estadoPago: 'Pagado',
+            plan: userPlan,
+            currentPeriodEnd: data.currentPeriodEnd || null,
           });
         }
       }
     } catch (err) {
       setUserError('Error conectando con la base de datos.');
       console.error(err);
+    } finally {
+      setUserLoading(false);
+    }
+  };
+
+  // Función para simular pago completado en entorno de desarrollo
+  const handleSimulatePaymentLocal = async () => {
+    if (!currentUserPending) return;
+    try {
+      const res = await fetch('/api/dev/simulate-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: currentUserPending,
+          plan: selectedPendingPlan,
+        }),
+      });
+      if (res.ok) {
+        setPaymentSuccess(true);
+        setExpiredNotice(null);
+      }
+    } catch (e) {
+      console.error('Error simulando pago local:', e);
     }
   };
 
@@ -362,7 +569,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
             </div>
             <h3 className="font-extrabold text-base text-white">Periodo de Prueba</h3>
             <p className="text-xs text-slate-400 mt-1">
-              Prueba gratuita (máx. 3 SdAs) con doble validación Email + Dispositivo.
+              Prueba gratuita (máx. 3 SdAs) con protección por huella de dispositivo y correo.
             </p>
           </button>
 
@@ -378,11 +585,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
               <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-indigo-400/20 text-indigo-300 border border-indigo-400/30">
                 Vía 2
               </span>
-              <CreditCard className="w-5 h-5 text-indigo-400" />
+              <div className="flex items-center space-x-1">
+                <Crown className="w-4 h-4 text-amber-400" />
+                <CreditCard className="w-5 h-5 text-indigo-400" />
+              </div>
             </div>
-            <h3 className="font-extrabold text-base text-white">Iniciar Sesión / Registro</h3>
+            <h3 className="font-extrabold text-base text-white">Registro y Suscripción</h3>
             <p className="text-xs text-slate-400 mt-1">
-              Acceso ilimitado (Próximamente).
+              3 planes disponibles (Mensual, Anual y Fundador). Acceso ilimitado.
             </p>
           </button>
 
@@ -402,13 +612,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
             </div>
             <h3 className="font-extrabold text-base text-white">Admin / Desarrolladores</h3>
             <p className="text-xs text-slate-400 mt-1">
-              Acceso restringido para administradores y testers con verificación de estado.
+              Acceso restringido para administradores y testers autorizados.
             </p>
           </button>
         </div>
 
         {/* Tab Content Cards */}
-        <div className="w-full max-w-xl bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        <div className={`w-full ${activeTab === 'user' && isRegister ? 'max-w-4xl' : 'max-w-xl'} bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative transition-all duration-300`}>
           {/* VIA 1: TRIAL */}
           {activeTab === 'trial' && (
             <div className="space-y-6 animate-fadeIn">
@@ -419,7 +629,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                 <div>
                   <h3 className="text-lg font-black text-white">Acceso Gratuito de Prueba</h3>
                   <p className="text-xs text-slate-400">
-                    Doble validación: Control por servidor (Email) y dispositivo (localStorage)
+                    Control por huella digital única de computadora y cuenta de correo
                   </p>
                 </div>
               </div>
@@ -427,7 +637,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
               <div className="p-3 bg-amber-950/40 border border-amber-500/30 rounded-2xl text-xs text-amber-200 flex items-start space-x-3">
                 <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <p>
-                  <strong>Límite:</strong> Puedes generar un máximo de <strong>3 Situaciones de Aprendizaje</strong>. Al consumir la tercera SdA, la aplicación bloqueará automáticamente este dispositivo y te redirigirá a la suscripción.
+                  <strong>Límite estricto:</strong> Puedes generar hasta <strong>3 Situaciones de Aprendizaje</strong> de prueba por computadora. El sistema detecta este dispositivo incluso en modo incógnito. Al consumir las 3 SdAs, se requiere suscripción.
                 </p>
               </div>
 
@@ -460,9 +670,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                           setActiveTab('user');
                           setIsRegister(true);
                         }}
-                        className="inline-flex items-center space-x-1 font-extrabold text-amber-300 underline text-xs"
+                        className="inline-flex items-center space-x-1 font-extrabold text-amber-300 hover:text-amber-200 underline text-xs cursor-pointer"
                       >
-                        <span>Ir a Registro y Pago (Vía 2)</span>
+                        <span>Ir a Registro y Suscripción (Vía 2)</span>
                         <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -471,10 +681,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-sm rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2"
+                  disabled={trialLoading}
+                  className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black text-sm rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
                 >
-                  <span>Comenzar periodo de prueba</span>
-                  <ArrowRight className="w-4 h-4" />
+                  {trialLoading ? (
+                    <>
+                      <RotateCw className="w-4 h-4 animate-spin" />
+                      <span>Verificando dispositivo...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Comenzar periodo de prueba</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
 
@@ -495,17 +715,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
           {/* VIA 2: REGISTER / LOGIN + STRIPE */}
           {activeTab === 'user' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
                 <div className="flex items-center space-x-3">
                   <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
                     <CreditCard className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-lg font-black text-white">
-                      {isRegister ? 'Registro de Usuario' : 'Iniciar Sesión'}
+                      {isRegister ? 'Registro de Nueva Cuenta' : 'Iniciar Sesión'}
                     </h3>
                     <p className="text-xs text-slate-400">
-                      {isRegister ? 'Cuestionario de alta (Próximamente)' : 'Ingresa con tus credenciales guardadas'}
+                      {isRegister ? 'Elige tu plan y completa tus datos de acceso' : 'Ingresa con tu correo y contraseña registrados'}
                     </p>
                   </div>
                 </div>
@@ -515,41 +735,214 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   onClick={() => {
                     setIsRegister(!isRegister);
                     setUserError(null);
+                    setExpiredNotice(null);
                   }}
-                  className="text-xs text-indigo-300 font-bold hover:text-white bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 px-3 py-1.5 rounded-xl transition"
+                  className="text-xs text-indigo-300 font-bold hover:text-white bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 px-3 py-1.5 rounded-xl transition self-start sm:self-auto cursor-pointer"
                 >
-                  {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿Aún no estás registrado? Regístrate'}
+                  {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Crear cuenta nueva'}
                 </button>
               </div>
 
+              {/* Selector de Planes (Visible en Registro) */}
+              {isRegister && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-black uppercase tracking-wider text-slate-300">
+                      1. Elige tu Modalidad de Suscripción:
+                    </label>
+                    <span className="text-[11px] text-slate-400">
+                      Pasarela oficial y segura vía Stripe
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                    {PLANS.map((plan) => {
+                      const isSelected = selectedPlan === plan.id;
+                      const isFounder = plan.id === 'fundador';
+                      const isAnual = plan.id === 'anual';
+                      const isAgotado = isFounder && founderStats.agotado;
+
+                      return (
+                        <div
+                          key={plan.id}
+                          onClick={() => {
+                            if (!isAgotado) {
+                              setSelectedPlan(plan.id);
+                            }
+                          }}
+                          className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between cursor-pointer border ${
+                            isAgotado
+                              ? 'bg-slate-900/30 border-slate-800 opacity-60 cursor-not-allowed'
+                              : isSelected
+                              ? isFounder
+                                ? 'bg-gradient-to-b from-amber-500/15 via-slate-900 to-slate-950 border-amber-400 shadow-2xl shadow-amber-500/15 ring-2 ring-amber-400/50 scale-[1.01]'
+                                : isAnual
+                                ? 'bg-gradient-to-b from-blue-500/15 via-slate-900 to-slate-950 border-blue-500 shadow-2xl shadow-blue-500/15 ring-2 ring-blue-500/50 scale-[1.01]'
+                                : 'bg-gradient-to-b from-indigo-500/15 via-slate-900 to-slate-950 border-indigo-400 shadow-2xl shadow-indigo-500/15 ring-2 ring-indigo-400/50 scale-[1.01]'
+                              : 'bg-slate-900/70 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
+                          }`}
+                        >
+                          {/* Badge Flotante Superior */}
+                          <div className="min-h-[26px] mb-2 flex items-center justify-between">
+                            {isAgotado ? (
+                              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40">
+                                Agotado (30/30)
+                              </span>
+                            ) : plan.badge ? (
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${plan.badgeColor || 'bg-blue-600 text-white border-blue-400'}`}>
+                                {plan.badge}
+                              </span>
+                            ) : (
+                              <span />
+                            )}
+
+                            {isSelected && !isAgotado && (
+                              <span className="flex items-center space-x-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+                                <Check className="w-3 h-3 stroke-[3]" />
+                                <span>Seleccionado</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Encabezado: Título y Subtítulo */}
+                          <div className="space-y-1 mb-4">
+                            <div className="flex items-center space-x-1.5">
+                              {isFounder && <Crown className="w-5 h-5 text-amber-400 shrink-0" />}
+                              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                                {plan.name}
+                              </h3>
+                            </div>
+                            <p className="text-xs sm:text-sm text-slate-400 leading-snug min-h-[36px]">
+                              {plan.subtitle}
+                            </p>
+                          </div>
+
+                          {/* Bloque de Precio Gigante */}
+                          <div className="mb-4 pb-4 border-b border-slate-800/80">
+                            <div className="flex items-baseline space-x-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                                {plan.priceDisplay}
+                              </span>
+                              <span className="text-sm sm:text-base font-bold text-slate-300">
+                                {plan.periodDisplay}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-1 font-medium">
+                              {plan.taxNote}
+                            </p>
+
+                            {/* Píldoras de Ahorro */}
+                            {(plan.pill1 || plan.pill2) && (
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                {plan.pill1 && (
+                                  <span className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 text-xs font-extrabold">
+                                    {plan.pill1}
+                                  </span>
+                                )}
+                                {plan.pill2 && (
+                                  <span className="px-2.5 py-1 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-black">
+                                    {plan.pill2}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Badge de Plazas para Fundador */}
+                            {isFounder && !isAgotado && (
+                              <div className="mt-3 px-3 py-1.5 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center space-x-2">
+                                <Flame className="w-4 h-4 text-amber-400 shrink-0 animate-bounce" />
+                                <span className="text-xs font-black text-amber-300">
+                                  ¡Quedan {founderStats.plazasRestantes} de {founderStats.maxFundadores} plazas!
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Lista de Características con Checks */}
+                          <div className="space-y-2.5 mb-6 flex-1">
+                            {plan.features.map((feature, fIdx) => (
+                              <div key={fIdx} className="flex items-start space-x-2.5">
+                                <div className="mt-0.5 p-0.5 rounded-full bg-emerald-500/20 text-emerald-400 shrink-0">
+                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                </div>
+                                <span className={`text-xs sm:text-sm leading-tight ${feature === 'Precio Fundador para siempre' ? 'font-black text-amber-300' : 'text-slate-200'}`}>
+                                  {feature}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Botón Suscribirme dentro de la tarjeta */}
+                          <div className="space-y-2 pt-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!isAgotado) {
+                                  setSelectedPlan(plan.id);
+                                }
+                              }}
+                              className={`w-full py-3 rounded-xl font-black text-sm transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer ${
+                                isAgotado
+                                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                  : isSelected
+                                  ? isFounder
+                                    ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/25 hover:brightness-110'
+                                    : isAnual
+                                    ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30'
+                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
+                                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                              }`}
+                            >
+                              <span>{isSelected ? 'Plan Seleccionado' : 'Suscribirme'}</span>
+                              {isSelected && <ArrowRight className="w-4 h-4" />}
+                            </button>
+
+                            {/* Nota de Renovación al pie */}
+                            <p className="text-[11px] text-slate-400 text-center leading-tight">
+                              {plan.footerNote}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleUserSubmit} className="space-y-4">
                 {isRegister && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-300 mb-1.5">
-                        Nombre:
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Tu nombre"
-                        value={userNombre}
-                        onChange={(e) => setUserNombre(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase text-slate-300 mb-1.5">
-                        Apellidos:
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Tus apellidos"
-                        value={userApellidos}
-                        onChange={(e) => setUserApellidos(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
-                      />
+                  <div className="border-t border-slate-800/80 pt-4">
+                    <label className="block text-xs font-black uppercase tracking-wider text-slate-300 mb-3">
+                      2. Datos del Docente:
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                          Nombre:
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Tu nombre"
+                          value={userNombre}
+                          onChange={(e) => setUserNombre(e.target.value)}
+                          className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                          Apellidos:
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Tus apellidos"
+                          value={userApellidos}
+                          onChange={(e) => setUserApellidos(e.target.value)}
+                          className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -578,13 +971,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   <div className="relative">
                     <Lock className="w-5 h-5 text-slate-500 absolute left-3.5 top-3" />
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••"
                       value={userPassword}
                       onChange={(e) => setUserPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
+                      className="w-full pl-11 pr-11 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-400 transition"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-3 text-slate-400 hover:text-white transition cursor-pointer"
+                      title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
                   </div>
                 </div>
 
@@ -593,7 +994,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                     <input 
                       type="checkbox" 
                       required 
-                      className="mt-1 w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900" 
+                      className="mt-1 w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer" 
                     />
                     <label className="text-xs text-slate-300 leading-relaxed">
                       He leído y acepto los <a href="https://crea-ef.es/terminos-y-condiciones.html" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 hover:underline font-semibold">Términos y Condiciones</a> y la <a href="https://crea-ef.es/privacidad.html" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 hover:underline font-semibold">Política de Privacidad</a>.
@@ -610,12 +1011,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2"
+                  disabled={userLoading}
+                  className="w-full py-3.5 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
                 >
-                  {isRegister ? (
+                  {userLoading ? (
                     <>
-                      <UserPlus className="w-4 h-4" />
-                      <span>Regístrame (Próximamente)</span>
+                      <RotateCw className="w-4 h-4 animate-spin" />
+                      <span>Procesando...</span>
+                    </>
+                  ) : isRegister ? (
+                    <>
+                      <CreditCard className="w-4 h-4" />
+                      <span>
+                        Continuar al Pago Seguro con Stripe • {PLANS.find((p) => p.id === selectedPlan)?.priceDisplay}
+                      </span>
                     </>
                   ) : (
                     <>
@@ -668,13 +1077,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                   <div className="relative">
                     <Lock className="w-5 h-5 text-slate-500 absolute left-3.5 top-3" />
                     <input
-                      type="password"
+                      type={showAdminPassword ? 'text' : 'password'}
                       required
                       placeholder="••••••••"
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-400 transition"
+                      className="w-full pl-11 pr-11 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-400 transition"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowAdminPassword(!showAdminPassword)}
+                      className="absolute right-3.5 top-3 text-slate-400 hover:text-white transition cursor-pointer"
+                      title={showAdminPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                    >
+                      {showAdminPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
                   </div>
                 </div>
 
@@ -687,7 +1104,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <UserCheck className="w-4 h-4" />
                   <span>Validar Credenciales Admin / Tester</span>
@@ -698,100 +1115,114 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
         </div>
       </main>
 
-      {/* STRIPE CHECKOUT MODAL SIMULATION */}
+      {/* STRIPE CHECKOUT MODAL & SIMULATION */}
       {showStripeCheckout && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-6 shadow-2xl relative">
             <button
               onClick={() => setShowStripeCheckout(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/30">
-                <CreditCard className="w-6 h-6" />
+              <div className="w-14 h-14 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/30">
+                <CreditCard className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-black text-white">Pasarela de Pago Stripe</h3>
               <p className="text-xs text-slate-400">
-                Estado de suscripción: <span className="text-amber-400 font-bold">Pendiente</span>
+                Plan seleccionado:{' '}
+                <span className="text-indigo-300 font-extrabold">
+                  {PLANS.find((p) => p.id === selectedPendingPlan)?.name || 'Suscripción Crea-EF'}
+                </span>
               </p>
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-3">
-              <div className="flex justify-between items-center text-xs text-slate-300">
-                <span>Pago Único por App Ilimitada Crea-Ef</span>
-                <span className="font-extrabold text-amber-400 text-sm">(Próximamente)</span>
+            {expiredNotice && (
+              <div className="p-3 bg-amber-950/70 border border-amber-500/40 rounded-2xl text-xs text-amber-200 flex items-start space-x-2.5">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <p>{expiredNotice}</p>
               </div>
-              <p className="text-[11px] text-slate-400">
-                Acceso completo e ilimitado para siempre a la herramienta de Situaciones de Aprendizaje de EF, Banco de Juegos, exportaciones y adaptaciones LOMLOE / DUA.
-              </p>
+            )}
+
+            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-300 font-medium">Importe a abonar:</span>
+                <span className="font-black text-white text-base">
+                  {PLANS.find((p) => p.id === selectedPendingPlan)?.priceDisplay}{' '}
+                  <span className="text-xs text-slate-400 font-normal">
+                    {PLANS.find((p) => p.id === selectedPendingPlan)?.periodDisplay}
+                  </span>
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-xs border-t border-slate-800/80 pt-2">
+                <span className="text-slate-400">Usuario registrado:</span>
+                <span className="font-mono text-indigo-300 text-xs truncate max-w-[200px]">
+                  {currentUserPending}
+                </span>
+              </div>
             </div>
 
             {paymentSuccess ? (
-              <div className="p-4 bg-emerald-950/80 border border-emerald-500/50 rounded-2xl text-emerald-200 text-center space-y-2">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-                <p className="font-extrabold text-sm">¡Pago Confirmado por Stripe!</p>
-                <p className="text-xs text-emerald-300">
-                  Tu estado se ha actualizado a "Pagado". Puedes iniciar sesión con tu usuario y contraseña.
+              <div className="p-5 bg-emerald-950/80 border border-emerald-500/50 rounded-2xl text-emerald-200 text-center space-y-3">
+                <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
+                <p className="font-extrabold text-base text-white">¡Pago Confirmado Exitosamente!</p>
+                <p className="text-xs text-emerald-300 leading-relaxed">
+                  Tu suscripción ha quedado activa en el sistema. Ya puedes iniciar sesión con tu correo y contraseña para disfrutar de acceso ilimitado.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowStripeCheckout(false);
+                    setIsRegister(false);
+                    setUserEmail(currentUserPending || '');
+                  }}
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition cursor-pointer"
+                >
+                  Iniciar Sesión Ahora
+                </button>
               </div>
             ) : (
               <div className="space-y-3">
                 <a
-                  href={stripeCheckoutUrl || `https://buy.stripe.com/test_dRm4gyaoG0Ft8gV7iy8Vi01?prefilled_email=${encodeURIComponent(currentUserPending || '')}`}
+                  href={stripeCheckoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2"
+                  className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <CreditCard className="w-4 h-4" />
-                  <span>Abrir Pasarela de Pago Stripe</span>
+                  <span>Abrir Pasarela de Pago Seguro Stripe</span>
                 </a>
+
                 <p className="text-[11px] text-slate-400 text-center leading-relaxed">
-                  Una vez realizado el pago, Stripe notificará a la app y tu usuario quedará activo automáticamente para que puedas acceder con tus credenciales.
+                  Una vez realizado el pago, Stripe notificará a la plataforma y tu suscripción quedará activa automáticamente.
                 </p>
+
+                {/* Simulador de Pago para Entorno Local / Desarrollo */}
+                <div className="p-3 bg-slate-950/80 rounded-2xl border border-slate-800 text-center space-y-2 mt-2">
+                  <div className="text-[10px] uppercase font-black tracking-widest text-slate-400">
+                    Herramienta de Prueba Local
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSimulatePaymentLocal}
+                    className="w-full py-2 bg-slate-800 hover:bg-emerald-950/60 hover:text-emerald-300 hover:border-emerald-500/40 border border-slate-700 text-slate-300 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center space-x-1.5"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Simular Pago Confirmado (Prueba Local)</span>
+                  </button>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => setShowStripeCheckout(false)}
-                  className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition"
+                  className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition cursor-pointer"
                 >
-                  Volver al Inicio de Sesión
+                  Cerrar
                 </button>
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* COMING SOON MODAL */}
-      {showComingSoonModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-6 shadow-2xl relative text-center">
-            <button
-              onClick={() => setShowComingSoonModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/30">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-black text-white">¡Próximamente!</h3>
-            <p className="text-sm text-slate-400">
-              El registro de nuevas cuentas estará disponible muy pronto. 
-              Mientras tanto, puedes probar la app en el <strong>Periodo de Prueba</strong> (Vía 1).
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setShowComingSoonModal(false);
-                setActiveTab('trial');
-              }}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm rounded-xl transition"
-            >
-              Ir al Periodo de Prueba
-            </button>
           </div>
         </div>
       )}

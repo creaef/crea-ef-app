@@ -14,7 +14,7 @@ import * as XLSX from 'xlsx';
 import { formatGameDescription } from './src/types';
 import { getNormativaForEtapa } from './src/utils/documentHeader';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
 
 dotenv.config();
@@ -247,75 +247,348 @@ function safeParseAIJson<T = any>(text: string | undefined | null, defaultValue:
   }
 }
 
-// --- PERSISTENCE MOVED TO FIRESTORE ---
+// --- PERSISTENCE & TRIAL CONTROLLER IN FIRESTORE ---
 
-const trialStore = new Map<string, { count: number; lastAccess: Date }>();
-
-// Vía 1: Trial (Doble Validación)
-app.post('/api/auth/trial', (req, res) => {
-  const { email, deviceCount } = req.body;
+// Vía 1: Trial Blindado con Device Fingerprint (indestructible contra Modo Incógnito)
+app.post('/api/auth/trial', async (req, res) => {
+  const { email, deviceId, deviceCount } = req.body;
   if (!email) return res.status(400).json({ error: 'Email requerido' });
 
   const cleanEmail = String(email).trim().toLowerCase();
-  let record = trialStore.get(cleanEmail);
+  const cleanDeviceId = String(deviceId || 'generic_device').trim();
 
-  if (!record) {
-    record = { count: Math.max(0, Number(deviceCount) || 0), lastAccess: new Date() };
-    trialStore.set(cleanEmail, record);
-  }
+  try {
+    const deviceRef = doc(db, 'trial_devices', cleanDeviceId);
+    const userTrialRef = doc(db, 'trial_users', cleanEmail);
 
-  if (record.count >= 3 || Number(deviceCount) >= 3) {
-    return res.status(403).json({
-      blocked: true,
-      message: 'Límite máximo de 3 Situaciones de Aprendizaje de prueba alcanzado en este email o dispositivo.',
-      generacionesUsadas: record.count,
+    const [deviceSnap, userSnap] = await Promise.all([
+      getDoc(deviceRef),
+      getDoc(userTrialRef),
+    ]);
+
+    const deviceData = deviceSnap.exists() ? deviceSnap.data() : null;
+    const userData = userSnap.exists() ? userSnap.data() : null;
+
+    const deviceGeneraciones = deviceData?.count ?? Math.max(0, Number(deviceCount) || 0);
+    const userGeneraciones = userData?.count ?? 0;
+    const effectiveCount = Math.max(deviceGeneraciones, userGeneraciones);
+
+    // 1. Bloqueo si el dispositivo ya consumió el límite de 3 SdAs (incluso en incógnito)
+    if (deviceGeneraciones >= 3) {
+      const associatedEmail = deviceData?.emails?.[0] || 'otra cuenta';
+      return res.status(403).json({
+        blocked: true,
+        message: `Este dispositivo ya ha consumido las 3 Situaciones de Aprendizaje de prueba gratuitas (incluso en modo incógnito). Te invitamos a registrarte y elegir un plan para continuar creando sin límites.`,
+        generacionesUsadas: 3,
+        generacionesRestantes: 0,
+        associatedEmail,
+      });
+    }
+
+    // 2. Bloqueo si el email ya consumió las 3 SdAs
+    if (userGeneraciones >= 3) {
+      return res.status(403).json({
+        blocked: true,
+        message: `El correo ${cleanEmail} ya ha alcanzado el límite máximo de 3 SdAs de prueba. Por favor, regístrate en la Vía 2 para obtener acceso completo.`,
+        generacionesUsadas: 3,
+        generacionesRestantes: 0,
+      });
+    }
+
+    // 3. Registrar o actualizar uso en Firestore
+    const newCount = effectiveCount;
+    const deviceEmails: string[] = deviceData?.emails || [];
+    if (!deviceEmails.includes(cleanEmail)) {
+      deviceEmails.push(cleanEmail);
+    }
+
+    await Promise.all([
+      setDoc(deviceRef, {
+        deviceId: cleanDeviceId,
+        count: newCount,
+        emails: deviceEmails,
+        lastAccess: new Date().toISOString(),
+      }, { merge: true }),
+      setDoc(userTrialRef, {
+        email: cleanEmail,
+        count: newCount,
+        lastDeviceId: cleanDeviceId,
+        lastAccess: new Date().toISOString(),
+      }, { merge: true }),
+    ]);
+
+    return res.json({
+      blocked: false,
+      generacionesUsadas: newCount,
+      generacionesRestantes: Math.max(0, 3 - newCount),
+    });
+  } catch (error) {
+    console.error('Error en /api/auth/trial con Firestore:', error);
+    // Fallback de seguridad en memoria si falla la conexión
+    return res.json({
+      blocked: false,
+      generacionesUsadas: Math.min(3, Number(deviceCount) || 0),
+      generacionesRestantes: Math.max(0, 3 - (Number(deviceCount) || 0)),
     });
   }
-
-  record.count += 1;
-  record.lastAccess = new Date();
-
-  return res.json({
-    blocked: false,
-    generacionesUsadas: record.count,
-    generacionesRestantes: Math.max(0, 3 - record.count),
-  });
 });
 
-// Vía 2: Confirmar Pago Stripe (Webhook oficial y confirmación por URL)
-app.post('/api/stripe/webhook', async (req, res) => {
-  const event = req.body;
-  const email =
-    event?.data?.object?.customer_details?.email ||
-    event?.data?.object?.customer_email ||
-    event?.data?.object?.email ||
-    event?.email;
+// Endpoint para incrementar el conteo de prueba cuando se crea o guarda una SdA
+app.post('/api/auth/trial/increment', async (req, res) => {
+  const { email, deviceId } = req.body;
+  if (!email || !deviceId) return res.status(400).json({ error: 'Email y deviceId requeridos' });
 
-  if (email) {
-    const cleanEmail = String(email).trim().toLowerCase();
-    const userRef = doc(db, 'users', cleanEmail);
-    try {
-      await setDoc(userRef, { estadoPago: 'Pagado', email: cleanEmail, password: '123' }, { merge: true });
-      console.log(`[Stripe Webhook] Usuario ${cleanEmail} actualizado a estado Pagado en Firestore.`);
-    } catch (e) {
-      console.error(`[Stripe Webhook] Error actualizando usuario ${cleanEmail} en Firestore:`, e);
-    }
+  const cleanEmail = String(email).trim().toLowerCase();
+  const cleanDeviceId = String(deviceId).trim();
+
+  try {
+    const deviceRef = doc(db, 'trial_devices', cleanDeviceId);
+    const userTrialRef = doc(db, 'trial_users', cleanEmail);
+
+    const [deviceSnap, userSnap] = await Promise.all([
+      getDoc(deviceRef),
+      getDoc(userTrialRef),
+    ]);
+
+    const currentDeviceCount = deviceSnap.exists() ? (deviceSnap.data().count || 0) : 0;
+    const currentUserCount = userSnap.exists() ? (userSnap.data().count || 0) : 0;
+    const newCount = Math.max(currentDeviceCount, currentUserCount) + 1;
+
+    await Promise.all([
+      setDoc(deviceRef, { count: newCount, lastAccess: new Date().toISOString() }, { merge: true }),
+      setDoc(userTrialRef, { count: newCount, lastAccess: new Date().toISOString() }, { merge: true }),
+    ]);
+
+    return res.json({
+      success: true,
+      generacionesUsadas: newCount,
+      generacionesRestantes: Math.max(0, 3 - newCount),
+      blocked: newCount >= 3,
+    });
+  } catch (error) {
+    console.error('Error incrementing trial count:', error);
+    return res.status(500).json({ error: 'Error actualizando contador' });
   }
-  res.json({ received: true });
 });
 
-app.post('/api/auth/user/confirm-payment', async (req, res) => {
+// Contador en vivo de Fundadores (Límite estricto de 30)
+app.get('/api/auth/founder-stats', async (_req, res) => {
+  try {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('plan', '==', 'fundador'), where('estadoPago', '==', 'Pagado'));
+    const snapshot = await getDocs(q);
+    const totalFundadores = snapshot.size;
+    const maxFundadores = 30;
+    const plazasRestantes = Math.max(0, maxFundadores - totalFundadores);
+
+    return res.json({
+      totalFundadores,
+      maxFundadores,
+      plazasRestantes,
+      agotado: totalFundadores >= maxFundadores,
+    });
+  } catch (err) {
+    console.error('Error consultando estadísticas de fundadores:', err);
+    // En caso de fallo devolvemos valores por defecto
+    return res.json({
+      totalFundadores: 0,
+      maxFundadores: 30,
+      plazasRestantes: 30,
+      agotado: false,
+    });
+  }
+});
+
+// Comprobar si la suscripción de un usuario sigue activa y no ha vencido
+app.post('/api/auth/user/check-subscription', async (req, res) => {
   const { email } = req.body;
   const cleanEmail = String(email || '').trim().toLowerCase();
   if (!cleanEmail) return res.status(400).json({ error: 'Email requerido' });
 
-  const userRef = doc(db, 'users', cleanEmail);
   try {
-    await setDoc(userRef, { estadoPago: 'Pagado', email: cleanEmail }, { merge: true });
-    return res.json({ success: true, estadoPago: 'Pagado', email: cleanEmail });
+    const userRef = doc(db, 'users', cleanEmail);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const userData = snap.data();
+    const now = Date.now();
+    let isExpired = false;
+
+    // Si tiene fecha de vencimiento definida, comprobar si ya pasó
+    if (userData.currentPeriodEnd) {
+      const periodEndTime = new Date(userData.currentPeriodEnd).getTime();
+      if (now > periodEndTime) {
+        isExpired = true;
+        // Marcar como Caducado en base de datos
+        if (userData.estadoPago === 'Pagado') {
+          await setDoc(userRef, { estadoPago: 'Caducado' }, { merge: true });
+          userData.estadoPago = 'Caducado';
+        }
+      }
+    }
+
+    return res.json({
+      email: cleanEmail,
+      estadoPago: isExpired ? 'Caducado' : userData.estadoPago,
+      plan: userData.plan || 'mensual',
+      currentPeriodEnd: userData.currentPeriodEnd || null,
+      isExpired,
+      subscriptionStatus: userData.subscriptionStatus || 'active',
+    });
+  } catch (err) {
+    console.error('Error comprobando suscripción:', err);
+    return res.status(500).json({ error: 'Error comprobando suscripción' });
+  }
+});
+
+// Vía 2: Webhook oficial de Stripe para los 3 Planes y control de ciclo de vida
+app.post('/api/stripe/webhook', async (req, res) => {
+  const event = req.body;
+  const eventType = event?.type || 'checkout.session.completed';
+  const dataObj = event?.data?.object || event;
+
+  const email =
+    dataObj?.customer_details?.email ||
+    dataObj?.customer_email ||
+    dataObj?.email ||
+    event?.email;
+
+  if (!email) {
+    return res.json({ received: true, note: 'No email found in event' });
+  }
+
+  const cleanEmail = String(email).trim().toLowerCase();
+  const userRef = doc(db, 'users', cleanEmail);
+
+  try {
+    // 1. Identificar el Plan contratado según metadata, producto o monto
+    // Mensual: ~13€ | Anual: ~75€ | Fundador: ~59€
+    let plan = dataObj?.metadata?.plan || 'mensual';
+    const amountTotal = dataObj?.amount_total || dataObj?.amount_paid || 0;
+    if (amountTotal >= 7000) {
+      plan = 'anual';
+    } else if (amountTotal >= 5000 && amountTotal < 7000) {
+      plan = 'fundador';
+    } else if (amountTotal > 0 && amountTotal < 2000) {
+      plan = 'mensual';
+    }
+
+    // 2. Calcular fecha de fin de periodo (próxima renovación)
+    // Mensual: 30 días | Anual / Fundador: 365 días
+    const now = new Date();
+    const periodEnd = new Date(now);
+    if (plan === 'mensual') {
+      periodEnd.setDate(periodEnd.getDate() + 32); // 32 días de margen para facturación mensual
+    } else {
+      periodEnd.setDate(periodEnd.getDate() + 366); // 366 días para suscripción anual / fundador
+    }
+
+    if (eventType === 'checkout.session.completed' || eventType === 'invoice.payment_succeeded') {
+      await setDoc(userRef, {
+        estadoPago: 'Pagado',
+        plan,
+        subscriptionStatus: 'active',
+        currentPeriodEnd: periodEnd.toISOString(),
+        lastPaymentDate: now.toISOString(),
+        stripeCustomerId: dataObj?.customer || null,
+        stripeSubscriptionId: dataObj?.subscription || null,
+        updatedAt: now.toISOString(),
+      }, { merge: true });
+
+      console.log(`[Stripe Webhook] Pago exitoso para ${cleanEmail}. Plan: ${plan}, Fin de periodo: ${periodEnd.toISOString()}`);
+    } else if (eventType === 'invoice.payment_failed') {
+      // El cobro del mes o año siguiente falló (tarjeta caducada o sin fondos)
+      await setDoc(userRef, {
+        estadoPago: 'Pendiente',
+        subscriptionStatus: 'past_due',
+        updatedAt: now.toISOString(),
+      }, { merge: true });
+      console.warn(`[Stripe Webhook] Pago fallido para ${cleanEmail}. Estado actualizado a Pendiente/past_due.`);
+    } else if (eventType === 'customer.subscription.deleted') {
+      // Suscripción cancelada
+      await setDoc(userRef, {
+        estadoPago: 'Caducado',
+        subscriptionStatus: 'canceled',
+        updatedAt: now.toISOString(),
+      }, { merge: true });
+      console.log(`[Stripe Webhook] Suscripción cancelada para ${cleanEmail}.`);
+    }
+
+    return res.json({ received: true, email: cleanEmail, plan });
+  } catch (e) {
+    console.error(`[Stripe Webhook] Error procesando evento para ${cleanEmail}:`, e);
+    return res.status(500).json({ error: 'Error procesando webhook' });
+  }
+});
+
+// Endpoint de confirmación manual / simulación para desarrollo local
+app.post('/api/auth/user/confirm-payment', async (req, res) => {
+  const { email, plan = 'mensual' } = req.body;
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!cleanEmail) return res.status(400).json({ error: 'Email requerido' });
+
+  const userRef = doc(db, 'users', cleanEmail);
+  const now = new Date();
+  const periodEnd = new Date(now);
+  if (plan === 'mensual') {
+    periodEnd.setDate(periodEnd.getDate() + 32);
+  } else {
+    periodEnd.setDate(periodEnd.getDate() + 366);
+  }
+
+  try {
+    await setDoc(userRef, {
+      estadoPago: 'Pagado',
+      email: cleanEmail,
+      plan,
+      subscriptionStatus: 'active',
+      currentPeriodEnd: periodEnd.toISOString(),
+      lastPaymentDate: now.toISOString(),
+      updatedAt: now.toISOString(),
+    }, { merge: true });
+
+    return res.json({
+      success: true,
+      estadoPago: 'Pagado',
+      email: cleanEmail,
+      plan,
+      currentPeriodEnd: periodEnd.toISOString(),
+    });
   } catch (e) {
     console.error(`Error confirming payment for ${cleanEmail}:`, e);
     return res.status(500).json({ error: 'Error interno guardando confirmación de pago' });
+  }
+});
+
+// Endpoint auxiliar para simular pagos en local desde el navegador
+app.post('/api/dev/simulate-payment', async (req, res) => {
+  const { email, plan = 'fundador' } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email requerido' });
+
+  const cleanEmail = String(email).trim().toLowerCase();
+  const userRef = doc(db, 'users', cleanEmail);
+  const now = new Date();
+  const periodEnd = new Date(now);
+  if (plan === 'mensual') {
+    periodEnd.setDate(periodEnd.getDate() + 32);
+  } else {
+    periodEnd.setDate(periodEnd.getDate() + 366);
+  }
+
+  try {
+    await setDoc(userRef, {
+      estadoPago: 'Pagado',
+      plan,
+      subscriptionStatus: 'active',
+      currentPeriodEnd: periodEnd.toISOString(),
+      lastPaymentDate: now.toISOString(),
+    }, { merge: true });
+
+    return res.json({ success: true, email: cleanEmail, plan, currentPeriodEnd: periodEnd.toISOString() });
+  } catch (e) {
+    return res.status(500).json({ error: 'Error simulando pago' });
   }
 });
 

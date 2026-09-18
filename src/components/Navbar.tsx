@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, FolderDown, Plus, HelpCircle, FileText, CheckCircle2, Info, LogOut, ShieldCheck, CreditCard, KeyRound, Users } from 'lucide-react';
+import { Sparkles, FolderDown, Plus, HelpCircle, FileText, CheckCircle2, Info, LogOut, ShieldCheck, CreditCard, KeyRound, Users, Crown } from 'lucide-react';
 import { SituacionAprendizaje } from '../types';
 import { HowItWorksModal } from './HowItWorksModal';
 import { SavedSdasModal } from './SavedSdasModal';
@@ -65,8 +65,22 @@ export const Navbar: React.FC<NavbarProps> = ({ currentStep, onNewSdA, savedSdas
               )}
               {userSession.type === 'user' && (
                 <>
-                  <CreditCard className="w-4 h-4 text-emerald-400" />
-                  <span className="font-bold text-emerald-300">Suscripción Activa</span>
+                  {(userSession as any).plan === 'fundador' ? (
+                    <>
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      <span className="font-extrabold text-amber-300">Socio Fundador</span>
+                    </>
+                  ) : (userSession as any).plan === 'anual' ? (
+                    <>
+                      <CreditCard className="w-4 h-4 text-sky-400" />
+                      <span className="font-bold text-sky-300">Plan Anual</span>
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4 text-emerald-400" />
+                      <span className="font-bold text-emerald-300">Plan Mensual</span>
+                    </>
+                  )}
                 </>
               )}
               {userSession.type === 'admin' && (
