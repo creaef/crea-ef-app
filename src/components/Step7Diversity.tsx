@@ -13,6 +13,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { AdaptacionNEAE, PautaDUA } from '../types';
+import { GenerationProgressModal } from './GenerationProgressModal';
 
 interface Step7Props {
   neaeSeleccionadas?: string[];
@@ -57,6 +58,9 @@ export const Step7Diversity: React.FC<Step7Props> = ({
   const [selectedCases, setSelectedCases] = useState<string[]>(neaeSeleccionadas);
   const [loadingAi, setLoadingAi] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressModalFinished, setProgressModalFinished] = useState(false);
+  const [progressModalError, setProgressModalError] = useState<string | null>(null);
 
   const toggleCase = (casuistica: string) => {
     let next: string[];
@@ -70,8 +74,11 @@ export const Step7Diversity: React.FC<Step7Props> = ({
   };
 
   const handleGenerateDiversityAI = async () => {
-    setLoadingAi(true);
     setErrorMsg(null);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
+    setLoadingAi(true);
     try {
       const res = await fetch('/api/ai/generate-diversity', {
         method: 'POST',
@@ -94,9 +101,16 @@ export const Step7Diversity: React.FC<Step7Props> = ({
       if (data.pautasDUA) {
         setPautasDUA(data.pautasDUA);
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e.message || 'Error al conectar con la IA.');
+      setProgressModalError(e.message || 'Error al conectar con la IA.');
     } finally {
       setLoadingAi(false);
     }
@@ -297,6 +311,18 @@ export const Step7Diversity: React.FC<Step7Props> = ({
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Generation Progress Modal (IA) */}
+      <GenerationProgressModal
+        isOpen={isProgressModalOpen}
+        type="diversity"
+        isFinished={progressModalFinished}
+        error={progressModalError}
+        onClose={() => {
+          setIsProgressModalOpen(false);
+          setProgressModalError(null);
+        }}
+      />
     </div>
   );
 };

@@ -139,9 +139,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('fundador');
   const [founderStats, setFounderStats] = useState({
-    totalFundadores: 0,
+    totalFundadores: 11,
     maxFundadores: 30,
-    plazasRestantes: 30,
+    plazasRestantes: 19,
     agotado: false,
   });
   const [userNombre, setUserNombre] = useState('');

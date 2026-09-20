@@ -15,6 +15,7 @@ import {
 import { InstrumentoEvaluacion, ElementoRubrica, SesionTrabajo, EtapaEducativa } from '../types';
 import { TODOS_LOS_CRITERIOS } from '../utils/curriculumHelpers';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
+import { GenerationProgressModal, GenerationType } from './GenerationProgressModal';
 
 interface Step8Props {
   evaluacionInicial: string;
@@ -70,6 +71,13 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
   const [loadingSessionRubricAi, setLoadingSessionRubricAi] = useState(false);
   const [errorAi, setErrorAi] = useState<string | null>(null);
 
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressModalFinished, setProgressModalFinished] = useState(false);
+  const [progressModalError, setProgressModalError] = useState<string | null>(null);
+  const [progressModalType, setProgressModalType] = useState<GenerationType>('rubric');
+  const [progressModalTitle, setProgressModalTitle] = useState<string | undefined>(undefined);
+  const [progressModalSubtitle, setProgressModalSubtitle] = useState<string | undefined>(undefined);
+
   const parseResponseJson = async (res: Response) => {
     const text = await res.text();
     if (!text || !text.trim()) {
@@ -88,6 +96,12 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       return;
     }
     setErrorAi(null);
+    setProgressModalType('session-rubric');
+    setProgressModalTitle(undefined);
+    setProgressModalSubtitle(undefined);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setLoadingSessionRubricAi(true);
 
     try {
@@ -108,9 +122,16 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           setSelectedTools((prev) => [...prev, 'Rúbrica de Evaluación Criterial (4 Niveles)']);
         }
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (err: any) {
       console.error(err);
       setErrorAi(err.message || 'Error al generar la rúbrica por sesiones.');
+      setProgressModalError(err.message || 'Error al generar la rúbrica por sesiones.');
     } finally {
       setLoadingSessionRubricAi(false);
     }
@@ -129,6 +150,12 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
 
   const handleGenerateEvaluationAI = async () => {
     setErrorAi(null);
+    setProgressModalType('rubric');
+    setProgressModalTitle(undefined);
+    setProgressModalSubtitle(undefined);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setLoadingAi(true);
 
     try {
@@ -179,9 +206,16 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           setRubrica(dataRubric.rubrica);
         }
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (err: any) {
       console.error(err);
       setErrorAi(err.message || 'Error al generar la evaluación con IA.');
+      setProgressModalError(err.message || 'Error al generar la evaluación con IA.');
     } finally {
       setLoadingAi(false);
     }
@@ -292,8 +326,15 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
   };
 
   const handleGenerateInitialEvalAI = async () => {
-    setLoadingInitialAi(true);
     setErrorAi(null);
+    setProgressModalType('rubric');
+    setProgressModalTitle('Redactando evaluación diagnóstica / inicial');
+    setProgressModalSubtitle('Elaborando preguntas clave, sondeo motor y registro inicial...');
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
+    setLoadingInitialAi(true);
+
     try {
       const res = await fetch('/api/ai/generate-initial-eval', {
         method: 'POST',
@@ -313,9 +354,16 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
       if (data.evaluacionInicial) {
         setEvaluacionInicial(data.evaluacionInicial);
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (e: any) {
       console.error(e);
       setErrorAi(e.message || 'Error al generar la evaluación inicial.');
+      setProgressModalError(e.message || 'Error al generar la evaluación inicial.');
     } finally {
       setLoadingInitialAi(false);
     }
@@ -1372,6 +1420,20 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Generation Progress Modal (IA) */}
+      <GenerationProgressModal
+        isOpen={isProgressModalOpen}
+        type={progressModalType}
+        customTitle={progressModalTitle}
+        customSubtitle={progressModalSubtitle}
+        isFinished={progressModalFinished}
+        error={progressModalError}
+        onClose={() => {
+          setIsProgressModalOpen(false);
+          setProgressModalError(null);
+        }}
+      />
     </div>
   );
 };

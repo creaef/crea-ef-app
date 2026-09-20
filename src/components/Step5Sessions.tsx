@@ -34,6 +34,7 @@ import {
 import { GoogleDriveSelectorModal } from './GoogleDriveSelectorModal';
 import { ExcelGameDatabaseModal } from './ExcelGameDatabaseModal';
 import { LocalFilesModal } from './LocalFilesModal';
+import { GenerationProgressModal, GenerationType } from './GenerationProgressModal';
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
 import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
 import { downloadDuaCardsPdf, downloadAcrosportCardsPdf } from '../utils/cardDecksPdf';
@@ -139,12 +140,24 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   };
 
   const [enrichingSession, setEnrichingSession] = useState<boolean>(false);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressModalFinished, setProgressModalFinished] = useState(false);
+  const [progressModalError, setProgressModalError] = useState<string | null>(null);
+  const [progressModalType, setProgressModalType] = useState<GenerationType>('sessions');
+  const [progressModalTitle, setProgressModalTitle] = useState<string | undefined>(undefined);
+  const [progressModalSubtitle, setProgressModalSubtitle] = useState<string | undefined>(undefined);
 
   const handleEnrichFullSession = async () => {
     const copy = [...sesiones];
     const targetSession = copy[activeSessionIndex];
     if (!targetSession) return;
 
+    setProgressModalType('sessions');
+    setProgressModalTitle(`Enriqueciendo y completando Sesión ${activeSessionIndex + 1}`);
+    setProgressModalSubtitle('Optimizando tiempos, variantes inclusivas y materiales...');
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setEnrichingSession(true);
     setErrorDrive(null);
     try {
@@ -169,10 +182,17 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         }
         setSesiones(copy);
         setSuccessDrive(`✓ Sesión ${activeSessionIndex + 1} completada y enriquecida con éxito por la IA.`);
+
+        setProgressModalFinished(true);
+        setTimeout(() => {
+          setIsProgressModalOpen(false);
+          setProgressModalFinished(false);
+        }, 700);
       }
     } catch (err: any) {
       console.error(err);
       setErrorDrive(err.message || 'No se pudo enriquecer la sesión completa.');
+      setProgressModalError(err.message || 'No se pudo enriquecer la sesión completa.');
     } finally {
       setEnrichingSession(false);
     }
@@ -378,6 +398,12 @@ export const Step5Sessions: React.FC<Step5Props> = ({
 
   // Generate sessions with AI (reading Drive documentation if available)
   const handleGenerateSessionsAI = async () => {
+    setProgressModalType('sessions');
+    setProgressModalTitle(undefined);
+    setProgressModalSubtitle(undefined);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setLoadingAi(true);
     setErrorDrive(null);
     try {
@@ -417,10 +443,17 @@ export const Step5Sessions: React.FC<Step5Props> = ({
           setFuentesUtilizadas(data.fuentesUtilizadas);
         }
         setActiveSessionIndex(0);
+
+        setProgressModalFinished(true);
+        setTimeout(() => {
+          setIsProgressModalOpen(false);
+          setProgressModalFinished(false);
+        }, 700);
       }
     } catch (e: any) {
       console.error(e);
       setErrorDrive(e.message || 'Error al generar las sesiones.');
+      setProgressModalError(e.message || 'Error al generar las sesiones.');
     } finally {
       setLoadingAi(false);
     }
@@ -1331,6 +1364,20 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         isOpen={isLocalFilesModalOpen}
         onClose={() => setIsLocalFilesModalOpen(false)}
         onAddLocalDocumentation={handleAddLocalDocumentation}
+      />
+
+      {/* Generation Progress Modal (IA) */}
+      <GenerationProgressModal
+        isOpen={isProgressModalOpen}
+        type={progressModalType}
+        customTitle={progressModalTitle}
+        customSubtitle={progressModalSubtitle}
+        isFinished={progressModalFinished}
+        error={progressModalError}
+        onClose={() => {
+          setIsProgressModalOpen(false);
+          setProgressModalError(null);
+        }}
       />
     </div>
   );

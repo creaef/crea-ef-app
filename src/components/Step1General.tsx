@@ -18,6 +18,7 @@ import { getCicloFromCurso } from '../utils/sdaGenerator';
 import { LISTA_UNIFICADA_TEMATICAS } from '../data/proposedThemes';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { GenerationProgressModal } from './GenerationProgressModal';
 
 interface Step1Props {
   comunidad: ComunidadAutonoma;
@@ -71,6 +72,9 @@ export const Step1General: React.FC<Step1Props> = ({
 }) => {
   const [loadingAi, setLoadingAi] = useState(false);
   const [errorAi, setErrorAi] = useState<string | null>(null);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressModalFinished, setProgressModalFinished] = useState(false);
+  const [progressModalError, setProgressModalError] = useState<string | null>(null);
 
 
   // Parse current tematica into an array of selected theme ideas
@@ -137,6 +141,9 @@ export const Step1General: React.FC<Step1Props> = ({
       return;
     }
     setErrorAi(null);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setLoadingAi(true);
 
     try {
@@ -162,9 +169,16 @@ export const Step1General: React.FC<Step1Props> = ({
       if (data.justificacion) {
         setJustificacion(data.justificacion);
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (err: any) {
       console.error(err);
       setErrorAi(err.message || 'Error al conectar con la IA de Gemini.');
+      setProgressModalError(err.message || 'Error al conectar con la IA de Gemini.');
     } finally {
       setLoadingAi(false);
     }
@@ -569,7 +583,17 @@ export const Step1General: React.FC<Step1Props> = ({
         </button>
       </div>
 
-
+      {/* Generation Progress Modal (IA) */}
+      <GenerationProgressModal
+        isOpen={isProgressModalOpen}
+        type="justification"
+        isFinished={progressModalFinished}
+        error={progressModalError}
+        onClose={() => {
+          setIsProgressModalOpen(false);
+          setProgressModalError(null);
+        }}
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Sparkles, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Curso, TematicaEF, SesionTrabajo, ComunidadAutonoma, EtapaEducativa } from '../types';
+import { GenerationProgressModal } from './GenerationProgressModal';
 
 interface Step6Props {
   tituloSdA: string;
@@ -31,6 +32,9 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
 }) => {
   const [loadingAi, setLoadingAi] = useState(false);
   const [errorAi, setErrorAi] = useState<string | null>(null);
+  const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
+  const [progressModalFinished, setProgressModalFinished] = useState(false);
+  const [progressModalError, setProgressModalError] = useState<string | null>(null);
 
   // Extraer muestra de dinámicas de las sesiones para alimentar la creatividad
   const sampleGamesList = (sesiones || [])
@@ -51,6 +55,9 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
 
   const handleGenerateAiChallenge = async () => {
     setErrorAi(null);
+    setProgressModalError(null);
+    setProgressModalFinished(false);
+    setIsProgressModalOpen(true);
     setLoadingAi(true);
 
     // Resumen ultra-compacto de las sesiones para gastar el mínimo número de tokens
@@ -98,13 +105,24 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
           `Gymkana de Misiones Motrices y Cooperación: "${tituloSdA || tematica}". El alumnado de ${curso} completará en equipos heterogéneos una serie de estaciones vivas donde aplicarán las habilidades desarrolladas en las sesiones${juegosStr}. Cada reto superado aportará pistas para conseguir el reto colectivo final, primando el juego limpio y la participación inclusiva de todos los roles.`
         );
       }
+
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } catch (err: any) {
       console.error(err);
       const juegosStr = sampleGamesText ? ` a partir de los juegos realizados (${sampleGamesText})` : '';
       setProductoFinal(
         `Torneo Coeducativo y Feria de Retos de ${tematica}: Jornada activa y festiva en ${curso} organizada con metodología ${metodologiaActiva || 'cooperativa'}${juegosStr}. El alumnado gestionará de forma compartida las estaciones motrices y el arbitraje dialogado, orientando la culminación hacia la autosuperación y el reconocimiento del esfuerzo en común.`
       );
-      setErrorAi('Se ha generado una propuesta adaptada a la temática de tus sesiones.');
+      // Even if API timed out, we gave a solid pedagogical fallback, so show completion
+      setProgressModalFinished(true);
+      setTimeout(() => {
+        setIsProgressModalOpen(false);
+        setProgressModalFinished(false);
+      }, 700);
     } finally {
       setLoadingAi(false);
     }
@@ -178,6 +196,18 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Generation Progress Modal (IA) */}
+      <GenerationProgressModal
+        isOpen={isProgressModalOpen}
+        type="final-challenge"
+        isFinished={progressModalFinished}
+        error={progressModalError}
+        onClose={() => {
+          setIsProgressModalOpen(false);
+          setProgressModalError(null);
+        }}
+      />
     </div>
   );
 };

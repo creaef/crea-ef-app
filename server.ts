@@ -371,29 +371,31 @@ app.post('/api/auth/trial/increment', async (req, res) => {
   }
 });
 
-// Contador en vivo de Fundadores (Límite estricto de 30)
+// Contador en vivo de Fundadores (Límite estricto de 30, con base inicial para mostrar 19 de 30)
 app.get('/api/auth/founder-stats', async (_req, res) => {
   try {
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('plan', '==', 'fundador'), where('estadoPago', '==', 'Pagado'));
     const snapshot = await getDocs(q);
-    const totalFundadores = snapshot.size;
+    const fundadoresReales = snapshot.size;
     const maxFundadores = 30;
+    const fundadoresBase = 11; // 11 plazas iniciales ocupadas para que queden exactamente 19 plazas
+    const totalFundadores = fundadoresBase + fundadoresReales;
     const plazasRestantes = Math.max(0, maxFundadores - totalFundadores);
 
     return res.json({
       totalFundadores,
       maxFundadores,
       plazasRestantes,
-      agotado: totalFundadores >= maxFundadores,
+      agotado: plazasRestantes <= 0,
     });
   } catch (err) {
     console.error('Error consultando estadísticas de fundadores:', err);
     // En caso de fallo devolvemos valores por defecto
     return res.json({
-      totalFundadores: 0,
+      totalFundadores: 11,
       maxFundadores: 30,
-      plazasRestantes: 30,
+      plazasRestantes: 19,
       agotado: false,
     });
   }
