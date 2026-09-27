@@ -65,13 +65,14 @@ function renderFormattedGameDescriptionReact(text: string) {
         }
 
         if (/^(?:🎵\s*)?(?:Canci[oó]n|Letra|Retah[ií]la)/i.test(trimmed) && trimmed.endsWith(':')) {
+          const cleanHeader = trimmed.replace(/^[🎵\s]+/, '');
           return (
             <div
               key={idx}
               className="inline-flex items-center gap-1 font-extrabold text-[10.5px] px-2 py-0.5 rounded border mt-2 mb-0.5 select-none text-pink-950 bg-pink-50 border-pink-200"
             >
               <span>🎵</span>
-              <span>{trimmed}</span>
+              <span>{cleanHeader}</span>
             </div>
           );
         }

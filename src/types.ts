@@ -126,9 +126,36 @@ export interface InstrumentoEvaluacion {
 }
 
 /**
+ * Deduplica líneas dentro de una sección para evitar que bucles de IA o re-formateos
+ * repitan normas, variaciones o estrofas.
+ */
+function deduplicateSectionLines(lines: string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const l of lines) {
+    const raw = l.trim();
+    if (!raw) continue;
+    // Normalizar para comparación: ignorar guiones, viñetas, mayúsculas y puntuaciones finales
+    const norm = raw
+      .toLowerCase()
+      .replace(/^[-*•]\s*/, '')
+      .replace(/\s+/g, ' ')
+      .replace(/[.,;:!¡?¿"«»]+$/g, '')
+      .replace(/^[!¡"«»]+/g, '')
+      .trim();
+    if (!norm) continue;
+    if (!seen.has(norm)) {
+      seen.add(norm);
+      result.push(raw);
+    }
+  }
+  return result;
+}
+
+/**
  * Formatea la descripción del desarrollo de un juego asegurando
  * que cada uno de los 5 apartados concisos (Terreno de juego, Roles, Desarrollo del juego, Normas, Variaciones)
- * esté presente sin redundancias, eliminando cualquier residuo como 'y normas' del inicio del desarrollo.
+ * y la sección opcional de Canción / Letra estén presentes sin duplicaciones ni redundancias.
  */
 export function formatGameDescription(text: string): string {
   if (!text || !text.trim()) return '';
@@ -214,6 +241,44 @@ export function formatGameDescription(text: string): string {
     }
   }
 
+  // Deduplicar las líneas acumuladas en cada sección para erradicar repeticiones
+  secContents[1] = deduplicateSectionLines(secContents[1]);
+  secContents[2] = deduplicateSectionLines(secContents[2]);
+  secContents[4] = deduplicateSectionLines(secContents[4]);
+  secContents[5] = deduplicateSectionLines(secContents[5]);
+
+  // Si la sección de canción tiene frases de acción motriz (ej. "Los alumnos se desplazan..."),
+  // moverlas al desarrollo (sección 3) si no están ya, y dejar sólo las estrofas en la canción
+  const songVerses: string[] = [];
+  const songActions: string[] = [];
+  for (const line of secContents[6]) {
+    const isActionPhrase = /^(?:Los\s+alumnos|El\s+alumnado|En\s+parejas|En\s+grupos|Se\s+desplazan|El\s+docente|Los\s+participantes|Cada\s+alumno|Formando\s+una\s+cadena)/i.test(line);
+    if (isActionPhrase && !line.startsWith('"') && !line.startsWith('«')) {
+      songActions.push(line);
+    } else {
+      songVerses.push(line);
+    }
+  }
+  secContents[6] = deduplicateSectionLines(songVerses);
+
+  // Limpiar Desarrollo: no repetir la letra de la canción si ya está en secContents[6]
+  const songNormSet = new Set(secContents[6].map(s => s.toLowerCase().replace(/[^a-záéíóúñ0-9]/gi, '')));
+  const cleanP3Lines: string[] = [];
+  for (const line of secContents[3]) {
+    const lineNorm = line.toLowerCase().replace(/[^a-záéíóúñ0-9]/gi, '');
+    if (lineNorm && songNormSet.has(lineNorm)) {
+      continue; // Ignorar estrofa de canción en Desarrollo porque ya va en Canción / Letra
+    }
+    cleanP3Lines.push(line);
+  }
+  // Añadir acciones de la canción a desarrollo si no estaban ya
+  for (const act of songActions) {
+    if (!cleanP3Lines.some(l => l.toLowerCase().includes(act.toLowerCase().slice(0, 25)))) {
+      cleanP3Lines.push(act);
+    }
+  }
+  secContents[3] = deduplicateSectionLines(cleanP3Lines);
+
   let p1 = secContents[1].join('\n').trim();
   let p2 = secContents[2].join('\n').trim();
   let p3 = secContents[3].join('\n').trim();
@@ -223,8 +288,10 @@ export function formatGameDescription(text: string): string {
 
   // If unsectioned content exists
   if (secContents[0].length > 0) {
-    const unsectioned = secContents[0].join('\n').trim();
-    p3 = p3 ? `${unsectioned}\n${p3}` : unsectioned;
+    const unsectioned = deduplicateSectionLines(secContents[0]).join('\n').trim();
+    if (!p3.includes(unsectioned)) {
+      p3 = p3 ? `${unsectioned}\n${p3}` : unsectioned;
+    }
   }
 
   // Clean sub-bullets that repeat the header name
@@ -287,7 +354,8 @@ export function renderFormattedGameDescriptionHtml(text: string): string {
 
       html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: ${color}; background: ${bg}; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">${icon} ${trimmed}</div>`;
     } else if (/^(?:🎵\s*)?(?:Canci[oó]n|Letra|Retah[ií]la)/i.test(trimmed) && trimmed.endsWith(':')) {
-      html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: #831843; background: #fce7f3; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">🎵 ${trimmed}</div>`;
+      const cleanHeader = trimmed.replace(/^[🎵\s]+/, '');
+      html += `<div class="game-section-badge" style="display: inline-block; font-weight: 800; color: #831843; background: #fce7f3; font-size: 10px; margin-top: 5px; margin-bottom: 2px; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; page-break-after: avoid !important; break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important;">🎵 ${cleanHeader}</div>`;
     } else if (trimmed.startsWith('"') || trimmed.startsWith('«') || (trimmed.startsWith('- ') && trimmed.includes('"'))) {
       // Letra de canción destacada
       html += `<div class="game-song-box" style="padding: 4px 8px; margin: 3px 0 4px 0; font-size: 9.5px; color: #831843; background: #fdf2f8; border-left: 3px solid #ec4899; border-radius: 4px; font-style: italic; line-height: 1.45; page-break-inside: avoid !important; break-inside: avoid !important;">${trimmed}</div>`;

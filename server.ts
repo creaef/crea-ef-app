@@ -1149,10 +1149,13 @@ El docente debe entender el juego en un solo vistazo. Ficha concisa (entre 60 y 
 - Normas: 2 viñetas clave (objetivo motor y falta/puntuación).
 - Variaciones: 1 variante rápida de progresión de dificultad.
 
-5. JUEGOS CANTADOS Y CANCIONES POPULARES (LETRA COMPLETA OBLIGATORIA):
-Si el juego es un juego cantado, canción tradicional, danza, corro o juego de comba (especialmente en Infantil y Primaria), es TERMINANTEMENTE OBLIGATORIO incluir la letra completa de la canción dentro del campo "descripcion" con el encabezado:
+5. JUEGOS CANTADOS Y CANCIONES POPULARES (CERO DUPLICACIÓN):
+Si el juego es un juego cantado, canción tradicional, danza, corro o juego de comba (especialmente en Infantil y Primaria):
+- En "Desarrollo del juego": Explica ÚNICAMENTE la dinámica motriz y las acciones físicas de los alumnos (desplazamiento, gestos, formación). ¡ESTÁ PROHIBIDO incluir la letra de la canción aquí!
+- En el apartado final con encabezado:
 🎵 Canción / Letra:
-"Escribe aquí las estrofas completas de la canción tradicional para que el docente pueda cantarla en clase."
+"Escribe aquí las estrofas completas de la canción tradicional UNA SOLA VEZ, sin repetir las instrucciones de juego ni duplicar los versos."
+- REGLA ANTI-REPETICIÓN: Cada apartado (Terreno, Roles, Desarrollo, Normas, Variaciones, Canción) debe figurar exactamente una sola vez, sin frases repetidas.
 
 6. GAMIFICACIÓN MOTRIZ TANGIBLE Y FACTIBLE (ENFOQUE DE PISTA ESCOLAR):
 Si la metodología seleccionada es Gamificación o Aprendizaje Basado en Juegos:
@@ -1751,10 +1754,13 @@ Desarrollo del juego: Explicación directa y motriz (2-3 líneas)
 Normas: 2 viñetas clave
 Variaciones: 1 variante de dificultad
 
-JUEGOS CANTADOS Y CANCIONES POPULARES:
-Si la actividad es un juego cantado, canción tradicional o corro, incluye OBLIGATORIAMENTE la letra completa bajo:
+JUEGOS CANTADOS Y CANCIONES POPULARES (CERO DUPLICACIÓN):
+Si la actividad es un juego cantado, canción tradicional o corro:
+- En "Desarrollo del juego": Explica SOLO la dinámica motriz (ej. desplazamientos, cadena, saltos). NO repitas la letra de la canción en Desarrollo.
+- Bajo el apartado:
 🎵 Canción / Letra:
-"Estrofas o letra completa para cantar en clase."
+"Estrofas o letra completa para cantar en clase, escrita una sola vez."
+- REGLA ESTRICTA DE NO-DUPLICACIÓN: NO dupliques normas, variaciones, frases explicativas ni estrofas. Si la actividad ya contiene información previa, depúrala y sintetízala en una sola estructura limpia sin concatenar duplicados.
 
 Devuelve un JSON estricto con la estructura de la sesión actualizada:
 {
