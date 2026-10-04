@@ -99,8 +99,8 @@ export const PLANS: PlanConfig[] = [
     taxNote: 'Impuestos incluidos',
     pill1: '4,92 € al mes',
     pill2: 'Ahorras 97 € al año',
-    badge: 'SÓLO LOS 30 PRIMEROS',
-    badgeColor: 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20 font-black',
+    badge: '¡ÚLTIMAS 5 PLAZAS! • ÚLTIMA OPORTUNIDAD',
+    badgeColor: 'bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 text-slate-950 shadow-lg shadow-amber-500/25 font-black animate-pulse',
     features: [
       'Creación de SdA ilimitadas durante un año',
       '8 SdA guardadas en tu usuario',
@@ -139,9 +139,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('fundador');
   const [founderStats, setFounderStats] = useState({
-    totalFundadores: 16,
+    totalFundadores: 25,
     maxFundadores: 30,
-    plazasRestantes: 14,
+    plazasRestantes: 5,
     agotado: false,
   });
   const [userNombre, setUserNombre] = useState('');
@@ -586,9 +586,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                 Vía 2
               </span>
               <div className="flex items-center space-x-1.5">
-                <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300 bg-amber-400/15 border border-amber-400/30 px-2 py-0.5 rounded-full animate-pulse">
+                <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300 bg-amber-400/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full animate-pulse shadow-sm">
                   <Flame className="w-3 h-3 text-amber-400" />
-                  ¡Quedan {founderStats.plazasRestantes} plazas!
+                  ¡Solo quedan {founderStats.plazasRestantes} plazas de {founderStats.maxFundadores}!
                 </span>
                 <Crown className="w-4 h-4 text-amber-400" />
                 <CreditCard className="w-5 h-5 text-indigo-400" />
@@ -853,27 +853,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
 
                             {/* Badge de Plazas para Fundador con efecto de urgencia y barra de cupos */}
                             {isFounder && !isAgotado && (
-                              <div className="mt-3.5 p-3 rounded-2xl bg-gradient-to-br from-amber-500/15 via-orange-500/15 to-red-500/10 border border-amber-400/40 shadow-lg shadow-amber-500/10">
+                              <div className="mt-3.5 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-red-500/15 border-2 border-amber-400/70 shadow-lg shadow-amber-500/15">
                                 <div className="flex items-center justify-between gap-2 mb-2">
                                   <div className="flex items-center space-x-2">
                                     <span className="relative flex h-2.5 w-2.5 shrink-0">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                                     </span>
                                     <Flame className="w-4 h-4 text-amber-400 shrink-0 animate-bounce" />
                                     <span className="text-xs sm:text-sm font-black text-amber-300 tracking-tight">
-                                      Quedan {founderStats.plazasRestantes} plazas de {founderStats.maxFundadores}
+                                      Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30 shrink-0">
-                                    ¡Últimas plazas!
+                                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-500/25 text-red-300 border border-red-500/40 shrink-0 animate-pulse">
+                                    ¡Última oportunidad!
                                   </span>
+                                </div>
+                                <div className="text-[11px] font-extrabold text-amber-200 mb-2.5 flex items-center gap-1.5 bg-amber-500/15 px-2.5 py-1.5 rounded-lg border border-amber-400/30">
+                                  <span className="text-amber-300">⚠️</span>
+                                  <span>Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}. <strong className="text-white underline decoration-amber-400">Es tu última oportunidad.</strong></span>
                                 </div>
                                 {/* Barra de progreso visual con cupos completados */}
                                 <div className="space-y-1">
-                                  <div className="w-full bg-slate-800/90 rounded-full h-2 overflow-hidden border border-amber-500/30">
+                                  <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-amber-500/40">
                                     <div
-                                      className="bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 h-2 rounded-full transition-all duration-700 shadow-sm"
+                                      className="bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 h-2.5 rounded-full transition-all duration-700 shadow-sm"
                                       style={{
                                         width: `${Math.min(100, Math.max(0, Math.round(((founderStats.maxFundadores - founderStats.plazasRestantes) / founderStats.maxFundadores) * 100)))}%`
                                       }}
@@ -881,7 +885,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                                   </div>
                                   <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold px-0.5">
                                     <span>{founderStats.maxFundadores - founderStats.plazasRestantes} plazas reservadas</span>
-                                    <span className="text-amber-300 font-bold">Quedan {founderStats.plazasRestantes}</span>
+                                    <span className="text-amber-300 font-bold">¡Solo quedan {founderStats.plazasRestantes} disponibles!</span>
                                   </div>
                                 </div>
                               </div>
