@@ -99,15 +99,15 @@ export const PLANS: PlanConfig[] = [
     taxNote: 'Impuestos incluidos',
     pill1: '4,92 € al mes',
     pill2: 'Ahorras 97 € al año',
-    badge: '¡ÚLTIMAS 5 PLAZAS! • ÚLTIMA OPORTUNIDAD',
-    badgeColor: 'bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 text-slate-950 shadow-lg shadow-amber-500/25 font-black animate-pulse',
+    badge: 'PLAZAS DE FUNDADOR AGOTADAS',
+    badgeColor: 'bg-red-500/20 text-red-400 border border-red-500/40 font-black',
     features: [
       'Creación de SdA ilimitadas durante un año',
       '8 SdA guardadas en tu usuario',
       'Descarga en PDF y Documento de texto editable',
       'Precio Fundador para siempre',
     ],
-    footerNote: 'Se renueva cada año a no ser que lo canceles antes del pago.',
+    footerNote: 'Suscripción cerrada por haber alcanzado el límite de 30 plazas.',
     stripeUrl: STRIPE_LINKS.fundador,
   },
 ];
@@ -137,12 +137,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
 
   // Via 2: User / Stripe State & Plans
   const [isRegister, setIsRegister] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<PlanType>('fundador');
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>('anual');
   const [founderStats, setFounderStats] = useState({
-    totalFundadores: 25,
+    totalFundadores: 30,
     maxFundadores: 30,
-    plazasRestantes: 5,
-    agotado: false,
+    plazasRestantes: 0,
+    agotado: true,
   });
   const [userNombre, setUserNombre] = useState('');
   const [userApellidos, setUserApellidos] = useState('');
@@ -178,7 +178,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
         setActiveTab('user');
         setIsRegister(true);
         if (planParam === 'mensual' || planParam === 'anual' || planParam === 'fundador') {
-          setSelectedPlan(planParam as PlanType);
+          if (planParam === 'fundador' && founderStats.agotado) {
+            setSelectedPlan('anual');
+          } else {
+            setSelectedPlan(planParam as PlanType);
+          }
         }
       }
     } catch (e) {
@@ -586,17 +590,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                 Vía 2
               </span>
               <div className="flex items-center space-x-1.5">
-                <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300 bg-amber-400/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full animate-pulse shadow-sm">
-                  <Flame className="w-3 h-3 text-amber-400" />
-                  ¡Solo quedan {founderStats.plazasRestantes} plazas de {founderStats.maxFundadores}!
-                </span>
+                {founderStats.agotado ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-400 bg-red-500/15 border border-red-500/30 px-2.5 py-0.5 rounded-full shadow-sm">
+                    Plazas Fundador Agotadas
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-black text-amber-300 bg-amber-400/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full animate-pulse shadow-sm">
+                    <Flame className="w-3 h-3 text-amber-400" />
+                    ¡Solo quedan {founderStats.plazasRestantes} plazas de {founderStats.maxFundadores}!
+                  </span>
+                )}
                 <Crown className="w-4 h-4 text-amber-400" />
                 <CreditCard className="w-5 h-5 text-indigo-400" />
               </div>
             </div>
             <h3 className="font-extrabold text-base text-white">Registro y Suscripción</h3>
             <p className="text-xs text-slate-400 mt-1">
-              3 planes disponibles (Mensual, Anual y Fundador). Acceso ilimitado.
+              {founderStats.agotado
+                ? 'Planes disponibles: Mensual y Anual (Plazas Fundador agotadas). Acceso ilimitado.'
+                : '3 planes disponibles (Mensual, Anual y Fundador). Acceso ilimitado.'}
             </p>
           </button>
 
@@ -776,7 +788,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                           }}
                           className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 flex flex-col justify-between cursor-pointer border ${
                             isAgotado
-                              ? 'bg-slate-900/30 border-slate-800 opacity-60 cursor-not-allowed'
+                              ? 'bg-slate-900/60 border-slate-800 cursor-not-allowed shadow-md'
                               : isSelected
                               ? isFounder
                                 ? 'bg-gradient-to-b from-amber-500/15 via-slate-900 to-slate-950 border-amber-400 shadow-2xl shadow-amber-500/15 ring-2 ring-amber-400/50 scale-[1.01]'
@@ -789,8 +801,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                           {/* Badge Flotante Superior */}
                           <div className="min-h-[26px] mb-2 flex items-center justify-between">
                             {isAgotado ? (
-                              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40">
-                                Agotado (30/30)
+                              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                Plazas de Fundador Agotadas (30/30)
                               </span>
                             ) : plan.badge ? (
                               <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${plan.badgeColor || 'bg-blue-600 text-white border-blue-400'}`}>
@@ -851,44 +864,76 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                               </div>
                             )}
 
-                            {/* Badge de Plazas para Fundador con efecto de urgencia y barra de cupos */}
-                            {isFounder && !isAgotado && (
-                              <div className="mt-3.5 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-red-500/15 border-2 border-amber-400/70 shadow-lg shadow-amber-500/15">
-                                <div className="flex items-center justify-between gap-2 mb-2">
-                                  <div className="flex items-center space-x-2">
-                                    <span className="relative flex h-2.5 w-2.5 shrink-0">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                            {/* Badge de Plazas para Fundador con efecto de urgencia y barra de cupos o estado Agotado */}
+                            {isFounder && (
+                              isAgotado ? (
+                                <div className="mt-3.5 p-3.5 rounded-2xl bg-gradient-to-br from-red-500/15 via-slate-900 to-slate-950 border border-red-500/40 shadow-lg">
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="relative flex h-2.5 w-2.5 shrink-0">
+                                        <span className="inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                      </span>
+                                      <span className="text-xs sm:text-sm font-black text-red-400 tracking-tight">
+                                        Plazas de Fundador Agotadas
+                                      </span>
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-500/25 text-red-300 border border-red-500/40 shrink-0">
+                                      30 / 30 completadas
                                     </span>
-                                    <Flame className="w-4 h-4 text-amber-400 shrink-0 animate-bounce" />
-                                    <span className="text-xs sm:text-sm font-black text-amber-300 tracking-tight">
-                                      Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}
+                                  </div>
+                                  <div className="text-[11px] font-medium text-slate-300 mb-2.5 flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1.5 rounded-lg border border-red-500/20">
+                                    <span className="text-red-400 shrink-0">🔒</span>
+                                    <span>Las 30 plazas de fundador se han agotado. Puedes unirte mediante el <strong>Plan Anual</strong>.</span>
+                                  </div>
+                                  {/* Barra de progreso completada al 100% */}
+                                  <div className="space-y-1">
+                                    <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-red-500/30">
+                                      <div className="bg-gradient-to-r from-red-500 to-rose-600 h-2.5 rounded-full w-full" />
+                                    </div>
+                                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold px-0.5">
+                                      <span>30 plazas reservadas</span>
+                                      <span className="text-red-400 font-bold">0 plazas disponibles</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="mt-3.5 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-red-500/15 border-2 border-amber-400/70 shadow-lg shadow-amber-500/15">
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="relative flex h-2.5 w-2.5 shrink-0">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                      </span>
+                                      <Flame className="w-4 h-4 text-amber-400 shrink-0 animate-bounce" />
+                                      <span className="text-xs sm:text-sm font-black text-amber-300 tracking-tight">
+                                        Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}
+                                      </span>
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-500/25 text-red-300 border border-red-500/40 shrink-0 animate-pulse">
+                                      ¡Última oportunidad!
                                     </span>
                                   </div>
-                                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-500/25 text-red-300 border border-red-500/40 shrink-0 animate-pulse">
-                                    ¡Última oportunidad!
-                                  </span>
-                                </div>
-                                <div className="text-[11px] font-extrabold text-amber-200 mb-2.5 flex items-center gap-1.5 bg-amber-500/15 px-2.5 py-1.5 rounded-lg border border-amber-400/30">
-                                  <span className="text-amber-300">⚠️</span>
-                                  <span>Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}. <strong className="text-white underline decoration-amber-400">Es tu última oportunidad.</strong></span>
-                                </div>
-                                {/* Barra de progreso visual con cupos completados */}
-                                <div className="space-y-1">
-                                  <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-amber-500/40">
-                                    <div
-                                      className="bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 h-2.5 rounded-full transition-all duration-700 shadow-sm"
-                                      style={{
-                                        width: `${Math.min(100, Math.max(0, Math.round(((founderStats.maxFundadores - founderStats.plazasRestantes) / founderStats.maxFundadores) * 100)))}%`
-                                      }}
-                                    />
+                                  <div className="text-[11px] font-extrabold text-amber-200 mb-2.5 flex items-center gap-1.5 bg-amber-500/15 px-2.5 py-1.5 rounded-lg border border-amber-400/30">
+                                    <span className="text-amber-300">⚠️</span>
+                                    <span>Solo quedan {founderStats.plazasRestantes} plazas disponibles de {founderStats.maxFundadores}. <strong className="text-white underline decoration-amber-400">Es tu última oportunidad.</strong></span>
                                   </div>
-                                  <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold px-0.5">
-                                    <span>{founderStats.maxFundadores - founderStats.plazasRestantes} plazas reservadas</span>
-                                    <span className="text-amber-300 font-bold">¡Solo quedan {founderStats.plazasRestantes} disponibles!</span>
+                                  {/* Barra de progreso visual con cupos completados */}
+                                  <div className="space-y-1">
+                                    <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-amber-500/40">
+                                      <div
+                                        className="bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 h-2.5 rounded-full transition-all duration-700 shadow-sm"
+                                        style={{
+                                          width: `${Math.min(100, Math.max(0, Math.round(((founderStats.maxFundadores - founderStats.plazasRestantes) / founderStats.maxFundadores) * 100)))}%`
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold px-0.5">
+                                      <span>{founderStats.maxFundadores - founderStats.plazasRestantes} plazas reservadas</span>
+                                      <span className="text-amber-300 font-bold">¡Solo quedan {founderStats.plazasRestantes} disponibles!</span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
+                              )
                             )}
                           </div>
 
@@ -910,26 +955,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartSession }) => {
                           <div className="space-y-2 pt-2">
                             <button
                               type="button"
+                              disabled={isAgotado}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (!isAgotado) {
                                   setSelectedPlan(plan.id);
                                 }
                               }}
-                              className={`w-full py-3 rounded-xl font-black text-sm transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer ${
+                              className={`w-full py-3 rounded-xl font-black text-sm transition-all duration-200 flex items-center justify-center space-x-2 ${
                                 isAgotado
-                                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                  ? 'bg-slate-800/90 text-slate-400 border border-slate-700/80 cursor-not-allowed opacity-80 shadow-inner'
                                   : isSelected
                                   ? isFounder
-                                    ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/25 hover:brightness-110'
+                                    ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/25 hover:brightness-110 cursor-pointer'
                                     : isAnual
-                                    ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30'
-                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                    ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 cursor-pointer'
+                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 cursor-pointer'
+                                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer'
                               }`}
                             >
-                              <span>{isSelected ? 'Plan Seleccionado' : 'Suscribirme'}</span>
-                              {isSelected && <ArrowRight className="w-4 h-4" />}
+                              {isAgotado ? (
+                                <>
+                                  <Lock className="w-4 h-4 text-slate-400" />
+                                  <span>Plazas de Fundador Agotadas</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>{isSelected ? 'Plan Seleccionado' : 'Suscribirme'}</span>
+                                  {isSelected && <ArrowRight className="w-4 h-4" />}
+                                </>
+                              )}
                             </button>
 
                             {/* Nota de Renovación al pie */}

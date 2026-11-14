@@ -371,7 +371,7 @@ app.post('/api/auth/trial/increment', async (req, res) => {
   }
 });
 
-// Contador en vivo de Fundadores (Límite estricto de 30, configurado para que queden solo 5 plazas disponibles de 30)
+// Contador en vivo de Fundadores (Límite estricto de 30 - Plazas de fundador agotadas)
 app.get('/api/auth/founder-stats', async (_req, res) => {
   try {
     const usersRef = collection(db, 'users');
@@ -379,7 +379,7 @@ app.get('/api/auth/founder-stats', async (_req, res) => {
     const snapshot = await getDocs(q);
     const fundadoresReales = snapshot.size;
     const maxFundadores = 30;
-    const fundadoresBase = 25; // 25 plazas iniciales ocupadas para que queden exactamente 5 plazas disponibles
+    const fundadoresBase = 30; // 30 plazas ocupadas: Plazas de fundador agotadas
     const totalFundadores = Math.min(maxFundadores, fundadoresBase + fundadoresReales);
     const plazasRestantes = Math.max(0, maxFundadores - totalFundadores);
 
@@ -387,16 +387,16 @@ app.get('/api/auth/founder-stats', async (_req, res) => {
       totalFundadores,
       maxFundadores,
       plazasRestantes,
-      agotado: plazasRestantes <= 0,
+      agotado: true,
     });
   } catch (err) {
     console.error('Error consultando estadísticas de fundadores:', err);
-    // En caso de fallo devolvemos valores por defecto con 5 plazas restantes
+    // En caso de fallo devolvemos valores por defecto con plazas agotadas
     return res.json({
-      totalFundadores: 25,
+      totalFundadores: 30,
       maxFundadores: 30,
-      plazasRestantes: 5,
-      agotado: false,
+      plazasRestantes: 0,
+      agotado: true,
     });
   }
 });
