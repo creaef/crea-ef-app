@@ -26,6 +26,7 @@ import { CreaEfLogo, CREA_EF_LOGO_URL } from './CreaEfLogo';
 import { renderOfficialDocumentHeaderHtml, getNormativaForEtapa } from '../utils/documentHeader';
 import { METODOLOGIAS_ACTIVAS_EF, MODELOS_ESTRUCTURA_SESION } from '../data/methodologiesAndModels';
 import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
+import { downloadSingleSessionSheetPdf, downloadAllSessionsNotebookPdf, renderSessionSheetHtml } from '../utils/sessionSheetPdf';
 
 /**
  * Renderiza la descripción de un juego en componentes React
@@ -183,6 +184,10 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
   const [docUrl, setDocUrl] = useState<string | null>(null);
   const [errorDoc, setErrorDoc] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'vistaDocumento' | 'texto' | 'fichasSesion'>('vistaDocumento');
+  const [selectedSheetIndex, setSelectedSheetIndex] = useState<number>(0);
+  const [downloadingSheetPdf, setDownloadingSheetPdf] = useState<boolean>(false);
+  const [downloadingAllSheetsPdf, setDownloadingAllSheetsPdf] = useState<boolean>(false);
+  const [includeTacticalPitchInDoc, setIncludeTacticalPitchInDoc] = useState<boolean>(false);
 
   useEffect(() => {
     if (analytics) {
@@ -436,7 +441,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
             </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+          ${includeTacticalPitchInDoc ? getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion) : ''}
           ${f?.esquemaGrafico ? `<p class="game-paragraph-item" style="margin-top: 3px; font-size: 9px; color: #334155; background: #f8fafc; padding: 3px 6px; border-radius: 4px; font-style: italic; page-break-inside: avoid !important; break-inside: avoid !important;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
         </div>
       `).join('');
@@ -459,7 +464,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                   </span>
                 </div>
                 ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-                ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+                ${includeTacticalPitchInDoc ? getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion) : ''}
                 ${f?.esquemaGrafico ? `<p class="game-paragraph-item" style="margin-top: 3px; font-size: 9px; color: #334155; background: #f8fafc; padding: 3px 6px; border-radius: 4px; font-style: italic; page-break-inside: avoid !important; break-inside: avoid !important;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
               </div>
             `).join('')}
@@ -478,7 +483,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
             </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+          ${includeTacticalPitchInDoc ? getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion) : ''}
         </div>
       `).join('');
 
@@ -493,7 +498,7 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
             </span>
           </div>
           ${renderFormattedGameDescriptionHtml(f?.descripcion || '')}
-          ${getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion)}
+          ${includeTacticalPitchInDoc ? getTacticalPitchHtml(detectPitchType(f?.descripcion, f?.nombreJuego), f?.nombreJuego, f?.esquemaTactico, f?.descripcion) : ''}
         </div>
       `).join('');
 
@@ -1257,13 +1262,23 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           onClick={() => setActiveTab('fichasSesion')}
           className={`px-5 py-2.5 rounded-xl font-extrabold text-xs transition flex items-center space-x-2 ${
             activeTab === 'fichasSesion'
-              ? 'bg-indigo-900 text-white shadow-md ring-2 ring-indigo-400'
+              ? 'bg-amber-400 text-slate-950 shadow-md ring-2 ring-amber-300'
               : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
           }`}
         >
-          <Printer className="w-4 h-4" />
-          <span>Fichas por Sesión</span>
+          <Printer className="w-4 h-4 text-slate-900" />
+          <span>📋 Diario de Pista (1 Folio por Sesión)</span>
         </button>
+
+        <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer select-none bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 transition">
+          <input
+            type="checkbox"
+            checked={includeTacticalPitchInDoc}
+            onChange={(e) => setIncludeTacticalPitchInDoc(e.target.checked)}
+            className="rounded text-indigo-900 focus:ring-indigo-600"
+          />
+          <span>Incluir esquemas tácticos en el documento</span>
+        </label>
 
         <button
           type="button"
@@ -1898,40 +1913,177 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           </section>
         </div>
 
-      {/* TAB 2: Fichas por Sesión */}
+      {/* TAB 2: Diario de Pista (1 Folio por Sesión) */}
       {activeTab === 'fichasSesion' && (
         <div className="space-y-6 max-w-5xl mx-auto">
-          {sda.sesiones.map((ses) => (
-            <div key={ses.numeroSesion} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b-2 border-indigo-900 pb-3">
-                <div>
-                  <span className="text-xs font-bold bg-indigo-900 text-white px-3 py-1 rounded-md">
-                    SESIÓN {ses.numeroSesion} (60 MIN)
+          {/* TOOLBAR SUPERIOR DEL DIARIO DE PISTA */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-amber-400 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+                    Modo Pista A4
                   </span>
-                  <h3 className="text-lg font-bold text-slate-900 mt-2">{(ses.titulo || '').replace(/^Sesión\s*\d+:\s*/i, '')}</h3>
-                  <p className="text-xs text-slate-500">{sda.curso} • {sda.tematica}</p>
+                  <h3 className="font-extrabold text-slate-900 text-base">
+                    Diario de Trabajo de Educación Física (1 Folio por Sesión)
+                  </h3>
                 </div>
-                <div className="text-right text-xs">
-                  <span className="font-bold text-slate-700 block">Materiales:</span>
-                  <p className="text-indigo-900 font-semibold">{(ses.materialesTotales || []).join(', ')}</p>
-                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  ⭐ Cada sesión maquetada estrictamente en <strong>1 cara A4</strong> para llevar con la carpeta de pinza al gimnasio o patio escolar, con espacio para anotaciones a mano.
+                </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-3">
-                {ses.fases.map((f, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-[11px] font-bold bg-indigo-900 text-white px-2 py-0.5 rounded">
-                        {f.fase} ({f.duracionMin} min)
-                      </span>
-                      <h4 className="font-bold text-slate-900 text-xs">{f.nombreJuego}</h4>
-                    </div>
-                    {renderFormattedGameDescriptionReact(f.descripcion)}
-                  </div>
-                ))}
+              {/* BOTONES DE ACCIÓN RÁPIDA */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  id="btn-download-all-notebook-pdf"
+                  disabled={downloadingAllSheetsPdf}
+                  onClick={async () => {
+                    setDownloadingAllSheetsPdf(true);
+                    try {
+                      await downloadAllSessionsNotebookPdf(sda.sesiones, {
+                        titulo: sda.tematica,
+                        tematica: sda.tematica,
+                        curso: sda.curso,
+                        ciclo: sda.ciclo,
+                        etapa: sda.etapa,
+                        comunidad: sda.comunidad,
+                        trimestre: sda.trimestre,
+                        numSesiones: sda.sesiones.length,
+                      });
+                    } catch (e) {
+                      console.error('Error descargando Cuaderno Completo:', e);
+                    } finally {
+                      setDownloadingAllSheetsPdf(false);
+                    }
+                  }}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs transition shadow-md border border-amber-400 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                  title="Descarga un PDF donde cada página es 1 sesión completa en 1 carilla"
+                >
+                  {downloadingAllSheetsPdf ? (
+                    <RefreshCw className="w-4 h-4 text-slate-950 animate-spin" />
+                  ) : (
+                    <Printer className="w-4 h-4 text-slate-950" />
+                  )}
+                  <span>{downloadingAllSheetsPdf ? 'Generando...' : '📥 Descargar Cuaderno Completo (1 Folio c/u PDF)'}</span>
+                </button>
+
+                {typeof selectedSheetIndex === 'number' && sda.sesiones[selectedSheetIndex] && (
+                  <button
+                    type="button"
+                    id="btn-download-single-sheet-pdf"
+                    disabled={downloadingSheetPdf}
+                    onClick={async () => {
+                      setDownloadingSheetPdf(true);
+                      try {
+                        await downloadSingleSessionSheetPdf(sda.sesiones[selectedSheetIndex], {
+                          titulo: sda.tematica,
+                          tematica: sda.tematica,
+                          curso: sda.curso,
+                          ciclo: sda.ciclo,
+                          etapa: sda.etapa,
+                          comunidad: sda.comunidad,
+                          trimestre: sda.trimestre,
+                          numSesiones: sda.sesiones.length,
+                        }, selectedSheetIndex, sda.sesiones.length);
+                      } catch (e) {
+                        console.error('Error descargando Ficha individual:', e);
+                      } finally {
+                        setDownloadingSheetPdf(false);
+                      }
+                    }}
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white font-black text-xs transition shadow-md border border-indigo-700 disabled:opacity-50"
+                  >
+                    {downloadingSheetPdf ? (
+                      <RefreshCw className="w-4 h-4 text-amber-300 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4 text-amber-300" />
+                    )}
+                    <span>Descargar Sesión {selectedSheetIndex + 1} (PDF)</span>
+                  </button>
+                )}
               </div>
             </div>
-          ))}
+
+            {/* SELECTOR DE SESIONES (PILLS) */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-xs font-bold text-slate-500 mr-1">Seleccionar Sesión:</span>
+              {sda.sesiones.map((ses, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setSelectedSheetIndex(idx)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                    selectedSheetIndex === idx
+                      ? 'bg-indigo-900 text-white shadow-xs ring-2 ring-indigo-400'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                  }`}
+                >
+                  <span>Sesión {ses.numeroSesion || (idx + 1)}</span>
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setSelectedSheetIndex(sda.sesiones.length)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                  selectedSheetIndex >= sda.sesiones.length
+                    ? 'bg-indigo-900 text-white shadow-xs ring-2 ring-indigo-400'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                }`}
+              >
+                <span>👀 Ver Todas las Fichas</span>
+              </button>
+            </div>
+          </div>
+
+          {/* VISUALIZADOR DE HOJAS A4 REALES */}
+          <div className="space-y-8">
+            {selectedSheetIndex < sda.sesiones.length && sda.sesiones[selectedSheetIndex] ? (
+              // VISTA DE LA SESIÓN SELECCIONADA
+              <div className="bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 shadow-inner flex justify-center">
+                <div 
+                  className="bg-white shadow-2xl rounded-sm border border-slate-300 p-4 sm:p-6 w-full max-w-[800px] overflow-hidden"
+                  dangerouslySetInnerHTML={{
+                    __html: renderSessionSheetHtml(sda.sesiones[selectedSheetIndex], {
+                      titulo: sda.tematica,
+                      tematica: sda.tematica,
+                      curso: sda.curso,
+                      ciclo: sda.ciclo,
+                      etapa: sda.etapa,
+                      comunidad: sda.comunidad,
+                      trimestre: sda.trimestre,
+                      numSesiones: sda.sesiones.length,
+                    }, selectedSheetIndex, sda.sesiones.length)
+                  }}
+                />
+              </div>
+            ) : (
+              // VISTA DE TODAS LAS SESIONES
+              sda.sesiones.map((ses, idx) => (
+                <div key={idx} className="bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 shadow-inner flex flex-col items-center gap-2">
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                    — Hoja de Pista {idx + 1} de {sda.sesiones.length} —
+                  </span>
+                  <div 
+                    className="bg-white shadow-2xl rounded-sm border border-slate-300 p-4 sm:p-6 w-full max-w-[800px] overflow-hidden"
+                    dangerouslySetInnerHTML={{
+                      __html: renderSessionSheetHtml(ses, {
+                        titulo: sda.tematica,
+                        tematica: sda.tematica,
+                        curso: sda.curso,
+                        ciclo: sda.ciclo,
+                        etapa: sda.etapa,
+                        comunidad: sda.comunidad,
+                        trimestre: sda.trimestre,
+                        numSesiones: sda.sesiones.length,
+                      }, idx, sda.sesiones.length)
+                    }}
+                  />
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
 

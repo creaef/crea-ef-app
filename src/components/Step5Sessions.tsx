@@ -21,6 +21,7 @@ import {
   FileCheck,
   FileSpreadsheet,
   Upload,
+  Printer,
 } from 'lucide-react';
 import {
   Ciclo,
@@ -38,6 +39,7 @@ import { GenerationProgressModal, GenerationType } from './GenerationProgressMod
 import { renderOfficialDocumentHeaderHtml } from '../utils/documentHeader';
 import { getTacticalPitchHtml, detectPitchType } from '../utils/tacticalPitch';
 import { downloadDuaCardsPdf, downloadAcrosportCardsPdf } from '../utils/cardDecksPdf';
+import { downloadSingleSessionSheetPdf, downloadAllSessionsNotebookPdf } from '../utils/sessionSheetPdf';
 
 interface Step5Props {
   numSesiones: number;
@@ -232,6 +234,45 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   const [manualMaterials, setManualMaterials] = useState<string>('');
   const [manualDuration, setManualDuration] = useState<number>(15);
   const [downloadingRubric, setDownloadingRubric] = useState<boolean>(false);
+  const [downloadingSheet, setDownloadingSheet] = useState<boolean>(false);
+  const [downloadingNotebook, setDownloadingNotebook] = useState<boolean>(false);
+
+  const handleDownloadSheet = async (sessionIdx: number) => {
+    const session = sesiones[sessionIdx];
+    if (!session) return;
+    setDownloadingSheet(true);
+    try {
+      await downloadSingleSessionSheetPdf(session, {
+        titulo: tematica,
+        tematica,
+        curso,
+        ciclo,
+        numSesiones,
+      }, sessionIdx, sesiones.length);
+    } catch (e) {
+      console.error('Error descargando Ficha de Pista:', e);
+    } finally {
+      setDownloadingSheet(false);
+    }
+  };
+
+  const handleDownloadNotebook = async () => {
+    if (!sesiones || sesiones.length === 0) return;
+    setDownloadingNotebook(true);
+    try {
+      await downloadAllSessionsNotebookPdf(sesiones, {
+        titulo: tematica,
+        tematica,
+        curso,
+        ciclo,
+        numSesiones,
+      });
+    } catch (e) {
+      console.error('Error descargando Cuaderno de Pista:', e);
+    } finally {
+      setDownloadingNotebook(false);
+    }
+  };
 
   const handleDownloadSessionRubric = async (sessionIdx: number) => {
     const session = sesiones[sessionIdx];
@@ -856,6 +897,23 @@ export const Step5Sessions: React.FC<Step5Props> = ({
               ))}
             </div>
 
+            {/* BOTÓN DESCARGAR CUADERNO DE PISTA (TODAS LAS SESIONES EN 1 FOLIO C/U) */}
+            <button
+              type="button"
+              id="btn-download-all-sessions-notebook"
+              disabled={downloadingNotebook}
+              onClick={handleDownloadNotebook}
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs transition shadow-md border border-amber-400 shrink-0 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+              title="Descargar Cuaderno de Pista completo: cada sesión en 1 carilla A4 lista para llevar al gimnasio o patio"
+            >
+              {downloadingNotebook ? (
+                <RefreshCw className="w-4 h-4 text-slate-950 animate-spin" />
+              ) : (
+                <Printer className="w-4 h-4 text-slate-950" />
+              )}
+              <span>{downloadingNotebook ? 'Generando Cuaderno...' : '📋 Cuaderno de Pista (1 Folio/Sesión PDF)'}</span>
+            </button>
+
             {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
             <button
               type="button"
@@ -921,6 +979,20 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                         <FileCheck className="w-3.5 h-3.5 text-amber-300" />
                       )}
                       <span>📋 Descargar Rúbrica de Evaluación (4 Niveles) de esta Sesión</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={downloadingSheet}
+                      onClick={() => handleDownloadSheet(activeSessionIndex)}
+                      className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition shadow-xs border border-amber-500 disabled:opacity-50 shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+                      title="Descargar esta sesión en un único folio A4 (Diario de Pista)"
+                    >
+                      {downloadingSheet ? (
+                        <RefreshCw className="w-3.5 h-3.5 text-slate-950 animate-spin" />
+                      ) : (
+                        <Printer className="w-3.5 h-3.5 text-slate-950" />
+                      )}
+                      <span>📄 Ficha de Pista en 1 Folio (PDF)</span>
                     </button>
                   </div>
                 </div>
