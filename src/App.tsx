@@ -490,6 +490,9 @@ export default function App() {
             tematica={sda.tematica}
             modeloEstructura={sda.modeloEstructura}
             criteriosSeleccionados={sda.criteriosSeleccionados}
+            saberesSeleccionados={sda.saberesSeleccionados}
+            etapa={sda.etapa}
+            comunidad={sda.comunidad}
             sesiones={sda.sesiones}
             setSesiones={(v) => updateSda({ sesiones: v })}
             driveFolderId={sda.driveFolderId}

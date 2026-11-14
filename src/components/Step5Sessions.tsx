@@ -26,6 +26,8 @@ import {
 import {
   Ciclo,
   Curso,
+  EtapaEducativa,
+  ComunidadAutonoma,
   ModeloEstructuraSesion,
   SesionTrabajo,
   ActividadEnSesion,
@@ -48,6 +50,9 @@ interface Step5Props {
   tematica: string;
   modeloEstructura: ModeloEstructuraSesion;
   criteriosSeleccionados: string[];
+  saberesSeleccionados?: string[];
+  etapa?: EtapaEducativa;
+  comunidad?: ComunidadAutonoma;
   sesiones: SesionTrabajo[];
   setSesiones: (v: SesionTrabajo[]) => void;
   driveFolderId?: string;
@@ -71,6 +76,9 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   tematica,
   modeloEstructura,
   criteriosSeleccionados,
+  saberesSeleccionados = [],
+  etapa = 'Primaria',
+  comunidad = 'Andalucía',
   sesiones,
   setSesiones,
   driveFolderId = '',
@@ -98,6 +106,9 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   const [porcentajeDrive, setPorcentajeDriveState] = useState<number>(initialPDrive);
   const [porcentajeBancoJuegos, setPorcentajeBancoJuegosState] = useState<number>(initialPBanco);
   const [porcentajeIA, setPorcentajeIAState] = useState<number>(initialPIA);
+  const [includeTacticalPitchInWord, setIncludeTacticalPitchInWord] = useState<boolean>(false);
+  const [showTacticalPitchInCards, setShowTacticalPitchInCards] = useState<boolean>(true);
+  const [juegosEliminados, setJuegosEliminados] = useState<string[]>([]);
   const [errorDrive, setErrorDrive] = useState<string | null>(null);
   const [successDrive, setSuccessDrive] = useState<string | null>(null);
 
@@ -155,14 +166,19 @@ export const Step5Sessions: React.FC<Step5Props> = ({
     if (!targetSession) return;
 
     setProgressModalType('sessions');
-    setProgressModalTitle(`Enriqueciendo y completando Sesión ${activeSessionIndex + 1}`);
-    setProgressModalSubtitle('Optimizando tiempos, variantes inclusivas y materiales...');
+    setProgressModalTitle(`Completando y enriqueciendo Sesión ${activeSessionIndex + 1}`);
+    setProgressModalSubtitle('Generando nuevos juegos alineados con los saberes y contenidos...');
     setProgressModalError(null);
     setProgressModalFinished(false);
     setIsProgressModalOpen(true);
     setEnrichingSession(true);
     setErrorDrive(null);
     try {
+      // Juegos presentes en todas las demás sesiones para no repetir ninguno
+      const juegosExistentes = sesiones
+        .flatMap((s, idx) => (idx !== activeSessionIndex ? (s.fases || []).map((f) => f.nombreJuego) : []))
+        .filter(Boolean);
+
       const res = await fetch('/api/ai/enrich-full-session', {
         method: 'POST',
         headers: { 
@@ -171,19 +187,36 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         },
         body: JSON.stringify({
           sesion: targetSession,
+          numeroSesion: activeSessionIndex + 1,
+          totalSesiones: numSesiones,
           tematica,
           curso,
+          ciclo,
+          etapa,
+          comunidad,
+          modeloEstructura,
+          criteriosSeleccionados,
+          saberesSeleccionados,
+          juegosEliminados,
+          juegosExistentes,
+          driveDocumentationText: docText ? docText.slice(0, 30000) : '',
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al enriquecer la sesión.');
+      if (!res.ok) throw new Error(data.error || 'Error al completar y enriquecer la sesión.');
       if (data.sesionActualizada && Array.isArray(data.sesionActualizada.fases)) {
         copy[activeSessionIndex].fases = data.sesionActualizada.fases;
         if (data.sesionActualizada.titulo) {
           copy[activeSessionIndex].titulo = data.sesionActualizada.titulo;
         }
+        if (data.sesionActualizada.objetivoSesion) {
+          copy[activeSessionIndex].objetivoSesion = data.sesionActualizada.objetivoSesion;
+        }
+        if (Array.isArray(data.sesionActualizada.materialesTotales)) {
+          copy[activeSessionIndex].materialesTotales = data.sesionActualizada.materialesTotales;
+        }
         setSesiones(copy);
-        setSuccessDrive(`✓ Sesión ${activeSessionIndex + 1} completada y enriquecida con éxito por la IA.`);
+        setSuccessDrive(`✓ Sesión ${activeSessionIndex + 1} completada con nuevos juegos alineados a los contenidos.`);
 
         setProgressModalFinished(true);
         setTimeout(() => {
@@ -193,8 +226,8 @@ export const Step5Sessions: React.FC<Step5Props> = ({
       }
     } catch (err: any) {
       console.error(err);
-      setErrorDrive(err.message || 'No se pudo enriquecer la sesión completa.');
-      setProgressModalError(err.message || 'No se pudo enriquecer la sesión completa.');
+      setErrorDrive(err.message || 'No se pudo completar la sesión.');
+      setProgressModalError(err.message || 'No se pudo completar la sesión.');
     } finally {
       setEnrichingSession(false);
     }
@@ -458,9 +491,12 @@ export const Step5Sessions: React.FC<Step5Props> = ({
           numSesiones,
           curso,
           ciclo,
+          etapa,
+          comunidad,
           tematica,
           modeloEstructura,
           criteriosSeleccionados,
+          saberesSeleccionados,
           driveDocumentationText: docText ? docText.slice(0, 45000) : '',
         }),
       });
@@ -530,6 +566,13 @@ export const Step5Sessions: React.FC<Step5Props> = ({
 
   const handleDeleteFase = (sesIndex: number, faseIndex: number) => {
     const copy = [...sesiones];
+    const targetFase = copy[sesIndex]?.fases?.[faseIndex];
+    if (targetFase && targetFase.nombreJuego) {
+      const gName = targetFase.nombreJuego.trim();
+      if (gName) {
+        setJuegosEliminados((prev) => Array.from(new Set([...prev, gName])));
+      }
+    }
     copy[sesIndex].fases.splice(faseIndex, 1);
     setSesiones(copy);
   };
@@ -554,7 +597,7 @@ export const Step5Sessions: React.FC<Step5Props> = ({
           <div style="font-size: 10pt; color: #334155; line-height: 1.5; text-align: justify;">
             ${renderFormattedGameDescriptionHtml(f.descripcion)}
           </div>
-          ${getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion)}
+          ${includeTacticalPitchInWord ? getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) : ''}
           ${f.esquemaGrafico ? `<p style="margin-top: 6px; font-size: 9.5pt; color: #92400e; background: #fef3c7; padding: 6px 10px; border-radius: 4px; font-style: italic;">🎨 <strong>Organización Espacial:</strong> ${f.esquemaGrafico}</p>` : ''}
         </div>
       `).join('');
@@ -871,24 +914,25 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Sessions Tabs Bar & Download Word Action */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100">
-            <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-thin flex-1 min-w-0">
+          {/* Sessions Tabs Bar & Download Actions Toolbar */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200">
+            {/* Session Tabs with Generous Width and Clean Scroll */}
+            <div className="flex space-x-1.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-thin flex-1 min-w-0 pr-1">
               {sesiones.map((ses, idx) => (
                 <button
                   key={idx}
                   id={`tab-sesion-${idx + 1}`}
                   onClick={() => setActiveSessionIndex(idx)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition shrink-0 flex items-center space-x-2 border ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 flex items-center space-x-1.5 border ${
                     activeSessionIndex === idx
-                      ? 'bg-indigo-900 text-white border-indigo-950 shadow-md ring-2 ring-indigo-500/20'
+                      ? 'bg-indigo-900 text-white border-indigo-950 shadow-sm ring-2 ring-indigo-500/20'
                       : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
                   <span>Sesión {idx + 1}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded ${
-                      activeSessionIndex === idx ? 'bg-amber-400 text-slate-950 font-extrabold' : 'bg-slate-100 text-slate-600'
+                    className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
+                      activeSessionIndex === idx ? 'bg-amber-400 text-slate-950' : 'bg-slate-100 text-slate-600'
                     }`}
                   >
                     60 min
@@ -897,34 +941,55 @@ export const Step5Sessions: React.FC<Step5Props> = ({
               ))}
             </div>
 
-            {/* BOTÓN DESCARGAR CUADERNO DE PISTA (TODAS LAS SESIONES EN 1 FOLIO C/U) */}
-            <button
-              type="button"
-              id="btn-download-all-sessions-notebook"
-              disabled={downloadingNotebook}
-              onClick={handleDownloadNotebook}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs transition shadow-md border border-amber-400 shrink-0 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-              title="Descargar Cuaderno de Pista completo: cada sesión en 1 carilla A4 lista para llevar al gimnasio o patio"
-            >
-              {downloadingNotebook ? (
-                <RefreshCw className="w-4 h-4 text-slate-950 animate-spin" />
-              ) : (
-                <Printer className="w-4 h-4 text-slate-950" />
-              )}
-              <span>{downloadingNotebook ? 'Generando Cuaderno...' : '📋 Cuaderno de Pista (1 Folio/Sesión PDF)'}</span>
-            </button>
+            {/* Compact Action Buttons on the Right */}
+            <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
+              {/* BOTÓN DESCARGAR CUADERNO DE PISTA (TODAS LAS SESIONES EN 1 FOLIO C/U) */}
+              <button
+                type="button"
+                id="btn-download-all-sessions-notebook"
+                disabled={downloadingNotebook}
+                onClick={handleDownloadNotebook}
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-[11px] transition shadow-xs border border-amber-400 shrink-0 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                title="Descargar Cuaderno de Pista completo: cada sesión en 1 carilla A4 lista para llevar al gimnasio o patio"
+              >
+                {downloadingNotebook ? (
+                  <RefreshCw className="w-3.5 h-3.5 text-slate-950 animate-spin" />
+                ) : (
+                  <Printer className="w-3.5 h-3.5 text-slate-950" />
+                )}
+                <span>{downloadingNotebook ? 'Generando...' : '📋 Cuaderno (1 Folio/S. PDF)'}</span>
+              </button>
 
-            {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
-            <button
-              type="button"
-              id="btn-download-all-sessions-word"
-              onClick={handleDownloadSessionsWord}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xs transition shadow-md border border-blue-600 shrink-0 hover:scale-[1.02] active:scale-[0.98]"
-              title="Descargar todas las sesiones en un documento Word (.doc) editable con formato completo"
-            >
-              <FileSpreadsheet className="w-4 h-4 text-amber-300" />
-              <span>Descargar Todas las Sesiones (.doc)</span>
-            </button>
+              {/* INTERRUPTOR DE DIAGRAMAS / ESQUEMAS TÁCTICOS EN WORD (AHORRO DE TINTA Y PAPEL) */}
+              <label
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-bold cursor-pointer select-none transition shadow-2xs shrink-0 ${
+                  includeTacticalPitchInWord
+                    ? 'bg-indigo-50 border-indigo-300 text-indigo-950 ring-1 ring-indigo-200'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                }`}
+                title="Activa o desactiva los diagramas tácticos en el archivo Word para ahorrar papel y tinta al imprimir"
+              >
+                <input
+                  type="checkbox"
+                  checked={includeTacticalPitchInWord}
+                  onChange={(e) => setIncludeTacticalPitchInWord(e.target.checked)}
+                  className="rounded text-indigo-900 focus:ring-indigo-600 w-3.5 h-3.5 cursor-pointer"
+                />
+                <span>{includeTacticalPitchInWord ? '📍 Con diagramas' : '🌱 Ahorro tinta'}</span>
+              </label>
+
+              {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
+              <button
+                type="button"
+                id="btn-download-all-sessions-word"
+                onClick={handleDownloadSessionsWord}
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-bold text-[11px] transition shadow-xs border border-blue-600 shrink-0 hover:scale-[1.01] active:scale-[0.99]"
+                title="Descargar todas las sesiones en un documento Word (.doc) editable con formato completo"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-amber-300" />
+                <span>Descargar Word (.doc)</span>
+              </button>
+            </div>
           </div>
 
           {/* Active Session Details */}
@@ -993,6 +1058,18 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                         <Printer className="w-3.5 h-3.5 text-slate-950" />
                       )}
                       <span>📄 Ficha de Pista en 1 Folio (PDF)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowTacticalPitchInCards((prev) => !prev)}
+                      className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition shadow-xs border shrink-0 ${
+                        showTacticalPitchInCards
+                          ? 'bg-slate-100 text-slate-800 hover:bg-slate-200 border-slate-300'
+                          : 'bg-emerald-50 text-emerald-950 hover:bg-emerald-100 border-emerald-300'
+                      }`}
+                      title="Oculta o muestra los diagramas tácticos en pantalla para una vista limpia y compacta"
+                    >
+                      <span>{showTacticalPitchInCards ? '👁️ Ocultar diagramas en pantalla' : '👁️ Mostrar diagramas en pantalla'}</span>
                     </button>
                   </div>
                 </div>
@@ -1295,13 +1372,15 @@ export const Step5Sessions: React.FC<Step5Props> = ({
                             </div>
 
                             {/* Esquema Táctico Vectorial del Juego (Propuesta A) */}
-                            <div className="pt-1">
-                              <div className="text-[11px] font-black text-slate-700 flex items-center space-x-1.5 mb-1.5">
-                                <span className="text-amber-500">📍</span>
-                                <span>Disposición Táctica en Pista (Generada automát. sin coste de tokens):</span>
+                            {showTacticalPitchInCards && (
+                              <div className="pt-1">
+                                <div className="text-[11px] font-black text-slate-700 flex items-center space-x-1.5 mb-1.5">
+                                  <span className="text-amber-500">📍</span>
+                                  <span>Disposición Táctica en Pista (Generada automát. sin coste de tokens):</span>
+                                </div>
+                                <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(fase.descripcion, fase.nombreJuego), fase.nombreJuego, fase.esquemaTactico, fase.descripcion) }} />
                               </div>
-                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(fase.descripcion, fase.nombreJuego), fase.nombreJuego, fase.esquemaTactico, fase.descripcion) }} />
-                            </div>
+                            )}
                           </div>
                         </div>
                       );

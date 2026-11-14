@@ -1134,6 +1134,23 @@ ${documentationInstruction}
 INSTRUCCIÓN MANDATORIA Y CRÍTICA PARA CADA UNA DE LAS SESIONES (DESDE LA SESIÓN 1 HASTA LA SESIÓN ${numSesiones}):
 Debes generar un array "sesiones" con EXACTAMENTE ${numSesiones} OBJETOS DE SESIÓN (desde numeroSesion 1 hasta numeroSesion ${numSesiones}). NINGUNA SESIÓN PUEDE SER ABREVIADA O RESUMIDA.
 
+CURVA PEDAGÓGICA Y PROGRESIÓN OBLIGATORIA POR FASES (SECUENCIA LONGITUDINAL EF):
+Las ${numSesiones} sesiones deben construir una progresión didáctica curricular ascendente, coherente y motivadora:
+1. SESIÓN 1: EVALUACIÓN INICIAL, ACTIVACIÓN Y RETOS COOPERATIVOS BASE
+   - Foco: Evaluación diagnóstica inicial de habilidades motrices y patrones de movimiento, acuerdos de aula y normas de seguridad en el gimnasio/pista, activación perceptiva y retos cooperativos base para la cohesión grupal.
+2. SESIONES INTERMEDIAS (SESIÓN 2 HASTA SESIÓN ${Math.max(2, numSesiones - 1)}): PROGRESIÓN TÉCNICO/TÁCTICA SEGÚN MODELO ("${modeloEstructura || 'Comprensivo / Cooperativo'}")
+   - Foco: Evolución motriz de lo simple a lo complejo, de baja a alta incertidumbre, aumentando la autonomía y la toma de decisiones.
+   - Si el modelo es "comprensivo / TGfU": situaciones modificadas con dilemas tácticos de invasión, red/muro o bate/campo.
+   - Si el modelo es "cooperativo": desafíos grupales con roles rotativos, interdependencia positiva y resolución colectiva.
+   - Si el modelo es "educación física para la salud" o "aventura": autorregulación del esfuerzo, higiene postural y superación de retos motrices en entornos variados.
+3. ÚLTIMA SESIÓN (SESIÓN ${numSesiones}): DESAFÍO FINAL, TORNEO INCLUSIVO O COEVALUACIÓN PRÁCTICA
+   - Foco: Culminación práctica del producto final de la SdA mediante un gran reto motor colectivo, festival motriz inclusivo, torneo coeducativo de Fair Play o gymkana motriz, cerrando con una asamblea de coevaluación y transferencia a la vida activa.
+
+REGLA ANTI-REPETICIÓN ESTRICTA Y LISTA NEGRA TRANSVERSAL (100% VARIEDAD MOTRIZ):
+- ¡PROHIBIDO REPETIR JUEGOS O DINÁMICAS ENTRE SESIONES! Un juego utilizado en una sesión queda TERMINANTEMENTE EN LISTA NEGRA para todas las sesiones siguientes.
+- Cada una de las ${numSesiones} sesiones debe tener un repertorio 100% NUEVO, ORIGINAL Y DIFERENCIADO de juegos.
+- Queda totalmente prohibido reutilizar juegos clásicos comodín (ej. "Pilla-pilla", "El rescate", "Balón prisionero", "Cadena humana", "Las cuatro esquinas") en más de una sesión.
+
 ¡REGLAS INDISPENSABLES DE CONTENIDO Y ESTRUCTURA DE JUEGOS!:
 1. REGLA ESTRICTA DE JUEGO ÚNICO E INDIVIDUAL POR FASE (PROHIBICIÓN TERMINANTE DE JUEGOS FUSIONADOS O COMPUESTOS):
 - Cada fase/actividad de la sesión debe contener EXACTAMENTE UN ÚNICO JUEGO individual.
@@ -1337,21 +1354,39 @@ Devuelve una respuesta JSON estricta con este formato:
     const parsed = safeParseAIJson<any>(response.text, {});
     let sesionesRes: any[] = Array.isArray(parsed) ? parsed : (parsed.sesiones || []);
 
-    // Ensure array length matches numSesiones requested without using any static hardcoded game descriptions
+    // Ensure array length matches numSesiones requested adhering to pedagogical progression
     if (sesionesRes.length < numSesiones) {
-      console.warn(`[API] Gemini devolvió ${sesionesRes.length} sesiones de las ${numSesiones} solicitadas. Auto-completando sesiones restantes de forma contextual...`);
+      console.warn(`[API] Gemini devolvió ${sesionesRes.length} sesiones de las ${numSesiones} solicitadas. Auto-completando sesiones restantes con progresión pedagógica por fases...`);
       const existingCount = sesionesRes.length;
       for (let i = existingCount + 1; i <= numSesiones; i++) {
+        const isFirst = i === 1;
+        const isLast = i === numSesiones;
+        const sessionTitle = isFirst
+          ? `Sesión 1: Evaluación Inicial, Diagnóstico y Acuerdos de Convivencia`
+          : isLast
+            ? `Sesión ${i}: Desafío Final, Torneo Inclusivo y Coevaluación`
+            : `Sesión ${i}: Progresión Técnico-Táctica y Retos de ${tematica}`;
+
+        const sessionObjective = isFirst
+          ? `Diagnóstico de patrones motores base, activación perceptiva y establecimiento de acuerdos de aula en ${tematica}.`
+          : isLast
+            ? `Transferencia y resolución del reto motor final, festival inclusivo de Fair Play y coevaluación práctica.`
+            : `Progresión de habilidades motrices, cooperación y toma de decisiones tácticas en ${tematica}.`;
+
         sesionesRes.push({
           numeroSesion: i,
-          titulo: `Sesión ${i}: Retos y Habilidades Tácticas de ${tematica}`,
-          objetivoSesion: `Aplicar y consolidar patrones motores y trabajo cooperativo en la temática ${tematica}.`,
+          titulo: sessionTitle,
+          objetivoSesion: sessionObjective,
           materialesTotales: ['Conos', 'Petos', 'Pelotas', 'Picas'],
           fases: [
             {
               fase: 'Calentamiento / Inicio',
               duracionMin: 10,
-              nombreJuego: `Activación Motriz ${i}: Movilidad y Coordinación`,
+              nombreJuego: isFirst
+                ? `Exploración y Activación Perceptiva Base`
+                : isLast
+                  ? `Activación Dinámica de Calentamiento para el Gran Desafío`
+                  : `Activación Motriz ${i}: Desplazamientos y Movilidad`,
               descripcion: `Terreno de juego:\nPista polideportiva completa delimitada con conos en esquinas.\n\nRoles:\nAlumnado en carrera suave y parejas de movilidad activa.\n\nDesarrollo del juego:\nDesplazamientos continuos variados con cambios de ritmo y movilidad articular reaccionando a consignas de ${tematica}.\n\nNormas:\n- Mantener distancia prudencial para evitar choques.\n- Seguir las consignas de movilidad sin detenerse.\n\nVariaciones:\n- Cambiar de dirección o de compañero de trote a la señal.`,
               materiales: ['Conos'],
               esquemaTactico: {
@@ -1370,7 +1405,11 @@ Devuelve una respuesta JSON estricta con este formato:
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.1: Habilidades de ${tematica}`,
+              nombreJuego: isFirst
+                ? `Reto Diagnóstico: Familiarización con ${tematica}`
+                : isLast
+                  ? `Fase 1 del Gran Desafío: Retos Cooperativos Colectivos`
+                  : `Reto Técnico ${i}.1: Habilidades de Precisión en ${tematica}`,
               descripcion: `Terreno de juego:\nMedia pista dividida en 2 subcampos rectangulares (15x12m).\n\nRoles:\n3 atacantes en posesión y 2 defensores en zona con petos distintivos.\n\nDesarrollo del juego:\nLos atacantes circulan el móvil buscando pases precisos y desmarques hacia la zona de meta sin ser interceptados.\n\nNormas:\n- Distancia de seguridad de 1 metro sin contacto físico.\n- Sumar 1 punto tras completar 4 pases limpios.\n\nVariaciones:\n- Limitar el tiempo de posesión individual a 3 segundos.`,
               materiales: ['Pelotas', 'Petos'],
               esquemaTactico: {
@@ -1389,7 +1428,11 @@ Devuelve una respuesta JSON estricta con este formato:
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.2: Circuito Táctico Cooperativo`,
+              nombreJuego: isFirst
+                ? `Acuerdos y Cooperación Base en Grupos`
+                : isLast
+                  ? `Fase 2 del Gran Desafío: Estaciones de Aplicación y Puntuación Verde`
+                  : `Reto Táctico ${i}.2: Circuito Estratégico en Parejas`,
               descripcion: `Terreno de juego:\n3 estaciones motrices delimitadas en el perímetro de la pista.\n\nRoles:\nGrupos rotativos de 5 alumnos por estación motriz.\n\nDesarrollo del juego:\nCada grupo supera el desafío técnico de su estación motriz sumando aciertos colectivos antes de rotar en sentido horario.\n\nNormas:\n- Completar el recorrido de forma controlada.\n- Respetar el orden de salida en cada posta.\n\nVariaciones:\n- Modificar la distancia al objetivo o añadir un obstáculo.`,
               materiales: ['Petos', 'Picas', 'Conos'],
               esquemaTactico: {
@@ -1407,7 +1450,11 @@ Devuelve una respuesta JSON estricta con este formato:
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.3: Juego Global y Resolución`,
+              nombreJuego: isFirst
+                ? `Juego de Cohesión Grupal y Toma de Contacto`
+                : isLast
+                  ? `Fase 3 del Gran Desafío: Torneo Inclusivo de Fair Play`
+                  : `Reto Colectivo ${i}.3: Juego Global y Resolución de Dilemas`,
               descripcion: `Terreno de juego:\nCampo central de 20x15m con dos zonas de anotación definidas.\n\nRoles:\nDos equipos mixtos equilibrados de 6 jugadores.\n\nDesarrollo del juego:\nJuego real modificado aplicando los patrones motrices practicados para avanzar mediante pases y anotar en la meta rival.\n\nNormas:\n- No se permite el contacto brusco.\n- Puntuación doble cuando todos tocan el móvil en la jugada.\n\nVariaciones:\n- Incorporar un jugador comodín neutral de apoyo ofensivo.`,
               materiales: ['Pelotas', 'Petos'],
               esquemaTactico: {
@@ -1425,7 +1472,11 @@ Devuelve una respuesta JSON estricta con este formato:
             {
               fase: 'Parte Principal / Práctica',
               duracionMin: 10,
-              nombreJuego: `Reto Motor ${i}.4: Desafío Final`,
+              nombreJuego: isFirst
+                ? `Puesta a Prueba Inicial de Desafíos Motores`
+                : isLast
+                  ? `Fase 4 del Gran Desafío: Reto Cumbre de Transferencia`
+                  : `Reto Situacional ${i}.4: Aplicación Competitiva Limpia`,
               descripcion: `Terreno de juego:\nPista completa dividida en 3 calles longitudinales.\n\nRoles:\nParejas colaborativas de ejecutores y observadores.\n\nDesarrollo del juego:\nPuesta en práctica global de la dinámica de la sesión encadenando secuencias motrices fluidas.\n\nNormas:\n- Cooperar con el compañero para mantener el ritmo de acción.\n- Respetar los límites de la propia calle de juego.\n\nVariaciones:\n- Elegir entre dos niveles de dificultad en cada intento.`,
               materiales: ['Conos', 'Petos'],
               esquemaTactico: {
@@ -1441,7 +1492,11 @@ Devuelve una respuesta JSON estricta con este formato:
             {
               fase: 'Vuelta a la Calma / Reflexión',
               duracionMin: 10,
-              nombreJuego: `Reflexión y Puesta en Común ${i}`,
+              nombreJuego: isFirst
+                ? `Asamblea de Diagnóstico y Compromisos de Aula`
+                : isLast
+                  ? `Asamblea de Coevaluación Práctica y Cierre del Producto Final`
+                  : `Reflexión Táctica y Puesta en Común ${i}`,
               descripcion: `Terreno de juego:\nCírculo central del gimnasio sobre esterillas.\n\nRoles:\nTodo el grupo sentado en posición cómoda de asamblea.\n\nDesarrollo del juego:\nEstiramientos pasivos guiados combinados con respiración consciente y asamblea reflexiva sobre los aprendizajes motrices.\n\nNormas:\n- Respetar el turno de palabra en la asamblea.\n- Mantener un tono de voz relajado y pausado.\n\nVariaciones:\n- Expresar con gestos o diana visual el grado de satisfacción.`,
               materiales: ['Esterillas'],
               esquemaTactico: {
@@ -1461,10 +1516,13 @@ Devuelve una respuesta JSON estricta con este formato:
     }
 
     // Post-process all sessions:
-    // 1. Ensure game names within each session are UNIQUE (no repeated game names in the same session).
-    // 2. Remove any leftover generic template paragraphs.
-    // 3. Format game descriptions cleanly.
-    // 4. GUARANTEE AT LEAST 4 MAIN GAMES in Parte Principal / Estaciones (60 min total).
+    // 1. Strict Transversal Anti-Repetition Blacklist across ALL sessions (no game reused from previous sessions).
+    // 2. Ensure game names within each session are UNIQUE.
+    // 3. Remove any leftover generic template paragraphs.
+    // 4. Format game descriptions cleanly.
+    // 5. GUARANTEE AT LEAST 4 MAIN GAMES in Parte Principal / Estaciones (60 min total).
+    const transversalBlacklist = new Set<string>();
+
     sesionesRes.forEach((ses, sIdx) => {
       if (!ses.fases || !Array.isArray(ses.fases)) {
         ses.fases = [];
@@ -1560,15 +1618,25 @@ Devuelve una respuesta JSON estricta con este formato:
       // Reassemble fases
       ses.fases = [warmup, ...mainGames, cooldown];
 
-      // Formatting and uniqueness checks
-      const seenNames = new Set<string>();
+      // Formatting and transversal anti-repetition blacklist enforcement
+      const seenNamesInSession = new Set<string>();
       ses.fases.forEach((f: any, idx: number) => {
         let gameName = String(f.nombreJuego || `Juego ${idx + 1}`).trim();
-        if (seenNames.has(gameName.toLowerCase())) {
+        const normalizeKey = (n: string) =>
+          n.toLowerCase().replace(/^(juego\s*\d*[:.-]?\s*)/i, '').replace(/\s+/g, ' ').trim();
+        const norm = normalizeKey(gameName);
+
+        // Check if already used in a previous session (transversal blacklist) or earlier in this session
+        if (transversalBlacklist.has(norm) && norm.length > 3) {
+          gameName = `${gameName} (Variante S${sIdx + 1}.${idx + 1})`;
+          f.nombreJuego = gameName;
+        } else if (seenNamesInSession.has(norm)) {
           gameName = `${gameName} (Variante ${idx + 1})`;
           f.nombreJuego = gameName;
         }
-        seenNames.add(gameName.toLowerCase());
+
+        seenNamesInSession.add(normalizeKey(gameName));
+        transversalBlacklist.add(normalizeKey(gameName));
 
         if (f.descripcion) {
           let descStr = String(f.descripcion);
@@ -1729,54 +1797,111 @@ Devuelve un JSON estricto con:
   }
 });
 
-// API: Enriquecer / Autocompletar Sesión Completa con IA
+// API: Enriquecer / Autocompletar Sesión Completa con IA (Emergencia con Nuevos Juegos y Alineación Curricular)
 app.post('/api/ai/enrich-full-session', async (req, res) => {
   try {
-    const { sesion, tematica, curso, etapa } = req.body;
+    const {
+      sesion,
+      numeroSesion = 1,
+      totalSesiones = 6,
+      tematica = 'Educación Física',
+      curso = 'Primaria',
+      ciclo = 'Primer Ciclo',
+      etapa = 'Primaria',
+      comunidad = 'Andalucía',
+      modeloEstructura = 'Comprensivo / Cooperativo',
+      criteriosSeleccionados = [],
+      saberesSeleccionados = [],
+      juegosEliminados = [],
+      juegosExistentes = [],
+      driveDocumentationText,
+    } = req.body;
+
     if (!sesion || !sesion.fases) {
       return res.status(400).json({ error: 'Datos de sesión incompletos.' });
     }
 
     const ai = getGenAIClient();
-    const prompt = `Actúa como Catedrático de Educación Física. Analiza y autocompleta/enriquece TODAS las actividades de la siguiente sesión.
-Si alguna actividad está vacía, incompleta, sin explicación o con datos escasos, REGENÉRALA O COMPLÉTALA con un juego de Educación Física conciso y dinámico para ${curso || 'Primaria'} y temática "${tematica || 'General'}".
 
-Sesión actual:
-Título: "${sesion.titulo || ''}"
-Fases/Actividades actuales:
+    let documentationNotice = '';
+    if (driveDocumentationText && driveDocumentationText.trim().length > 0) {
+      documentationNotice = `
+DOCUMENTACIÓN ADJUNTA DEL DOCENTE (PDF, WORD, EXCEL O DRIVE):
+---
+${driveDocumentationText.slice(0, 25000)}
+---
+Si en la documentación hay bancos de juegos acordes al curso y temática que no hayan sido eliminados ni repetidos, puedes extraer de ahí los juegos de reemplazo.`;
+    }
+
+    const prompt = `Actúa como Catedrático de Educación Física y Diseñador Curricular LOMLOE de máximo nivel.
+El docente está trabajando en la Sesión ${numeroSesion} de ${totalSesiones} de la Situación de Aprendizaje.
+Ha eliminado uno o varios juegos insatisfactorios de esta sesión (actualmente quedan ${sesion.fases.length} actividades) y solicita:
+¡COMPLETAR LA SESIÓN CON NUEVOS JUEGOS ORIGINALES Y RIGUROSAMENTE ALINEADOS CON LOS CONTENIDOS Y CRITERIOS SELECCIONADOS!
+
+PARÁMETROS CURRICULARES OBLIGATORIOS DE LA SDA:
+- Curso / Nivel: ${curso} (${ciclo}) - Etapa: ${etapa}
+- Temática Central: "${tematica}"
+- Contenidos / Saberes Básicos seleccionados por el docente: ${JSON.stringify(saberesSeleccionados || [])}
+- Criterios de Evaluación trabajados: ${JSON.stringify(criteriosSeleccionados || [])}
+- Modelo Pedagógico: "${modeloEstructura || 'Comprensivo / Cooperativo'}"
+
+ESTADO ACTUAL DE LA SESIÓN TRAS EL BORRADO REALIZADO POR EL DOCENTE:
+Título de la sesión: "${sesion.titulo || `Sesión ${numeroSesion}`}"
+Objetivo de la sesión: "${sesion.objetivoSesion || ''}"
+Fases/Actividades que el docente HA MANTENIDO (${sesion.fases.length} actividades):
 ${JSON.stringify(sesion.fases, null, 2)}
 
-REGLA INDISPENSABLE:
-Cada una de las fases/actividades devueltas debe tener su "nombreJuego", "duracionMin", "materiales" y su "descripcion" REDACTADA DE FORMA DIRECTA Y OPERATIVA (60-90 palabras a pie de pista):
-Terreno de juego: Espacio y dimensiones aproximadas
-Roles: Distribución del alumnado
-Desarrollo del juego: Explicación directa y motriz (2-3 líneas)
-Normas: 2 viñetas clave
-Variaciones: 1 variante de dificultad
+LISTA NEGRA ESTRICTA (¡JUEGOS TOTALMENTE PROHIBIDOS!):
+1. JUEGOS ELIMINADOS POR EL DOCENTE (NUNCA VOLVER A PROPONERLOS):
+${JSON.stringify(juegosEliminados || [])}
+¡ESTÁ TERMINANTEMENTE PROHIBIDO volver a proponer ninguno de estos juegos eliminados! El docente los ha descartado expresamente.
+2. JUEGOS YA PRESENTES EN OTRAS SESIONES DE LA SDA (PROHIBIDO REPETIRLOS):
+${JSON.stringify(juegosExistentes || [])}
+¡ESTÁ TERMINANTEMENTE PROHIBIDO repetir ningún juego ya utilizado en otras sesiones!
 
-JUEGOS CANTADOS Y CANCIONES POPULARES (CERO DUPLICACIÓN):
-Si la actividad es un juego cantado, canción tradicional o corro:
-- En "Desarrollo del juego": Explica SOLO la dinámica motriz (ej. desplazamientos, cadena, saltos). NO repitas la letra de la canción en Desarrollo.
-- Bajo el apartado:
-🎵 Canción / Letra:
-"Estrofas o letra completa para cantar en clase, escrita una sola vez."
-- REGLA ESTRICTA DE NO-DUPLICACIÓN: NO dupliques normas, variaciones, frases explicativas ni estrofas. Si la actividad ya contiene información previa, depúrala y sintetízala en una sola estructura limpia sin concatenar duplicados.
+${documentationNotice}
 
-Devuelve un JSON estricto con la estructura de la sesión actualizada:
+INSTRUCCIONES MANDATORIAS Y VINCULANTES:
+1. ESTRUCTURA OBLIGATORIA COMPLETA DE 60 MINUTOS (EXACTAMENTE 6 FASES INDIVIDUALES):
+   Toda sesión completa de EF debe constar de EXACTAMENTE 6 FASES (10 min cada una):
+   - Fase 1: Calentamiento / Activación Dinámica (10 min) - 1 juego motivante de animación
+   - Fase 2: Parte Principal / Reto Motriz 1 (10 min) - Juego individual 1
+   - Fase 3: Parte Principal / Reto Motriz 2 (10 min) - Juego individual 2
+   - Fase 4: Parte Principal / Reto Motriz 3 (10 min) - Juego individual 3
+   - Fase 5: Parte Principal / Reto Motriz 4 (10 min) - Juego individual 4 (o Aplicación / Torneo inclusivo)
+   - Fase 6: Vuelta a la Calma / Reflexión y Hábitos (10 min) - 1 juego sensorial o asamblea reflexiva
+2. GENERAR JUEGOS TOTALMENTE NUEVOS PARA REEMPLAZAR LOS BORRADOS:
+   - Si la sesión actual tiene menos de 6 fases (o la Parte Principal tiene menos de 4 juegos), DEBES CREAR JUEGOS NUEVOS Y FRESCOS para rellenar las fases faltantes hasta completar las 6 fases obligatorias (60 minutos en total).
+   - Respeta las actividades válidas que el docente mantuvo y depura su redacción si fuese necesario.
+3. ALINEACIÓN CURRICULAR ESTRICTA CON LOS SABERES BÁSICOS Y CRITERIOS:
+   - CADA NUEVO JUEGO que generes DEBE TRABAJAR DIRECTAMENTE los Saberes Básicos seleccionados (${JSON.stringify(saberesSeleccionados)}) y los Criterios de Evaluación (${JSON.stringify(criteriosSeleccionados)}), adaptado al desarrollo psicomotriz de ${curso}.
+4. FORMATO DIRECTO Y OPERATIVO ("REGLA DE LOS 15 SEGUNDOS"):
+   Cada juego desglosado en:
+   - Terreno de juego: Espacio y dimensiones aproximadas (ej. Media pista polideportiva, 20x15m).
+   - Roles: Distribución de los alumnos.
+   - Desarrollo del juego: Dinámica motriz directa y concisa (2-3 líneas).
+   - Normas: 2 viñetas clave (objetivo motor y falta/puntuación).
+   - Variaciones: 1 variante rápida de progresión de dificultad.
+   - esquemaTactico: Coordenadas tácticas ligeras ("tipoPista", "descripcionCorta", "elementos").
+5. JUEGOS CANTADOS / CANCIONES:
+   - Desarrollo del juego: SOLO acciones motrices físicas.
+   - Letra completa únicamente bajo el epígrafe "🎵 Canción / Letra:". Cero duplicación de versos.
+
+Devuelve un JSON estricto con la estructura de la sesión completa de 6 fases:
 {
-  "titulo": "${sesion.titulo || ''}",
-  "objetivoSesion": "${sesion.objetivoSesion || ''}",
-  "materialesTotales": ${JSON.stringify(sesion.materialesTotales || [])},
+  "titulo": "${sesion.titulo || `Sesión ${numeroSesion}`}",
+  "objetivoSesion": "${sesion.objetivoSesion || `Desarrollo de las habilidades de ${tematica}`}",
+  "materialesTotales": ${JSON.stringify(sesion.materialesTotales || ['Conos', 'Petos', 'Pelotas'])},
   "fases": [
     {
-      "fase": "...",
+      "fase": "Calentamiento / Activación Dinámica",
       "duracionMin": 10,
       "nombreJuego": "...",
-      "descripcion": "...",
+      "descripcion": "Terreno de juego: ...\\n\\nRoles: ...\\n\\nDesarrollo del juego: ...\\n\\nNormas: ...\\n\\nVariaciones: ...",
       "materiales": ["..."],
       "esquemaTactico": {
         "tipoPista": "pabellon",
-        "descripcionCorta": "Disposición táctica del juego",
+        "descripcionCorta": "...",
         "elementos": [
           { "tipo": "alumno", "x": 25, "y": 55, "color": "#0284c7" },
           { "tipo": "cono", "x": 50, "y": 65, "label": "1" },
@@ -1791,23 +1916,118 @@ Devuelve un JSON estricto con la estructura de la sesión actualizada:
       model: 'gemini-1.5-flash',
       contents: prompt,
       config: {
-        systemInstruction: getSystemInstructionEF(etapa, req.body.comunidad),
-        temperature: 0.7,
+        systemInstruction: getSystemInstructionEF(etapa, comunidad),
+        temperature: 0.75,
         responseMimeType: 'application/json',
       },
     });
 
     const parsed = safeParseAIJson<any>(response.text, {});
-    if (parsed.fases && Array.isArray(parsed.fases)) {
-      parsed.fases.forEach((f: any) => {
-        if (f.descripcion) f.descripcion = formatGameDescription(f.descripcion);
+    let fasesRes: any[] = parsed.fases && Array.isArray(parsed.fases) ? parsed.fases : [];
+
+    // Classify phases into Warmup, Cooldown, Main games
+    const isWarmup = (f: any) =>
+      /calentamiento|activaci[oó]n|inicial|animaci[oó]n/i.test(f.fase || '') ||
+      /calentamiento|activaci[oó]n|inicial|animaci[oó]n/i.test(f.nombreJuego || '');
+    const isCooldown = (f: any) =>
+      /vuelta a la calma|cierre|reflexi[oó]n|calma|puesta en com[uú]n|evaluaci[oó]n/i.test(f.fase || '') ||
+      /calma|relax|estiramiento|reflexi[oó]n/i.test(f.nombreJuego || '');
+
+    let warmup = fasesRes.find(isWarmup);
+    let cooldown = [...fasesRes].reverse().find(isCooldown);
+    let mainGames = fasesRes.filter((f: any) => f !== warmup && f !== cooldown);
+
+    // If Gemini did not return a warmup, ensure one
+    if (!warmup) {
+      warmup = {
+        fase: 'Calentamiento / Activación Dinámica',
+        duracionMin: 10,
+        nombreJuego: `Activación Motriz Dinámica (${tematica})`,
+        descripcion: `Terreno de juego:\nPista delimitada 15x15m.\n\nRoles:\nTodo el grupo activo libremente en el espacio.\n\nDesarrollo del juego:\nDesplazamientos variados y movilidad articular activa vinculada a ${tematica} y al contenido ${saberesSeleccionados[0] || 'patrones motores'}.\n\nNormas:\n- Mantener distancia de seguridad activa sin choques.\n- Seguir las consignas docentes de cambio de ritmo.\n\nVariaciones:\n- Desplazamientos en parejas espejo.`,
+        materiales: ['Conos'],
+        origen: 'ia',
+      };
+    }
+
+    // If Gemini did not return a cooldown, ensure one
+    if (!cooldown) {
+      cooldown = {
+        fase: 'Vuelta a la Calma / Reflexión y Hábitos',
+        duracionMin: 10,
+        nombreJuego: 'Calma Sensorial y Diálogo Reflexivo',
+        descripcion: `Terreno de juego:\nCírculo central del pabellón sobre colchonetas.\n\nRoles:\nTodo el alumnado sentado en asamblea circular.\n\nDesarrollo del juego:\nEjercicios de respiración diafragmática consciente seguidos de una asamblea de reflexión sobre los aprendizajes motrices de ${tematica}.\n\nNormas:\n- Escucha activa y respeto al turno de palabra.\n- Participación sincera en la autoevaluación.\n\nVariaciones:\n- Autoevaluación rápida con pulgares (arriba / medio / abajo).`,
+        materiales: ['Colchonetas'],
+        origen: 'ia',
+      };
+    }
+
+    // Filter out any main game that matches the deleted games blacklist
+    const isDeletedName = (name: string) => {
+      const norm = (name || '').toLowerCase().replace(/^(juego\s*\d*[:.-]?\s*)/i, '').replace(/\s+/g, ' ').trim();
+      return (juegosEliminados || []).some((del: string) => {
+        const normDel = del.toLowerCase().replace(/^(juego\s*\d*[:.-]?\s*)/i, '').replace(/\s+/g, ' ').trim();
+        return normDel.length > 3 && (norm === normDel || norm.includes(normDel) || normDel.includes(norm));
+      });
+    };
+
+    mainGames = mainGames.filter((mg: any) => !isDeletedName(mg.nombreJuego));
+
+    // Guarantee AT LEAST 4 main games
+    const fallbackMainTitles = [
+      `Reto Técnico de ${tematica}: Habilidades Base y Precisión`,
+      `Reto Táctico de ${tematica}: Cooperación y Toma de Decisiones`,
+      `Desafío Colectivo de ${tematica}: Oposición Inclusiva`,
+      `Juego de Aplicación Real de ${tematica}: Situación Global de Desafío`,
+    ];
+
+    while (mainGames.length < 4) {
+      const nextIdx = mainGames.length + 1;
+      const title = fallbackMainTitles[nextIdx - 1] || `Reto Motriz ${nextIdx}: Aplicación de ${tematica}`;
+      const saberRef = (saberesSeleccionados && saberesSeleccionados.length > 0)
+        ? saberesSeleccionados[(nextIdx - 1) % saberesSeleccionados.length]
+        : 'saberes básicos de la unidad';
+
+      mainGames.push({
+        fase: `Parte Principal / Reto Motriz ${nextIdx}`,
+        duracionMin: 10,
+        nombreJuego: title,
+        descripcion: `Terreno de juego:\nMedia pista polideportiva (20x15m) delimitada con conos.\n\nRoles:\nEquipos heterogéneos rotativos de 4-5 participantes.\n\nDesarrollo del juego:\nDesafío motriz cooperativo enfocado en ${tematica} y alineado con ${saberRef}, donde los participantes resuelven colectivamente dilemas motrices en progresión de dificultad.\n\nNormas:\n- Participación y pase activo de todos los integrantes del equipo antes de puntuar.\n- Sin eliminaciones: sistema de retos acumulativos o reincorporación inmediata.\n\nVariaciones:\n- Modificar el tamaño del móvil o la distancia de interacción para adaptar el reto.`,
+        materiales: ['Balones', 'Petos', 'Conos'],
+        origen: 'ia',
+        esquemaTactico: {
+          tipoPista: 'pabellon',
+          descripcionCorta: `Reto motriz ${nextIdx} por subgrupos`,
+          elementos: [
+            { tipo: 'alumno', x: 25, y: 50, color: '#0284c7' },
+            { tipo: 'cono', x: 50, y: 50, label: 'Zona' },
+            { tipo: 'alumno', x: 75, y: 50, color: '#b91c1c' },
+            { tipo: 'flecha', x: 30, y: 50, x2: 70, y2: 50, curva: 'recta', color: '#0f766e' },
+          ],
+        },
       });
     }
+
+    // Durations: 10 min each for 1 warmup + 4 main games + 1 cooldown = 60 min
+    warmup.duracionMin = 10;
+    mainGames.forEach((mg: any, idx: number) => {
+      mg.duracionMin = 10;
+      mg.fase = `Parte Principal / Reto Motriz ${idx + 1}`;
+    });
+    cooldown.duracionMin = 10;
+
+    const fullFases = [warmup, ...mainGames, cooldown];
+    fullFases.forEach((f: any) => {
+      if (f.descripcion) f.descripcion = formatGameDescription(f.descripcion);
+    });
+
+    parsed.fases = fullFases;
+    if (!parsed.titulo) parsed.titulo = sesion.titulo || `Sesión ${numeroSesion}`;
+    if (!parsed.objetivoSesion) parsed.objetivoSesion = sesion.objetivoSesion || `Desarrollo de las habilidades motrices de ${tematica}`;
 
     res.json({ sesionActualizada: parsed });
   } catch (error: any) {
     console.error('Error enriching full session:', error);
-    res.status(500).json({ error: error.message || 'Error al enriquecer la sesión completa.' });
+    res.status(500).json({ error: error.message || 'Error al enriquecer y completar la sesión.' });
   }
 });
 

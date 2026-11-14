@@ -1270,14 +1270,21 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
           <span>📋 Diario de Pista (1 Folio por Sesión)</span>
         </button>
 
-        <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer select-none bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 transition">
+        <label
+          className={`flex items-center gap-2.5 text-xs font-black cursor-pointer select-none px-3.5 py-2.5 rounded-xl border transition shadow-xs ${
+            includeTacticalPitchInDoc
+              ? 'bg-indigo-50 border-indigo-300 text-indigo-950 ring-1 ring-indigo-200'
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+          }`}
+          title="Activa o desactiva los esquemas tácticos en el documento y exportación (desactívalos para ahorrar tinta y papel)"
+        >
           <input
             type="checkbox"
             checked={includeTacticalPitchInDoc}
             onChange={(e) => setIncludeTacticalPitchInDoc(e.target.checked)}
-            className="rounded text-indigo-900 focus:ring-indigo-600"
+            className="rounded text-indigo-900 focus:ring-indigo-600 w-4 h-4 cursor-pointer"
           />
-          <span>Incluir esquemas tácticos en el documento</span>
+          <span>{includeTacticalPitchInDoc ? '📍 Esquemas tácticos ACTIVADOS' : '🌱 Ahorro de tinta (Sin esquemas tácticos)'}</span>
         </label>
 
         <button
@@ -1610,7 +1617,9 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                                 </div>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
-                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              {includeTacticalPitchInDoc && (
+                                <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              )}
                               {f.esquemaGrafico && (
                                 <p className="text-[11px] text-amber-900 bg-amber-50 p-1.5 rounded-lg border border-amber-200 mt-1 italic">
                                   🎨 <strong>Organización Espacial:</strong> {f.esquemaGrafico}
@@ -1651,7 +1660,9 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                                     </div>
                                   </div>
                                   {renderFormattedGameDescriptionReact(f.descripcion)}
-                                  <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                                  {includeTacticalPitchInDoc && (
+                                    <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                                  )}
                                   {f.esquemaGrafico && (
                                     <p className="text-[11px] text-slate-700 bg-slate-50 p-1.5 rounded-lg border border-slate-200 mt-1 italic">
                                       🎨 <strong>Organización Espacial:</strong> {f.esquemaGrafico}
@@ -1688,7 +1699,9 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                                 </div>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
-                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              {includeTacticalPitchInDoc && (
+                                <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              )}
                             </div>
                           ))}
 
@@ -1699,7 +1712,9 @@ export const Step10Export: React.FC<Step10Props> = ({ sda: rawSda, onSaveSdA, on
                                 <span className="text-[10px] font-extrabold bg-indigo-100 text-indigo-900 px-2 py-0.5 rounded border border-indigo-200 shrink-0">{f.fase} • {f.duracionMin} min</span>
                               </div>
                               {renderFormattedGameDescriptionReact(f.descripcion)}
-                              <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              {includeTacticalPitchInDoc && (
+                                <div dangerouslySetInnerHTML={{ __html: getTacticalPitchHtml(detectPitchType(f.descripcion, f.nombreJuego), f.nombreJuego, f.esquemaTactico, f.descripcion) }} />
+                              )}
                             </div>
                           ))}
                         </>
