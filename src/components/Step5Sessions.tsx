@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import {
@@ -22,6 +22,8 @@ import {
   FileSpreadsheet,
   Upload,
   Printer,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import {
   Ciclo,
@@ -159,6 +161,17 @@ export const Step5Sessions: React.FC<Step5Props> = ({
   const [progressModalType, setProgressModalType] = useState<GenerationType>('sessions');
   const [progressModalTitle, setProgressModalTitle] = useState<string | undefined>(undefined);
   const [progressModalSubtitle, setProgressModalSubtitle] = useState<string | undefined>(undefined);
+  const sessionsTrackRef = useRef<HTMLDivElement>(null);
+
+  const scrollSessionsTrack = (direction: 'left' | 'right') => {
+    if (sessionsTrackRef.current) {
+      const scrollAmount = 260;
+      sessionsTrackRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const handleEnrichFullSession = async () => {
     const copy = [...sesiones];
@@ -661,32 +674,32 @@ export const Step5Sessions: React.FC<Step5Props> = ({
 
   return (
     <div id="step5-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40 flex flex-wrap items-center justify-between gap-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-3 mb-2">
-            <Calendar className="w-7 h-7 text-amber-400" />
-            <h2 className="text-xl font-bold">Paso 5: Diseño de Sesiones de Trabajo (60 min)</h2>
+          <div className="flex items-center space-x-3 mb-1">
+            <Calendar className="w-6 h-6 text-amber-400" />
+            <h2 className="text-lg font-bold">Paso 5: Diseño de Sesiones de Aprendizaje (60 min)</h2>
           </div>
-          <p className="text-indigo-100 text-sm max-w-2xl">
+          <p className="text-indigo-100 text-xs max-w-2xl">
             Desarrollo de las <strong>{numSesiones} sesiones</strong> de Educación Física para {curso} ({ciclo}) basadas en la temática <strong>{tematica || 'General'}</strong>.
           </p>
         </div>
 
-        {/* Prominent Regenerate AI Sessions Button */}
+        {/* Action Button */}
         <button
           id="btn-generate-ai-sessions"
           onClick={handleGenerateSessionsAI}
           disabled={loadingAi}
-          className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition shadow-lg border border-amber-300 animate-pulse-subtle disabled:opacity-50"
+          className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition shadow-lg border border-amber-300 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
         >
           {loadingAi ? (
-            <RefreshCw className="w-5 h-5 text-slate-950 animate-spin" />
+            <RefreshCw className="w-4 h-4 text-slate-950 animate-spin" />
           ) : (
-            <Sparkles className="w-5 h-5 text-slate-950" />
+            <Sparkles className="w-4 h-4 text-slate-950" />
           )}
           <span>
-            {sesiones.length > 0 ? 'Volver a generar de nuevo (IA)' : 'Generar Sesiones con IA'}
+            {sesiones.length > 0 ? 'Volver a generar (IA)' : 'Generar Sesiones con IA'}
           </span>
         </button>
       </div>
@@ -914,80 +927,117 @@ export const Step5Sessions: React.FC<Step5Props> = ({
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Sessions Tabs Bar & Download Actions Toolbar */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200">
-            {/* Session Tabs with Generous Width and Clean Scroll */}
-            <div className="flex space-x-1.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-thin flex-1 min-w-0 pr-1">
-              {sesiones.map((ses, idx) => (
+          {/* Sessions Tabs Bar & Download Actions Toolbar (High Contrast Dark Theme) */}
+          <div className="bg-slate-900 text-white rounded-xl border border-slate-800 p-3 shadow-md space-y-2.5">
+            {/* Top Toolbar: Label & Compact Action Buttons on the Right */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-300">
+                  Sesiones de Trabajo
+                </span>
+                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-700">
+                  {sesiones.length} sesiones
+                </span>
+              </div>
+
+              {/* Compact Action Buttons */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* BOTÓN DESCARGAR CUADERNO DE PISTA (TODAS LAS SESIONES EN 1 FOLIO C/U) */}
                 <button
-                  key={idx}
-                  id={`tab-sesion-${idx + 1}`}
-                  onClick={() => setActiveSessionIndex(idx)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 flex items-center space-x-1.5 border ${
-                    activeSessionIndex === idx
-                      ? 'bg-indigo-900 text-white border-indigo-950 shadow-sm ring-2 ring-indigo-500/20'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
+                  type="button"
+                  id="btn-download-all-sessions-notebook"
+                  disabled={downloadingNotebook}
+                  onClick={handleDownloadNotebook}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[11px] transition shadow-2xs border border-amber-400 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                  title="Descargar Cuaderno de Pista completo: cada sesión en 1 carilla A4 lista para llevar al gimnasio o patio"
                 >
-                  <span>Sesión {idx + 1}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
-                      activeSessionIndex === idx ? 'bg-amber-400 text-slate-950' : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    60 min
-                  </span>
+                  {downloadingNotebook ? (
+                    <RefreshCw className="w-3 h-3 text-slate-950 animate-spin" />
+                  ) : (
+                    <Printer className="w-3 h-3 text-slate-950" />
+                  )}
+                  <span>{downloadingNotebook ? 'Generando...' : '📋 Cuaderno (1 Folio/S. PDF)'}</span>
                 </button>
-              ))}
+
+                {/* INTERRUPTOR DE DIAGRAMAS / ESQUEMAS TÁCTICOS EN WORD (AHORRO DE TINTA Y PAPEL) */}
+                <label
+                  className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-[11px] font-bold cursor-pointer select-none transition shadow-2xs ${
+                    includeTacticalPitchInWord
+                      ? 'bg-indigo-950 border-indigo-600 text-indigo-200'
+                      : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                  }`}
+                  title="Activa o desactiva los diagramas tácticos en el archivo Word para ahorrar papel y tinta al imprimir"
+                >
+                  <input
+                    type="checkbox"
+                    checked={includeTacticalPitchInWord}
+                    onChange={(e) => setIncludeTacticalPitchInWord(e.target.checked)}
+                    className="rounded text-indigo-500 focus:ring-indigo-500 w-3 h-3 cursor-pointer"
+                  />
+                  <span>{includeTacticalPitchInWord ? '📍 Con diagramas' : '🌱 Ahorro tinta'}</span>
+                </label>
+
+                {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
+                <button
+                  type="button"
+                  id="btn-download-all-sessions-word"
+                  onClick={handleDownloadSessionsWord}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md bg-blue-700 hover:bg-blue-600 text-white font-bold text-[11px] transition shadow-2xs border border-blue-600 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                  title="Descargar todas las sesiones en un documento Word (.doc) editable con formato completo"
+                >
+                  <FileSpreadsheet className="w-3 h-3 text-amber-300" />
+                  <span>Descargar Word (.doc)</span>
+                </button>
+              </div>
             </div>
 
-            {/* Compact Action Buttons on the Right */}
-            <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
-              {/* BOTÓN DESCARGAR CUADERNO DE PISTA (TODAS LAS SESIONES EN 1 FOLIO C/U) */}
+            {/* Dedicated Full-Width Sessions Scroll Track with Generous Scroll & Chevron Buttons */}
+            <div className="relative flex items-center gap-1.5 pt-1 border-t border-slate-800">
               <button
                 type="button"
-                id="btn-download-all-sessions-notebook"
-                disabled={downloadingNotebook}
-                onClick={handleDownloadNotebook}
-                className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-[11px] transition shadow-xs border border-amber-400 shrink-0 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
-                title="Descargar Cuaderno de Pista completo: cada sesión en 1 carilla A4 lista para llevar al gimnasio o patio"
+                onClick={() => scrollSessionsTrack('left')}
+                aria-label="Desplazar sesiones a la izquierda"
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 transition border border-slate-700 shrink-0 cursor-pointer"
+                title="Desplazar a la izquierda"
               >
-                {downloadingNotebook ? (
-                  <RefreshCw className="w-3.5 h-3.5 text-slate-950 animate-spin" />
-                ) : (
-                  <Printer className="w-3.5 h-3.5 text-slate-950" />
-                )}
-                <span>{downloadingNotebook ? 'Generando...' : '📋 Cuaderno (1 Folio/S. PDF)'}</span>
+                <ChevronLeft className="w-4 h-4" />
               </button>
 
-              {/* INTERRUPTOR DE DIAGRAMAS / ESQUEMAS TÁCTICOS EN WORD (AHORRO DE TINTA Y PAPEL) */}
-              <label
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-bold cursor-pointer select-none transition shadow-2xs shrink-0 ${
-                  includeTacticalPitchInWord
-                    ? 'bg-indigo-50 border-indigo-300 text-indigo-950 ring-1 ring-indigo-200'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-                title="Activa o desactiva los diagramas tácticos en el archivo Word para ahorrar papel y tinta al imprimir"
+              <div
+                ref={sessionsTrackRef}
+                className="flex space-x-2 overflow-x-auto py-1 scroll-smooth scrollbar-medium flex-1 min-w-0"
               >
-                <input
-                  type="checkbox"
-                  checked={includeTacticalPitchInWord}
-                  onChange={(e) => setIncludeTacticalPitchInWord(e.target.checked)}
-                  className="rounded text-indigo-900 focus:ring-indigo-600 w-3.5 h-3.5 cursor-pointer"
-                />
-                <span>{includeTacticalPitchInWord ? '📍 Con diagramas' : '🌱 Ahorro tinta'}</span>
-              </label>
+                {sesiones.map((ses, idx) => (
+                  <button
+                    key={idx}
+                    id={`tab-sesion-${idx + 1}`}
+                    onClick={() => setActiveSessionIndex(idx)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 flex items-center space-x-1.5 border cursor-pointer ${
+                      activeSessionIndex === idx
+                        ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm font-black ring-2 ring-amber-400/30'
+                        : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+                    }`}
+                  >
+                    <span>Sesión {idx + 1}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
+                        activeSessionIndex === idx ? 'bg-slate-950 text-amber-400' : 'bg-slate-900 text-slate-400'
+                      }`}
+                    >
+                      {ses.duracionTotalMin || 60} min
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-              {/* BOTÓN DESCARGAR TODAS LAS SESIONES EN WORD */}
               <button
                 type="button"
-                id="btn-download-all-sessions-word"
-                onClick={handleDownloadSessionsWord}
-                className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-bold text-[11px] transition shadow-xs border border-blue-600 shrink-0 hover:scale-[1.01] active:scale-[0.99]"
-                title="Descargar todas las sesiones en un documento Word (.doc) editable con formato completo"
+                onClick={() => scrollSessionsTrack('right')}
+                aria-label="Desplazar sesiones a la derecha"
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-300 transition border border-slate-700 shrink-0 cursor-pointer"
+                title="Desplazar a la derecha"
               >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-amber-300" />
-                <span>Descargar Word (.doc)</span>
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>

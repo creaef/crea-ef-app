@@ -155,50 +155,50 @@ export const Step3Saberes: React.FC<Step3Props> = ({
   };
 
   return (
-    <div id="step3-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40">
-        <div className="flex items-center space-x-3 mb-2">
-          <BookOpen className="w-7 h-7 text-amber-400" />
-          <h2 className="text-xl font-bold">Paso 3: Saberes Básicos, ODS y Descriptores Operativos</h2>
+    <div id="step3-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40">
+        <div className="flex items-center space-x-3 mb-1">
+          <BookOpen className="w-6 h-6 text-amber-400" />
+          <h2 className="text-lg font-bold">Paso 3: Saberes Básicos, ODS y Descriptores Operativos</h2>
         </div>
-        <p className="text-indigo-100 text-sm max-w-3xl">
-          Selecciona los Saberes Básicos por bloques de contenidos alineados con <strong>{etapa} ({ciclo})</strong> y conecta con los Objetivos de Desarrollo Sostenible (ODS).
+        <p className="text-indigo-100 text-xs max-w-3xl">
+          Selecciona los Saberes Básicos por bloques alineados con <strong>{etapa} ({ciclo})</strong> y conecta con ODS.
         </p>
       </div>
 
       {/* Banner de Vinculación Curricular Automática */}
       {targetBloques.size > 0 && (
-        <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-2xl flex items-start space-x-3 shadow-2xs">
-          <Sparkles className="w-5 h-5 text-indigo-700 shrink-0 mt-0.5" />
-          <div className="text-xs text-indigo-950 space-y-1">
-            <p className="font-bold text-sm text-indigo-900">
+        <div className="p-3 bg-indigo-50/90 border border-indigo-200 rounded-xl flex items-start space-x-2.5 shadow-2xs">
+          <Sparkles className="w-4 h-4 text-indigo-700 shrink-0 mt-0.5" />
+          <div className="text-xs text-indigo-950 space-y-0.5">
+            <p className="font-bold text-xs text-indigo-900">
               Saberes Básicos alineados con los Criterios del Paso 2:
             </p>
-            <p className="text-indigo-800 leading-relaxed">
+            <p className="text-indigo-800 leading-relaxed text-xs">
               Hemos vinculado y preseleccionado automáticamente los saberes de los bloques{' '}
               <strong className="underline decoration-indigo-400 font-extrabold">
                 {Array.from(targetBloques).sort().map((b) => `Bloque ${b}`).join(', ')}
               </strong>{' '}
-              según los criterios y competencias elegidos en la pantalla anterior. Puedes añadir o retirar bloques libremente haciendo clic en cada tarjeta.
+              según los criterios y competencias elegidos. Puedes marcar o desmarcar libremente.
             </p>
           </div>
         </div>
       )}
 
-      {/* Saberes Básicos por Bloque */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h3 className="font-bold text-slate-800 text-base flex items-center space-x-2">
-            <Layers className="w-5 h-5 text-indigo-700" />
+      {/* Saberes Básicos por Bloque con Scroll Compacto */}
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 className="font-bold text-slate-800 text-sm flex items-center space-x-2">
+            <Layers className="w-4 h-4 text-indigo-700" />
             <span>Saberes Básicos (Bloques A-F) - {ciclo}</span>
           </h3>
-          <span className="text-xs bg-indigo-100 text-indigo-900 font-bold px-2.5 py-1 rounded-full">
+          <span className="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100">
             {saberesSeleccionados.length} seleccionados
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1.5 scrollbar-thin">
           {saberesDelCiclo.map((saber) => {
             const isSelected = saberesSeleccionados.includes(saber.codigo);
             const vincInfo = vinculacionPorBloque[saber.bloque];

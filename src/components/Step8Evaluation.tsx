@@ -1110,16 +1110,16 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
   };
 
   return (
-    <div id="step8-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40 flex flex-wrap items-center justify-between gap-4">
+    <div id="step8-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-3 mb-2">
-            <ClipboardCheck className="w-7 h-7 text-amber-400" />
-            <h2 className="text-xl font-bold">Paso 8: Evaluación Formativa e Instrumentos</h2>
+          <div className="flex items-center space-x-3 mb-1">
+            <ClipboardCheck className="w-6 h-6 text-amber-400" />
+            <h2 className="text-lg font-bold">Paso 8: Evaluación Formativa e Instrumentos</h2>
           </div>
-          <p className="text-indigo-100 text-sm max-w-2xl">
-            Selecciona qué tipos de instrumentos de evaluación deseas generar. La IA los elaborará partiendo de la temática <strong>({tematica})</strong> y de los criterios de evaluación seleccionados.
+          <p className="text-indigo-100 text-xs max-w-2xl">
+            Selecciona qué tipos de instrumentos de evaluación deseas generar partiendo de la temática <strong>({tematica})</strong> y criterios seleccionados.
           </p>
         </div>
 
@@ -1127,7 +1127,7 @@ export const Step8Evaluation: React.FC<Step8Props> = ({
           <button
             type="button"
             onClick={handleDownloadEvaluationWord}
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-950 font-extrabold text-xs transition shadow-md border border-indigo-200"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-extrabold text-xs transition shadow-2xs border border-indigo-200"
           >
             <span>📄 Descargar Rúbrica en Word (.doc)</span>
           </button>

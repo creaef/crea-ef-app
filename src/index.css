@@ -25,6 +25,28 @@ html {
   scrollbar-color: rgba(148, 163, 184, 0.6) rgba(241, 245, 249, 0.8);
 }
 
+/* Generous, easy-to-click scrollbar for horizontal session bars */
+.scrollbar-medium::-webkit-scrollbar {
+  height: 9px;
+  width: 9px;
+}
+.scrollbar-medium::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+.scrollbar-medium::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+.scrollbar-medium::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
+}
+.scrollbar-medium {
+  scrollbar-width: auto;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
 @keyframes slideUpBanner {
     from { transform: translate(-50%, 30px); opacity: 0; }
     to { transform: translate(-50%, 0); opacity: 1; }

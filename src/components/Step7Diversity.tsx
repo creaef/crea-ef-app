@@ -123,15 +123,15 @@ export const Step7Diversity: React.FC<Step7Props> = ({
   };
 
   return (
-    <div id="step7-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40">
-        <div className="flex items-center space-x-3 mb-2">
-          <Users className="w-7 h-7 text-amber-400" />
-          <h2 className="text-xl font-bold">Paso 7: Atención a la Diversidad e Inclusión (Marco DUA y NEAE)</h2>
+    <div id="step7-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40">
+        <div className="flex items-center space-x-3 mb-1">
+          <Users className="w-6 h-6 text-amber-400" />
+          <h2 className="text-lg font-bold">Paso 7: Atención a la Diversidad e Inclusión (Marco DUA y NEAE)</h2>
         </div>
-        <p className="text-indigo-100 text-sm max-w-3xl">
-          Selecciona las casuísticas del alumnado con necesidades específicas de apoyo educativo (NEAE) presentes en tu aula para generar adaptaciones personalizadas. A continuación se presentarán las Pautas Universales DUA.
+        <p className="text-indigo-100 text-xs max-w-3xl">
+          Selecciona las casuísticas del alumnado con necesidades específicas (NEAE) y pautas universales DUA.
         </p>
       </div>
 

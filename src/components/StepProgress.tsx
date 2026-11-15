@@ -12,6 +12,7 @@ import {
   Download,
   Check,
 } from 'lucide-react';
+import { useColorTheme } from '../utils/theme';
 
 interface StepProgressProps {
   currentStep: number;
@@ -33,8 +34,18 @@ const STEPS = [
 ];
 
 export const StepProgress: React.FC<StepProgressProps> = ({ currentStep, onSelectStep, maxStepReached }) => {
+  const { theme } = useColorTheme();
+  const isLight = theme.id === 'option_1_balanced';
+
   return (
-    <div id="step-progress-wrapper" className="bg-white border-b border-slate-200 py-3 px-4 shadow-2xs overflow-x-auto">
+    <div
+      id="step-progress-wrapper"
+      className={`sticky top-[58px] z-30 backdrop-blur-md border-b py-2 px-4 shadow-md overflow-x-auto scrollbar-thin transition-colors ${
+        isLight
+          ? 'bg-white/95 border-slate-200/90 text-slate-900'
+          : 'bg-slate-950/95 border-slate-800 text-slate-200'
+      }`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[760px] space-x-1">
         {STEPS.map((s) => {
           const Icon = s.icon;
@@ -50,21 +61,29 @@ export const StepProgress: React.FC<StepProgressProps> = ({ currentStep, onSelec
                 onClick={() => onSelectStep(s.step)}
                 className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-indigo-800 text-white shadow-md ring-2 ring-indigo-500/40'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-md shadow-orange-500/25 ring-2 ring-amber-400/40'
                     : isCompleted
-                    ? 'bg-indigo-50 text-indigo-900 hover:bg-indigo-100/80 border border-indigo-200'
+                    ? isLight
+                      ? 'bg-indigo-50 text-indigo-900 hover:bg-indigo-100 border border-indigo-200'
+                      : 'bg-emerald-950/70 text-emerald-300 hover:bg-emerald-900/80 border border-emerald-500/30'
                     : isClickable
-                    ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    : 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60'
+                    ? isLight
+                      ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      : 'bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60'
+                    : isLight
+                    ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-60'
+                    : 'bg-slate-900/60 text-slate-600 cursor-not-allowed opacity-50'
                 }`}
               >
                 <div
                   className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                     isActive
-                      ? 'bg-amber-400 text-slate-950 font-extrabold'
+                      ? 'bg-slate-950 text-amber-400 font-black'
                       : isCompleted
-                      ? 'bg-indigo-700 text-white'
-                      : 'bg-slate-200 text-slate-600'
+                      ? 'bg-emerald-500 text-white'
+                      : isLight
+                      ? 'bg-slate-200 text-slate-600'
+                      : 'bg-slate-700 text-slate-300'
                   }`}
                 >
                   {isCompleted && !isActive ? <Check className="w-3 h-3 stroke-[3]" /> : s.step}
@@ -76,7 +95,13 @@ export const StepProgress: React.FC<StepProgressProps> = ({ currentStep, onSelec
               {s.step < STEPS.length && (
                 <div
                   className={`h-0.5 flex-1 min-w-[10px] max-w-[24px] ${
-                    isCompleted ? 'bg-amber-400' : 'bg-slate-200'
+                    isCompleted
+                      ? isLight
+                        ? 'bg-indigo-300'
+                        : 'bg-amber-400'
+                      : isLight
+                      ? 'bg-slate-200'
+                      : 'bg-slate-800'
                   }`}
                 />
               )}

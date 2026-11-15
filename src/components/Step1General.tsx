@@ -188,175 +188,210 @@ export const Step1General: React.FC<Step1Props> = ({
     titulo.trim().length > 0 && tematica.trim().length > 0 && justificacion.trim().length > 0;
 
   return (
-    <div id="step1-container" className="space-y-6">
-      {/* Header card */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40">
-        <div className="flex items-center space-x-3 mb-2">
-          <FileText className="w-7 h-7 text-amber-400" />
-          <h2 className="text-xl font-bold">Paso 1: Datos Generales y Temática SdA</h2>
+    <div id="step1-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center space-x-3">
+          <FileText className="w-6 h-6 text-amber-400" />
+          <div>
+            <h2 className="text-lg font-bold">Paso 1: Datos Generales y Temática SdA</h2>
+            <p className="text-indigo-100 text-xs">
+              Define las coordenadas principales de tu Situación de Aprendizaje para el área de Educación Física ({comunidad}).
+            </p>
+          </div>
         </div>
-        <p className="text-indigo-100 text-sm max-w-3xl">
-          Define las coordenadas principales de tu Situación de Aprendizaje para el área de Educación Física bajo la normativa LOMLOE de {comunidad}.
-        </p>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full">
+            {etapa} • {curso} • {trimestre}
+          </span>
+        </div>
       </div>
 
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6">
-        {/* Title Input */}
-        <div>
-          <label id="label-sda-titulo" className="block text-sm font-bold text-slate-800 mb-1">
-            Título de la Situación de Aprendizaje <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="input-sda-titulo"
-            type="text"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            placeholder="Ej: Misión Flamenca: Descubriendo el Folclore Andaluz en Movimiento"
-            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 font-medium text-sm transition"
-          />
-        </div>
-
-        {/* Comunidad, Etapa, Course, Trimestre, Num Sesiones Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          {/* Comunidad Select */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* COLUMNA IZQUIERDA: Coordenadas y Justificación (7 cols) */}
+        <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          {/* Title Input */}
           <div>
-            <label id="label-sda-comunidad" className="block text-sm font-bold text-slate-800 mb-1">
-              Comunidad Autónoma
+            <label id="label-sda-titulo" className="block text-xs font-bold text-slate-800 mb-1">
+              Título de la Situación de Aprendizaje <span className="text-red-500">*</span>
             </label>
-            <select
-              id="select-sda-comunidad"
-              value={comunidad}
-              onChange={(e) => {
-                const newComunidad = e.target.value as ComunidadAutonoma;
-                setComunidad(newComunidad);
-                if (newComunidad !== 'Andalucía' && (etapa === 'Infantil' || etapa === 'Bachillerato')) {
-                  setEtapa('Primaria');
-                  setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
-                }
-              }}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
-            >
-              <option value="Andalucía">Andalucía</option>
-              <option value="Aragón">Aragón</option>
-              <option value="Asturias">Asturias</option>
-              <option value="Cantabria">Cantabria</option>
-              <option value="Castilla y León">Castilla y León</option>
-              <option value="Castilla-La Mancha">Castilla-La Mancha</option>
-              <option value="Catalunya">Catalunya</option>
-              <option value="Comunidad de Madrid">Comunidad de Madrid</option>
-              <option value="Comunidad Valenciana">Comunidad Valenciana</option>
-              <option value="Extremadura">Extremadura</option>
-              <option value="Galicia">Galicia</option>
-              <option value="La Rioja">La Rioja</option>
-              <option value="Navarra">Navarra</option>
-              <option value="País Vasco">País Vasco</option>
-              <option value="Región de Murcia">Región de Murcia</option>
-            </select>
+            <input
+              id="input-sda-titulo"
+              type="text"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)}
+              placeholder="Ej: Misión Flamenca: Descubriendo el Folclore Andaluz en Movimiento"
+              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 font-medium text-xs sm:text-sm transition bg-slate-50/50"
+            />
           </div>
 
-          {/* Etapa Select */}
-          <div>
-            <label id="label-sda-etapa" className="block text-sm font-bold text-slate-800 mb-1">
-              Etapa Educativa
-            </label>
-            <select
-              id="select-sda-etapa"
-              value={etapa}
-              onChange={(e) => {
-                const newEtapa = e.target.value as EtapaEducativa;
-                setEtapa(newEtapa);
-                const firstCourse = CURSOS_POR_ETAPA[newEtapa][0];
-                setCurso(firstCourse);
-              }}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
-            >
-              {comunidad === 'Andalucía' && <option value="Infantil">Infantil</option>}
-              <option value="Primaria">Primaria</option>
-              <option value="ESO">ESO</option>
-              {comunidad === 'Andalucía' && <option value="Bachillerato">Bachillerato</option>}
-            </select>
+          {/* Comunidad, Etapa, Course, Trimestre, Num Sesiones Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Comunidad Select */}
+            <div>
+              <label id="label-sda-comunidad" className="block text-[11px] font-bold text-slate-700 mb-1">
+                Comunidad Autónoma
+              </label>
+              <select
+                id="select-sda-comunidad"
+                value={comunidad}
+                onChange={(e) => {
+                  const newComunidad = e.target.value as ComunidadAutonoma;
+                  setComunidad(newComunidad);
+                  if (newComunidad !== 'Andalucía' && (etapa === 'Infantil' || etapa === 'Bachillerato')) {
+                    setEtapa('Primaria');
+                    setCurso(CURSOS_POR_ETAPA['Primaria'][0]);
+                  }
+                }}
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 text-slate-800 text-xs font-medium bg-slate-50"
+              >
+                <option value="Andalucía">Andalucía</option>
+                <option value="Aragón">Aragón</option>
+                <option value="Asturias">Asturias</option>
+                <option value="Cantabria">Cantabria</option>
+                <option value="Castilla y León">Castilla y León</option>
+                <option value="Castilla-La Mancha">Castilla-La Mancha</option>
+                <option value="Catalunya">Catalunya</option>
+                <option value="Comunidad de Madrid">Comunidad de Madrid</option>
+                <option value="Comunidad Valenciana">Comunidad Valenciana</option>
+                <option value="Extremadura">Extremadura</option>
+                <option value="Galicia">Galicia</option>
+                <option value="La Rioja">La Rioja</option>
+                <option value="Navarra">Navarra</option>
+                <option value="País Vasco">País Vasco</option>
+                <option value="Región de Murcia">Región de Murcia</option>
+              </select>
+            </div>
+
+            {/* Etapa Select */}
+            <div>
+              <label id="label-sda-etapa" className="block text-[11px] font-bold text-slate-700 mb-1">
+                Etapa Educativa
+              </label>
+              <select
+                id="select-sda-etapa"
+                value={etapa}
+                onChange={(e) => {
+                  const newEtapa = e.target.value as EtapaEducativa;
+                  setEtapa(newEtapa);
+                  const firstCourse = CURSOS_POR_ETAPA[newEtapa][0];
+                  setCurso(firstCourse);
+                }}
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 text-slate-800 text-xs font-medium bg-slate-50"
+              >
+                {comunidad === 'Andalucía' && <option value="Infantil">Infantil</option>}
+                <option value="Primaria">Primaria</option>
+                <option value="ESO">ESO</option>
+                {comunidad === 'Andalucía' && <option value="Bachillerato">Bachillerato</option>}
+              </select>
+            </div>
+
+            {/* Curso / Level Select */}
+            <div>
+              <label id="label-sda-curso" className="block text-[11px] font-bold text-slate-700 mb-1">
+                Curso / Nivel
+              </label>
+              <select
+                id="select-sda-curso"
+                value={curso}
+                onChange={(e) => setCurso(e.target.value as Curso)}
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 text-slate-800 text-xs font-medium bg-slate-50"
+              >
+                {CURSOS_POR_ETAPA[etapa].map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Trimestre */}
+            <div>
+              <label id="label-sda-trimestre" className="block text-[11px] font-bold text-slate-700 mb-1">
+                Trimestre
+              </label>
+              <select
+                id="select-sda-trimestre"
+                value={trimestre}
+                onChange={(e) => setTrimestre(e.target.value as Trimestre)}
+                className="w-full px-3 py-1.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 text-slate-800 text-xs font-medium bg-slate-50"
+              >
+                {TRIMESTRES_LIST.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Num Sesiones */}
+            <div className="sm:col-span-2">
+              <label id="label-sda-num-sesiones" className="block text-[11px] font-bold text-slate-700 mb-1">
+                Nº Sesiones Totales (60 min c/u)
+              </label>
+              <div className="flex items-center space-x-2">
+                <input
+                  id="input-sda-num-sesiones"
+                  type="number"
+                  min={2}
+                  max={16}
+                  value={numSesiones}
+                  onChange={(e) => setNumSesiones(Math.max(2, Math.min(16, parseInt(e.target.value) || 6)))}
+                  className="w-20 px-3 py-1.5 rounded-xl border border-slate-300 focus:border-indigo-600 text-slate-900 font-bold text-xs bg-slate-50"
+                />
+                <span className="text-[11px] text-slate-500">
+                  {cicloCalculado} • Rec: 6 a 10 sesiones.
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Curso / Level Select */}
-          <div>
-            <label id="label-sda-curso" className="block text-sm font-bold text-slate-800 mb-1">
-              Curso / Nivel Educativo
-            </label>
-            <select
-              id="select-sda-curso"
-              value={curso}
-              onChange={(e) => setCurso(e.target.value as Curso)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
-            >
-              {CURSOS_POR_ETAPA[etapa].map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            {etapa === 'Primaria' && (
-              <p className="text-xs text-slate-500 mt-1">
-                Ciclo asignado automáticamente: <strong className="text-indigo-700">{cicloCalculado}</strong>
-              </p>
+          {/* Justificación y Temática */}
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-between">
+              <label id="label-sda-justificacion" className="block text-xs font-bold text-slate-800">
+                Justificación de la Propuesta <span className="text-red-500">*</span>
+              </label>
+              <button
+                id="btn-generate-justification-ai"
+                type="button"
+                disabled={loadingAi}
+                onClick={handleGenerateJustification}
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs font-bold transition border border-indigo-200 disabled:opacity-50 cursor-pointer"
+              >
+                <Sparkles className={`w-3.5 h-3.5 text-amber-500 ${loadingAi ? 'animate-spin' : ''}`} />
+                <span>{loadingAi ? 'Generando...' : 'Redactar con IA'}</span>
+              </button>
+            </div>
+
+            <textarea
+              id="textarea-sda-justificacion"
+              rows={7}
+              value={justificacion}
+              onChange={(e) => setJustificacion(e.target.value)}
+              placeholder={`Introduce la justificación pedagógica o pulsa en 'Redactar con IA' para que el sistema redacte la justificación alineada con la LOMLOE de ${comunidad}...`}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-xs leading-relaxed transition bg-slate-50/30"
+            />
+
+            {errorAi && (
+              <div id="error-ai-justification" className="p-2.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{errorAi}</span>
+              </div>
             )}
           </div>
-
-          {/* Trimestre */}
-          <div>
-            <label id="label-sda-trimestre" className="block text-sm font-bold text-slate-800 mb-1">
-              Trimestre
-            </label>
-            <select
-              id="select-sda-trimestre"
-              value={trimestre}
-              onChange={(e) => setTrimestre(e.target.value as Trimestre)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm font-medium bg-slate-50"
-            >
-              {TRIMESTRES_LIST.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Num Sesiones */}
-          <div>
-            <label id="label-sda-num-sesiones" className="block text-sm font-bold text-slate-800 mb-1">
-              Número de Sesiones Totales (60 min/sesión)
-            </label>
-            <div className="flex items-center space-x-3">
-              <input
-                id="input-sda-num-sesiones"
-                type="number"
-                min={2}
-                max={16}
-                value={numSesiones}
-                onChange={(e) => setNumSesiones(Math.max(2, Math.min(16, parseInt(e.target.value) || 6)))}
-                className="w-28 px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 font-bold text-sm bg-slate-50"
-              />
-              <span className="text-xs text-slate-500">Recomendado: 6 a 10 sesiones por SdA.</span>
-            </div>
-          </div>
         </div>
 
-        {/* CUADRO DE SELECCIÓN Y COMPOSICIÓN DE TEMÁTICAS */}
-        <div id="cuadro-tematicas-container" className="border border-indigo-200 bg-indigo-50/40 rounded-2xl p-5 space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-indigo-100 pb-3">
-            <div>
-              <h3 className="font-bold text-indigo-950 text-base flex items-center space-x-2">
-                <Tag className="w-5 h-5 text-indigo-700 shrink-0" />
-                <span>Cuadro de Selección y Composición de Temáticas</span>
+        {/* COLUMNA DERECHA: Cuadro de Selección y Composición de Temáticas (5 cols) */}
+        <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm flex items-center space-x-1.5">
+                <Tag className="w-4 h-4 text-indigo-700 shrink-0" />
+                <span>Composición de Temáticas</span>
               </h3>
-              <p className="text-xs text-slate-600 mt-0.5">
-                Escribe ideas propias y/o selecciona al menos <strong>3 propuestas</strong> de la lista unificada oficial para articular tu SdA.
-              </p>
-            </div>
-
-            {/* Selected Ideas Counter Badge */}
-            <div className="flex items-center space-x-2">
               <span
-                className={`text-xs font-bold px-3 py-1 rounded-full flex items-center space-x-1.5 transition ${
+                className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center space-x-1 transition ${
                   selectedThemes.length >= 3
                     ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                     : selectedThemes.length > 0
@@ -364,211 +399,119 @@ export const Step1General: React.FC<Step1Props> = ({
                     : 'bg-slate-100 text-slate-600 border border-slate-200'
                 }`}
               >
-                {selectedThemes.length >= 3 ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-                ) : (
-                  <Lightbulb className="w-4 h-4 text-amber-600 shrink-0" />
-                )}
-                <span>
-                  {selectedThemes.length} / 3+ ideas seleccionadas
-                </span>
+                <span>{selectedThemes.length}/3+</span>
               </span>
-
-              {selectedThemes.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleClearThemes}
-                  className="text-xs text-slate-500 hover:text-red-600 font-semibold px-2 py-1 rounded hover:bg-red-50 transition"
-                  title="Limpiar todas las temáticas seleccionadas"
-                >
-                  Limpiar
-                </button>
-              )}
             </div>
-          </div>
 
-          {/* Active / Selected Ideas Chips */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-2">
-              Ideas Temáticas Activas en esta SdA:
-            </label>
-            {selectedThemes.length === 0 ? (
-              <div className="p-3 bg-white rounded-xl border border-dashed border-slate-300 text-xs text-slate-500 text-center">
-                Aún no has seleccionado ninguna idea. Escribe una idea abajo o marca 3 o más de la lista oficial.
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {selectedThemes.map((theme, idx) => (
+            {/* Chips de ideas seleccionadas */}
+            {selectedThemes.length > 0 ? (
+              <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto scrollbar-thin p-1 bg-indigo-50/40 rounded-xl border border-indigo-100">
+                {selectedThemes.map((thm) => (
                   <span
-                    key={idx}
-                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-indigo-900 text-white text-xs font-semibold shadow-2xs border border-indigo-950 animate-fadeIn"
+                    key={thm}
+                    className="inline-flex items-center gap-1 bg-white text-indigo-950 font-bold text-[10px] px-2 py-0.5 rounded-lg border border-indigo-200 shadow-2xs"
                   >
-                    <span>{theme}</span>
+                    <span>{thm}</span>
                     <button
                       type="button"
-                      onClick={() => handleToggleTheme(theme)}
-                      className="hover:bg-indigo-700 p-0.5 rounded-full text-indigo-200 hover:text-white transition"
+                      onClick={() => handleToggleTheme(thm)}
+                      className="text-slate-400 hover:text-red-500 ml-0.5"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3 h-3" />
                     </button>
                   </span>
                 ))}
               </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 italic">
+                Selecciona al menos 3 ideas de la lista o escribe tu propia temática.
+              </p>
             )}
-          </div>
 
-          {/* Write and Add Custom Idea Field */}
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
-            <label className="block text-xs font-bold text-slate-800">
-              Añadir Idea Propia o Personalizada:
-            </label>
-            <div className="flex gap-2">
+            {/* Input para añadir temática propia */}
+            <div className="flex space-x-1.5">
               <input
                 type="text"
                 value={customIdeaInput}
                 onChange={(e) => setCustomIdeaInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddCustomIdea();
-                  }
-                }}
-                placeholder="Escribe tu propia idea de temática y pulsa Añadir (ej: Misión Espacial en EF, Torneo de Quidditch adaptado)..."
-                className="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 text-xs text-slate-800 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomIdea())}
+                placeholder="Añadir idea propia..."
+                className="flex-1 px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-900 bg-slate-50 focus:border-indigo-600"
               />
               <button
                 type="button"
                 onClick={handleAddCustomIdea}
-                disabled={!customIdeaInput.trim()}
-                className="inline-flex items-center space-x-1 px-4 py-2 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white font-bold text-xs transition shadow-2xs disabled:opacity-50"
+                className="px-3 py-1.5 bg-indigo-900 hover:bg-indigo-950 text-white rounded-lg text-xs font-bold shrink-0"
               >
-                <Plus className="w-4 h-4" />
-                <span>Añadir</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Search, Random Pick & Themes Checklist Grid */}
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="relative flex-1 min-w-[220px]">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Buscar entre las 65 temáticas oficiales (ej: danza, parkour, juegos, salud, agua)..."
-                  className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 focus:border-indigo-600"
-                />
-              </div>
-
-              <button
-                type="button"
-                onClick={handlePickThreeRandom}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition border border-amber-300 shadow-2xs"
-              >
-                <Shuffle className="w-4 h-4" />
-                <span>Seleccionar 3 Aleatorias</span>
+                <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* List of 65 Unified Proposed Themes with Checkboxes */}
-            <div className="max-h-64 overflow-y-auto pr-1 bg-white p-3 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-              {filteredThemes.length === 0 ? (
-                <div className="col-span-2 text-center text-slate-500 py-4">
-                  No se encontraron temáticas para "{searchTerm}".
-                </div>
-              ) : (
-                filteredThemes.map((themeItem) => {
-                  const isChecked = selectedThemes.includes(themeItem);
-                  return (
-                    <button
-                      key={themeItem}
-                      type="button"
-                      onClick={() => handleToggleTheme(themeItem)}
-                      className={`p-2.5 rounded-xl border text-left transition flex items-start space-x-2.5 ${
-                        isChecked
-                          ? 'bg-indigo-50 border-indigo-600 ring-1 ring-indigo-500/30 text-indigo-950 font-bold shadow-2xs'
-                          : 'bg-slate-50/80 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+            {/* Buscador de temáticas */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Filtrar temáticas (ej: acrosport, circo, comba)..."
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 bg-slate-50 focus:border-indigo-600"
+              />
+            </div>
+
+            {/* Lista Scrollable de Temáticas */}
+            <div className="max-h-56 overflow-y-auto scrollbar-thin pr-1 space-y-1">
+              {filteredThemes.map((themeItem) => {
+                const isChecked = selectedThemes.includes(themeItem);
+                return (
+                  <button
+                    key={themeItem}
+                    type="button"
+                    onClick={() => handleToggleTheme(themeItem)}
+                    className={`w-full p-1.5 px-2.5 rounded-lg border text-left text-xs transition flex items-center justify-between ${
+                      isChecked
+                        ? 'bg-indigo-50 border-indigo-400 font-bold text-indigo-950'
+                        : 'bg-slate-50/70 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span className="truncate pr-1">{themeItem}</span>
+                    <div
+                      className={`w-3.5 h-3.5 rounded border shrink-0 flex items-center justify-center ${
+                        isChecked ? 'bg-indigo-700 border-indigo-800 text-white' : 'bg-white border-slate-300'
                       }`}
                     >
-                      <div
-                        className={`w-4 h-4 rounded border mt-0.5 shrink-0 flex items-center justify-center transition ${
-                          isChecked
-                            ? 'bg-indigo-700 border-indigo-800 text-white'
-                            : 'bg-white border-slate-300'
-                        }`}
-                      >
-                        {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
-                      </div>
-                      <span className="leading-snug">{themeItem}</span>
-                    </button>
-                  );
-                })
-              )}
+                      {isChecked && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Consolidated Temática Text Field */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1">
-              Temática Consolidada de la SdA (Resultado):
+          {/* Temática Consolidada */}
+          <div className="pt-2 border-t border-slate-100">
+            <label className="block text-[10px] font-bold text-slate-600 mb-0.5">
+              Temática Consolidada de la SdA:
             </label>
-            <textarea
-              rows={2}
+            <input
+              type="text"
               value={tematica}
               onChange={(e) => {
                 setTematica(e.target.value);
-                // Also update array if edited manually
                 setSelectedThemes(
-                  e.target.value
-                    .split(', ')
-                    .map((s) => s.trim())
-                    .filter(Boolean)
+                  e.target.value.split(', ').map((s) => s.trim()).filter(Boolean)
                 );
               }}
-              placeholder="Las temáticas seleccionadas o escritas se consolidan aquí..."
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 bg-white focus:border-indigo-600"
+              placeholder="Las temáticas seleccionadas se resumen aquí..."
+              className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-semibold text-slate-800 bg-slate-50"
             />
           </div>
         </div>
-
-
-        {/* Justificación y Temática */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label id="label-sda-justificacion" className="block text-sm font-bold text-slate-800">
-              Justificación de la Propuesta <span className="text-red-500">*</span>
-            </label>
-            <button
-              id="btn-generate-justification-ai"
-              type="button"
-              disabled={loadingAi}
-              onClick={handleGenerateJustification}
-              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs font-bold transition border border-indigo-200 disabled:opacity-50"
-            >
-              <Sparkles className={`w-3.5 h-3.5 text-amber-500 ${loadingAi ? 'animate-spin' : ''}`} />
-              <span>{loadingAi ? 'Generando con IA...' : 'Generar Justificación con IA'}</span>
-            </button>
-          </div>
-
-          <textarea
-            id="textarea-sda-justificacion"
-            rows={5}
-            value={justificacion}
-            onChange={(e) => setJustificacion(e.target.value)}
-            placeholder={`Introduce la justificación pedagógica o pulsa en 'Generar Justificación con IA' para que el sistema redacte la justificación alineada con la LOMLOE de ${comunidad}...`}
-            className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 text-slate-800 text-sm transition"
-          />
-
-          {errorAi && (
-            <div id="error-ai-justification" className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{errorAi}</span>
-            </div>
-          )}
-        </div>
       </div>
+
+
+
+
 
       {/* Navigation Footer */}
       <div className="flex justify-end pt-2">

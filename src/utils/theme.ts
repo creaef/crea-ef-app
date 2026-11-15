@@ -27,33 +27,33 @@ export interface ColorTheme {
 export const COLOR_THEMES: ColorTheme[] = [
   {
     id: 'option_1_balanced',
-    optionLabel: 'OPCIÓN 1',
-    name: 'The Balanced Academic-Athletic',
-    focusLabel: 'Foco en Equilibrio',
-    description: 'Diseño limpio y equilibrado sobre fondo claro neutro. Utiliza Naranja Vibrante y Azul-Teal Marino como acentos principales. Tarjetas bien estructuradas para Situaciones de Aprendizaje y Tareas.',
+    optionLabel: 'MODO CLARO',
+    name: 'Luz y Claridad Editorial (Modo Claro)',
+    focusLabel: 'Foco en Claridad y Lectura',
+    description: 'Diseño ultra-luminoso, limpio y descansado sobre fondo suave neutro. Tarjetas blancas, contraste nítido y acentos deportivos en azul marino y naranja.',
     primaryHex: '#0D47A1', // Azul-Teal Marino
-    secondaryHex: '#FF8A65', // Naranja Vibrante
+    secondaryHex: '#E85D04', // Naranja Atlético
     accentHex: '#0284C7', // Azul Cielo
     greenHex: '#2E7D32', // Verde Bosque
     motifs: ['Cronómetro Equilibrado', 'Tarjetas Claras', 'Iconografía Ágil'],
-    typographyStyle: 'Inter / Plus Jakarta Sans (Crea: Amigable, -Ef: Estructurada)',
-    badgeBg: 'bg-blue-900/10 text-blue-800 border-blue-300',
-    headerBgClass: 'bg-white/95 border-slate-300 text-slate-900 shadow-sm',
-    bodyBgClass: 'bg-slate-200 text-slate-900',
-    heroTextGradient: 'from-blue-900 via-sky-600 to-orange-600',
-    buttonClass: 'bg-blue-800 hover:bg-blue-900 text-white font-bold shadow-md shadow-blue-800/20',
-    cardBgClass: 'bg-white border-slate-200 shadow-sm',
-    activeBorderClass: 'border-blue-700 ring-2 ring-blue-700/20',
-    docHeaderBg: '#0D47A1',
+    typographyStyle: 'Inter / Plus Jakarta Sans (Limpia y profesional)',
+    badgeBg: 'bg-indigo-50 text-indigo-900 border-indigo-200',
+    headerBgClass: 'bg-white/95 border-slate-200 text-slate-850 shadow-2xs backdrop-blur-md',
+    bodyBgClass: 'bg-slate-100/90 text-slate-900',
+    heroTextGradient: 'from-indigo-900 via-sky-600 to-orange-600',
+    buttonClass: 'bg-indigo-900 hover:bg-indigo-950 text-white font-extrabold shadow-sm',
+    cardBgClass: 'bg-white border-slate-200 shadow-xs',
+    activeBorderClass: 'border-indigo-600 ring-2 ring-indigo-500/20',
+    docHeaderBg: '#0A2240',
     docHeaderColor: '#FFFFFF',
-    docAccentBorder: '#FF8A65',
+    docAccentBorder: '#E85D04',
   },
   {
     id: 'option_2_dynamic',
-    optionLabel: 'OPCIÓN 2',
-    name: 'The Dynamic Athletic High-Energy',
+    optionLabel: 'MODO OSCURO',
+    name: 'The Dynamic Athletic (Modo Oscuro)',
     focusLabel: 'Foco en Alta Energía',
-    description: 'Diseño con fondo azul marino profundo (#0A2240). Utiliza Naranja vibrante para botones de acción principal y barras de progreso. Los motivos del atleta corriendo y el cronómetro son prominentes.',
+    description: 'Diseño con fondo azul marino profundo (#0A2240). Utiliza Naranja vibrante para botones de acción principal y barras de progreso.',
     primaryHex: '#0A2240', // Azul Marino Profundo
     secondaryHex: '#E85D04', // Naranja Atlético
     accentHex: '#0284C7', // Turquesa / Azul Cielo
@@ -99,8 +99,15 @@ export const COLOR_THEMES: ColorTheme[] = [
 const THEME_STORAGE_KEY = 'creaef_selected_theme_id';
 
 export function getStoredTheme(): ColorTheme {
-  // Permanently use Option 2: The Dynamic Athletic High-Energy (#0A2240 navy, #E85D04 orange)
-  return COLOR_THEMES[1];
+  try {
+    const savedId = localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedId) {
+      const found = COLOR_THEMES.find((t) => t.id === savedId);
+      if (found) return found;
+    }
+  } catch (e) {}
+  // Default to classic athletic high-contrast dark theme (Option 2)
+  return COLOR_THEMES[1] || COLOR_THEMES[0];
 }
 
 export function saveTheme(themeId: string) {

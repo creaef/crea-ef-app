@@ -82,55 +82,52 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
   };
 
   return (
-    <div id="step2-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40">
-        <div className="flex items-center space-x-3 mb-2">
-          <BookmarkCheck className="w-7 h-7 text-amber-400" />
-          <h2 className="text-xl font-bold">Paso 2: Conexión Curricular (Criterios y Competencias)</h2>
+    <div id="step2-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40">
+        <div className="flex items-center space-x-3 mb-1">
+          <BookmarkCheck className="w-6 h-6 text-amber-400" />
+          <h2 className="text-lg font-bold">Paso 2: Conexión Curricular (Criterios y Competencias)</h2>
         </div>
-        <p className="text-indigo-100 text-sm max-w-3xl">
+        <p className="text-indigo-100 text-xs max-w-3xl">
           Selección de Competencias Específicas y Criterios de Evaluación autonómicos de {comunidad} para <strong>{etapa} ({ciclo})</strong>.
         </p>
       </div>
 
-      {/* Info notice */}
-      <div className="p-4 bg-amber-50 border border-amber-300/80 rounded-xl flex items-start space-x-3 text-amber-950 text-xs shadow-2xs">
-        <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-        <div>
-          <p className="font-bold">Alineación autonómica automática:</p>
-          <p className="mt-0.5">
-            Los criterios mostrados corresponden al <strong>{ciclo}</strong>. Al seleccionar los Criterios de Evaluación, la aplicación asocia automáticamente las Competencias Específicas correspondientes.
-          </p>
-        </div>
+      {/* Info notice compact */}
+      <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-center space-x-2.5 text-amber-950 text-xs shadow-2xs">
+        <Info className="w-4 h-4 text-amber-600 shrink-0" />
+        <p className="text-xs">
+          <strong>Alineación autonómica automática:</strong> Al marcar Criterios de Evaluación del <strong>{ciclo}</strong>, la app vincula automáticamente sus Competencias Específicas correspondientes.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Competencias Específicas EF (5 total) */}
-        <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <h3 className="font-bold text-slate-800 text-base border-b border-slate-100 pb-2 flex items-center justify-between">
+        <div className="lg:col-span-5 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col">
+          <h3 className="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center justify-between">
             <span>Competencias Específicas (EF)</span>
-            <span className="text-xs bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100">
               {competenciasSeleccionadas.length} seleccionadas
             </span>
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 max-h-[560px] overflow-y-auto pr-1.5 scrollbar-thin">
             {competenciasEtapa.map((comp) => {
               const isSelected = competenciasSeleccionadas.includes(comp.id);
               return (
                 <div
                   key={comp.id}
                   onClick={() => toggleCompetencia(comp.id)}
-                  className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                  className={`p-3 rounded-xl border transition cursor-pointer ${
                     isSelected
-                      ? 'bg-indigo-50/90 border-indigo-500 shadow-xs ring-1 ring-indigo-500/20'
+                      ? 'bg-indigo-50/90 border-indigo-500 shadow-2xs ring-1 ring-indigo-500/20'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
-                  <div className="flex items-start space-x-3">
+                  <div className="flex items-start space-x-2.5">
                     <div className="mt-0.5 text-indigo-700">
-                      {isSelected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5 text-slate-400" />}
+                      {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4 text-slate-400" />}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -149,15 +146,15 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
         </div>
 
         {/* Criterios de Evaluación por Ciclo */}
-        <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <h3 className="font-bold text-slate-800 text-base border-b border-slate-100 pb-2 flex items-center justify-between">
+        <div className="lg:col-span-7 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col">
+          <h3 className="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center justify-between">
             <span>Criterios de Evaluación - {ciclo}</span>
-            <span className="text-xs bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100">
               {criteriosSeleccionados.length} seleccionados
             </span>
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 max-h-[560px] overflow-y-auto pr-1.5 scrollbar-thin">
             {criteriosDelCiclo.map((crit) => {
               const isSelected = criteriosSeleccionados.includes(crit.codigo) || criteriosSeleccionados.includes(crit.id);
               const decretoNum = crit.id ? crit.id.replace(/-[23]c/, '') : '';
@@ -165,15 +162,15 @@ export const Step2Curriculum: React.FC<Step2Props> = ({
                 <div
                   key={crit.id}
                   onClick={() => toggleCriterio(crit.codigo, crit.id)}
-                  className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                  className={`p-3 rounded-xl border transition cursor-pointer ${
                     isSelected
-                      ? 'bg-indigo-50/90 border-indigo-500 shadow-xs ring-1 ring-indigo-500/20'
+                      ? 'bg-indigo-50/90 border-indigo-500 shadow-2xs ring-1 ring-indigo-500/20'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
-                  <div className="flex items-start space-x-3">
+                  <div className="flex items-start space-x-2.5">
                     <div className="mt-0.5 text-indigo-700">
-                      {isSelected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5 text-slate-400" />}
+                      {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4 text-slate-400" />}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">

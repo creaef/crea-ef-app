@@ -18,6 +18,20 @@ import { getCicloFromCurso, getEtapaFromCurso, generarRubricaPorDefecto } from '
 import { logoutGoogle, db } from './lib/firebase';
 import { collection, doc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { useColorTheme } from './utils/theme';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+const STEP_LABELS = [
+  'Datos & Temática',
+  'Currículo',
+  'Saberes & ODS',
+  'Metodología',
+  'Sesiones',
+  'Producto Final',
+  'Diversidad',
+  'Evaluación',
+  'Recursos',
+  'Resumen SdA',
+];
 
 const INITIAL_SDA_STATE: SituacionAprendizaje = {
   id: 'sda-' + Date.now(),
@@ -589,11 +603,56 @@ export default function App() {
         )}
       </main>
 
+      {/* Sticky Bottom Action Bar (Navegación Rápida Anti-Scroll en tema clásico) */}
+      <aside
+        id="sticky-anti-scroll-bar"
+        className="sticky bottom-0 z-30 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 shadow-2xl py-2.5 px-4 no-print transition-all"
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          <div>
+            {currentStep > 1 ? (
+              <button
+                type="button"
+                onClick={handlePrev}
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition border border-slate-700 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
+                <span className="hidden sm:inline">Paso {currentStep - 1}</span>
+                <span className="sm:hidden">Anterior</span>
+              </button>
+            ) : (
+              <div className="w-20" />
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2 text-xs font-bold text-slate-400">
+            <span className="hidden md:inline">Paso {currentStep} de 10:</span>
+            <span className="text-amber-300 font-extrabold bg-slate-900 px-3 py-1 rounded-full border border-slate-700 shadow-2xs">
+              {STEP_LABELS[currentStep - 1]}
+            </span>
+          </div>
+
+          <div>
+            {currentStep < 10 && (
+              <button
+                type="button"
+                onClick={handleNext}
+                className="inline-flex items-center space-x-1.5 px-4.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black text-xs transition shadow-lg shadow-orange-500/25 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+              >
+                <span className="hidden sm:inline">Siguiente: {STEP_LABELS[currentStep]}</span>
+                <span className="sm:hidden">Siguiente</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-950" />
+              </button>
+            )}
+          </div>
+        </div>
+      </aside>
+
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
+      <footer className="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-400 no-print">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-3">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <p className="font-bold text-slate-800">
+            <p className="font-bold text-slate-200">
               Crea-Ef LOMLOE • Basado en la normativa vigente de cada comunidad autónoma.
             </p>
             <p className="mt-1">

@@ -129,14 +129,14 @@ export const Step6FinalChallenge: React.FC<Step6Props> = ({
   };
 
   return (
-    <div id="step6-container" className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-indigo-700/40">
-        <div className="flex items-center space-x-3 mb-2">
-          <Trophy className="w-7 h-7 text-amber-400" />
-          <h2 className="text-xl font-bold">Paso 6: Producto Final / Reto Motor Culminante</h2>
+    <div id="step6-container" className="space-y-4">
+      {/* Header card compact dark athletic */}
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/40">
+        <div className="flex items-center space-x-3 mb-1">
+          <Trophy className="w-6 h-6 text-amber-400" />
+          <h2 className="text-lg font-bold">Paso 6: Producto Final / Reto Motor Culminante</h2>
         </div>
-        <p className="text-indigo-100 text-sm max-w-3xl">
+        <p className="text-indigo-100 text-xs max-w-3xl">
           Define la tarea integradora o reto motivador que culmina la SdA, donde el alumnado aplica los saberes aprendidos.
         </p>
       </div>
